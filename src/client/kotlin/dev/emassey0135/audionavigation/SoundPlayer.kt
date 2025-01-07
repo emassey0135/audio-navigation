@@ -3,6 +3,7 @@ package dev.emassey0135.audionavigation
 import java.lang.Thread
 import kotlin.concurrent.thread
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.ALC
@@ -28,7 +29,7 @@ object SoundPlayer {
     }
     AudioNavigation.logger.info("OpenAL initialized.")
   }
-  fun playSound(bytes: ByteArray, listenerPos: BlockPos, sourcePos: BlockPos) {
+  fun playSound(bytes: ByteArray, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
     val process = thread {
       EXTThreadLocalContext.alcSetThreadContext(alContext!!)
       val alcCapabilities = ALC.createCapabilities(alDevice!!)
@@ -41,8 +42,10 @@ object SoundPlayer {
       val source = AL11.alGenSources()
       AL11.alSourcef(source, AL11.AL_MAX_DISTANCE, 100f)
       AL11.alSourcef(source, AL11.AL_ROLLOFF_FACTOR, 0.1f)
-      AL11.alSource3f(source, AL11.AL_POSITION, sourcePos.getX().toFloat(), sourcePos.getY().toFloat(), sourcePos.getZ().toFloat())
       AL11.alListener3f(AL11.AL_POSITION, listenerPos.getX().toFloat(), listenerPos.getY().toFloat(), listenerPos.getZ().toFloat())
+      val vector = listenerOrientation.getUnitVector()
+      AL11.alListenerfv(AL11.AL_ORIENTATION, floatArrayOf(vector.x, vector.y, vector.z, 0f, 1f, 0f))
+      AL11.alSource3f(source, AL11.AL_POSITION, sourcePos.getX().toFloat(), sourcePos.getY().toFloat(), sourcePos.getZ().toFloat())
       AL11.alSourcei(source, AL11.AL_BUFFER, buffer)
       AL11.alSourcePlay(source)
       while (AL11.alGetSourcei(source, AL11.AL_SOURCE_STATE) == AL11.AL_PLAYING) {

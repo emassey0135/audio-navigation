@@ -2,6 +2,7 @@ package dev.emassey0135.audionavigation
 
 import java.io.ByteArrayOutputStream
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import com.sun.jna.Callback
 import com.sun.jna.Library
 import com.sun.jna.Native
@@ -36,10 +37,10 @@ object Speech {
     espeak.espeak_SetParameter(2, 200, 0)
     AudioNavigation.logger.info("eSpeak initialized.")
   }
-  fun speakText(text: String, listenerPos: BlockPos, sourcePos: BlockPos) {
+  fun speakText(text: String, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
     val callback = SynthCallbackCollectAudio(ByteArrayOutputStream())
     espeak.espeak_SetSynthCallback(callback)
     espeak.espeak_Synth(text, size_t((text.length+1).toLong()), 0, 1, 0, 0, Pointer(0), Pointer(0))
-    SoundPlayer.playSound(callback.stream.toByteArray(), listenerPos, sourcePos)
+    SoundPlayer.playSound(callback.stream.toByteArray(), listenerPos, listenerOrientation, sourcePos)
   }
 }

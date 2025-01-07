@@ -3,7 +3,6 @@ package dev.emassey0135.audionavigation
 import java.lang.Thread
 import java.util.concurrent.locks.ReentrantLock
 import java.util.concurrent.SynchronousQueue
-import java.util.LinkedList
 import kotlin.concurrent.thread
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -11,6 +10,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Interval
 import dev.emassey0135.audionavigation.packets.PoiListPayload
@@ -24,8 +24,8 @@ object AudioNavigationClient : ClientModInitializer {
   private val poiListQueue = SynchronousQueue<PoiList>()
   private var oldPoiList = PoiList(listOf())
   private var mutex = ReentrantLock()
-  private fun speakPoi(origin: BlockPos, poi: Poi) {
-    Speech.speakText(poi.identifier.getPath(), origin, poi.pos)
+  private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi) {
+    Speech.speakText(poi.identifier.getPath(), origin, orientation, poi.pos)
   }
   private fun waitForAndSpeakPoiList() {
     mutex.lock()
@@ -33,17 +33,14 @@ object AudioNavigationClient : ClientModInitializer {
     val minecraftClient = MinecraftClient.getInstance()
     val player = minecraftClient.player
     if (player==null) return
-    AudioNavigation.logger.info("a: " + poiList.toSet().toString())
     val filteredPoiList = poiList.filterByDistance(BlockPos.ofFloored(player.getPos()), 25f)
-    AudioNavigation.logger.info("b: " + filteredPoiList.toSet().toString())
-    AudioNavigation.logger.info("c: " + oldPoiList.toSet().toString())
     if (filteredPoiList!=oldPoiList) {
       val newPoiList = filteredPoiList.subtract(oldPoiList)
-      AudioNavigation.logger.info("d: " + newPoiList.toSet().toString())
       oldPoiList = filteredPoiList
       val sortedPoiList = newPoiList.sortByDistance(BlockPos.ofFloored(player.getPos()))
-      AudioNavigation.logger.info("e: " + sortedPoiList.toString())
-      sortedPoiList.forEach { poi -> speakPoi(BlockPos.ofFloored(player.getPos()), poi) }
+      val origin = BlockPos.ofFloored(player.getPos())
+      val orientation = player.getFacing()
+      sortedPoiList.forEach { poi -> speakPoi(origin, orientation, poi) }
     }
     mutex.unlock()
   }

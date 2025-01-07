@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "dev.emassey0135.audionavigation.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"PlacedFeatureMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

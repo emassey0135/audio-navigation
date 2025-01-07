@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "dev.emassey0135.audionavigation.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"ExampleClientMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

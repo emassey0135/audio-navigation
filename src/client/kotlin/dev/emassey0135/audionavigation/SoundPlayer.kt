@@ -16,17 +16,13 @@ import dev.emassey0135.audionavigation.AudioNavigation
 object SoundPlayer {
   private var alDevice: Long? = null
   private var alContext: Long? = null
-  fun initialize() {
+  init {
     alDevice = ALC11.nalcOpenDevice(0L)
-    if (alDevice==null || alDevice==0L) {
-      AudioNavigation.logger.error("OpenAL initialization failed: could not open device")
-      return
-    }
+    if (alDevice==null || alDevice==0L)
+      error("OpenAL initialization failed: could not open device")
     alContext = ALC11.alcCreateContext(alDevice!!, intArrayOf(SOFTHRTF.ALC_HRTF_SOFT, ALC11.ALC_TRUE, 0))
-    if (alContext==null || alContext==0L) {
-      AudioNavigation.logger.error("OpenAL initialization failed: could not create context")
-      return
-    }
+    if (alContext==null || alContext==0L)
+      error("OpenAL initialization failed: could not create context")
     AudioNavigation.logger.info("OpenAL initialized.")
   }
   fun playSound(bytes: ByteArray, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {

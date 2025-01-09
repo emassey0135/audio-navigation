@@ -46,8 +46,6 @@ object AudioNavigationClient : ClientModInitializer {
   }
   override fun onInitializeClient() {
     val minecraftClient = MinecraftClient.getInstance()
-    SoundPlayer.initialize()
-    Speech.initialize()
     ClientPlayNetworking.registerGlobalReceiver(PoiListPayload.ID, { payload: PoiListPayload, context: ClientPlayNetworking.Context ->
         thread { poiListQueue.put(payload.poiList) }
     })

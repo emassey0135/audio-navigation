@@ -32,7 +32,7 @@ class SynthCallbackCollectAudio (val stream: ByteArrayOutputStream): SynthCallba
 }
 object Speech {
   private val espeak = Espeak.INSTANCE
-  fun initialize() {
+  init {
     espeak.espeak_Initialize(2, 0, null, 0)
     espeak.espeak_SetParameter(2, 200, 0)
     AudioNavigation.logger.info("eSpeak initialized.")

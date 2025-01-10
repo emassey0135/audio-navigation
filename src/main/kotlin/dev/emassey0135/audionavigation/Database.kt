@@ -5,7 +5,7 @@ import java.sql.DriverManager
 import org.sqlite.SQLiteConfig
 
 object Database {
-  var connection: Connection
+  @JvmField var connection: Connection
   init {
     val config = SQLiteConfig()
     config.enableLoadExtension(true)

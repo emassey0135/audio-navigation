@@ -25,7 +25,7 @@ object AudioNavigationClient : ClientModInitializer {
   private var oldPoiList = PoiList(listOf())
   private var mutex = ReentrantLock()
   private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi) {
-    Speech.speakText(poi.identifier.getPath(), origin, orientation, poi.pos)
+    Speech.speakText(poi.identifier.getPath(), origin, orientation, poi.toBlockPos())
   }
   private fun waitForAndSpeakPoiList() {
     mutex.lock()

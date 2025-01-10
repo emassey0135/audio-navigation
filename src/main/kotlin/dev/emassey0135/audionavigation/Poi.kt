@@ -1,11 +1,13 @@
 package dev.emassey0135.audionavigation
 
+import org.locationtech.jts.geom.Point
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.network.codec.PacketCodec
 import net.minecraft.network.codec.PacketCodecs
 import net.minecraft.util.Identifier
 import net.minecraft.util.dynamic.Codecs
 import net.minecraft.util.math.BlockPos
+import dev.emassey0135.audionavigation.Geometry
 
 enum class PoiType {
   LANDMARK, FEATURE, STRUCTURE;
@@ -15,25 +17,32 @@ enum class PoiType {
   }
 }
 
-data class Poi(val type: PoiType, val identifier: Identifier, val pos: BlockPos) {
-  fun distance(pos2: BlockPos): Double {
-    return pos.getSquaredDistance(pos2)
+data class Poi(val type: PoiType, val identifier: Identifier, val point: Point) {
+  constructor (type: PoiType, identifier: Identifier, pos: BlockPos): this(type, identifier, Geometry.blockPosToPoint(pos))
+  fun toBlockPos(): BlockPos {
+    return Geometry.pointToBlockPos(point)
+  }
+  fun distance(point2: Point): Double {
+    return point.distance(point2)
   }
   fun distance(poi: Poi): Double {
-    return distance(poi.pos)
+    return distance(poi.point)
+  }
+  fun distance(pos: BlockPos): Double {
+    return distance(Geometry.blockPosToPoint(pos))
   }
   companion object {
     @JvmField val CODEC = RecordCodecBuilder.create { instance ->
       instance.group(
         PoiType.CODEC.fieldOf("type").forGetter(Poi::type),
         Identifier.CODEC.fieldOf("identifier").forGetter(Poi::identifier),
-        BlockPos.CODEC.fieldOf("pos").forGetter(Poi::pos))
+        BlockPos.CODEC.fieldOf("pos").forGetter(Poi::toBlockPos))
         .apply(instance, ::Poi)
     }
     @JvmField val PACKET_CODEC = PacketCodec.tuple(
       PoiType.PACKET_CODEC, Poi::type,
       Identifier.PACKET_CODEC, Poi::identifier,
-      BlockPos.PACKET_CODEC, Poi::pos,
+      BlockPos.PACKET_CODEC, Poi::toBlockPos,
       ::Poi)
   }
 }

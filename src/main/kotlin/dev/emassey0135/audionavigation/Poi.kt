@@ -36,7 +36,7 @@ data class Poi(val type: PoiType, val identifier: Identifier, val point: Point) 
   fun addToDatabase() {
     check(type==PoiType.FEATURE)
     val statement = Database.connection.createStatement()
-    val wkt = Geometry.geometryToWKT(point)
+    val wkt = Geometry.writeWKT(point)
     statement.executeUpdate("INSERT INTO features (id, name, location) VALUES(NULL, '${identifier.getPath()}', ST_GeomFromText('${wkt}', -1))")
   }
   companion object {
@@ -55,32 +55,32 @@ data class Poi(val type: PoiType, val identifier: Identifier, val point: Point) 
   }
 }
 
-class PoiList(set: Set<Poi>) {
-  private val poiList = set.toMutableSet()
-  constructor (): this(setOf())
-  constructor (list: List<Poi>): this(list.toMutableSet())
-  fun toSet(): Set<Poi> {
-    return poiList.toSet()
-  }
+class PoiList(list: List<Poi>) {
+  private val poiList = list.toMutableList()
+  constructor (): this(listOf())
   fun toList(): List<Poi> {
     return poiList.toList()
   }
   fun addPoi(poi: Poi) {
     poiList.add(poi)
   }
-  fun addPoi(type: PoiType, identifier: Identifier, pos: BlockPos) {
-    poiList.add(Poi(type, identifier, pos))
-  }
-  fun filterByDistance(origin: BlockPos, maxDistance: Float): PoiList {
-    return PoiList(poiList.filter({ poi -> poi.distance(origin) <= maxDistance }))
-  }
-  fun sortByDistance(origin: BlockPos): List<Poi> {
-    return poiList.sortedBy({ poi -> poi.distance(origin) })
-  }
   fun subtract(poiList2: PoiList): PoiList {
-    return PoiList(poiList-poiList2.toSet())
+    return PoiList(poiList-poiList2.toList())
   }
   companion object {
+    fun getNearest(origin: Point, radius: Double): PoiList {
+      val statement = Database.connection.createStatement()
+      val originWKT = Geometry.writeWKT(origin)
+      val results = statement.executeQuery("SELECT a.pos AS rank, b.id, b.name, ST_AsText(b.location) AS location, a.distance_crs AS distance FROM knn2 AS a JOIN features AS b ON (b.id = a.fid) WHERE f_table_name = 'features' AND ref_geometry = ST_GeomFromText('${originWKT}', -1) AND radius = ${radius} AND max_items = 10")
+      val poiList = PoiList()
+      while (results.next()) {
+        poiList.addPoi(Poi(PoiType.FEATURE, Identifier.of(results.getString("name")), Geometry.readWKT(results.getString("location")) as Point))
+      }
+      return poiList
+    }
+    fun getNearest(origin: BlockPos, radius: Double): PoiList {
+    return getNearest(Geometry.blockPosToPoint(origin), radius)
+    }
     @JvmField val CODEC = RecordCodecBuilder.create { instance ->
       instance.group(
         Poi.CODEC.listOf().fieldOf("poiList").forGetter(PoiList::toList))

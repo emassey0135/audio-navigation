@@ -33,14 +33,12 @@ object AudioNavigationClient : ClientModInitializer {
     val minecraftClient = MinecraftClient.getInstance()
     val player = minecraftClient.player
     if (player==null) return
-    val filteredPoiList = poiList.filterByDistance(BlockPos.ofFloored(player.getPos()), 25f)
-    if (filteredPoiList!=oldPoiList) {
-      val newPoiList = filteredPoiList.subtract(oldPoiList)
-      oldPoiList = filteredPoiList
-      val sortedPoiList = newPoiList.sortByDistance(BlockPos.ofFloored(player.getPos()))
+    if (poiList!=oldPoiList) {
+      val newPoiList = poiList.subtract(oldPoiList)
+      oldPoiList = poiList
       val origin = BlockPos.ofFloored(player.getPos())
       val orientation = player.getFacing()
-      sortedPoiList.forEach { poi -> speakPoi(origin, orientation, poi) }
+      newPoiList.toList().forEach { poi -> speakPoi(origin, orientation, poi) }
     }
     mutex.unlock()
   }
@@ -56,7 +54,7 @@ object AudioNavigationClient : ClientModInitializer {
         if (ClientPlayNetworking.canSend(PoiRequestPayload.ID)) {
           val player = minecraftClient.player
           if (player!=null) {
-            ClientPlayNetworking.send(PoiRequestPayload(BlockPos.ofFloored(player.getPos())))
+            ClientPlayNetworking.send(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), 25.0))
             thread { waitForAndSpeakPoiList() }
           }
         }

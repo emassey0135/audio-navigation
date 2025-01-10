@@ -36,8 +36,8 @@ data class Poi(val type: PoiType, val identifier: Identifier, val point: Point) 
   fun addToDatabase() {
     check(type==PoiType.FEATURE)
     val statement = Database.connection.createStatement()
-    val wkbHex = Geometry.geometryToWKBHex(point)
-    statement.executeUpdate("INSERT INTO features (id, name, location) VALUES(NULL, '${identifier.getPath()}', ST_GeomFromWKB(x'${wkbHex}'))")
+    val wkt = Geometry.geometryToWKT(point)
+    statement.executeUpdate("INSERT INTO features (id, name, location) VALUES(NULL, '${identifier.getPath()}', ST_GeomFromText('${wkt}', -1))")
   }
   companion object {
     @JvmField val CODEC = RecordCodecBuilder.create { instance ->

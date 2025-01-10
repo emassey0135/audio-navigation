@@ -1,7 +1,7 @@
 package dev.emassey0135.audionavigation.mixin;
 
 import dev.emassey0135.audionavigation.AudioNavigation;
-import dev.emassey0135.audionavigation.PoiList;
+import dev.emassey0135.audionavigation.Poi;
 import dev.emassey0135.audionavigation.PoiType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -54,8 +54,7 @@ public class PlacedFeatureMixin {
                     mutableBoolean.setTrue();
 
                     if (key.isPresent()) {
-                        PoiList poiList = context.getWorld().getChunk(blockPos).getAttachedOrCreate(AudioNavigation.POI_LIST_ATTACHMENT);
-                        poiList.addPoi(PoiType.FEATURE, key.get().getValue(), blockPos);
+                        new Poi(PoiType.FEATURE, key.get().getValue(), blockPos).addToDatabase();
                     }
             }
         });

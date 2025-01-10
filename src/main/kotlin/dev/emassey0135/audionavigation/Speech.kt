@@ -38,6 +38,7 @@ object Speech {
     AudioNavigation.logger.info("eSpeak initialized.")
   }
   fun speakText(text: String, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
+    AudioNavigation.logger.info("Speaking text: $text")
     val callback = SynthCallbackCollectAudio(ByteArrayOutputStream())
     espeak.espeak_SetSynthCallback(callback)
     espeak.espeak_Synth(text, size_t((text.length+1).toLong()), 0, 1, 0, 0, Pointer(0), Pointer(0))

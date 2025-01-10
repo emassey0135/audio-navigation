@@ -21,12 +21,9 @@ repositories {
 }
 
 loom {
-  splitEnvironmentSourceSets()
-
   mods {
     "audio-navigation" {
       sourceSet sourceSets.main
-      sourceSet sourceSets.client
     }
   }
 

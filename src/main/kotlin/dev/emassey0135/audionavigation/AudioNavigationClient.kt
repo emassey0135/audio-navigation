@@ -49,7 +49,7 @@ object AudioNavigationClient : ClientModInitializer {
     ClientPlayNetworking.registerGlobalReceiver(PoiListPayload.ID, { payload: PoiListPayload, context: ClientPlayNetworking.Context ->
         thread { poiListQueue.put(payload.poiList) }
     })
-    AudioNavigation.logger.info("The mod has been initialized.", 0f, 0f, 0f)
+    AudioNavigation.logger.info("The mod has been initialized.")
     interval.beReady()
     ClientTickEvents.START_WORLD_TICK.register { world ->
       if (interval.isReady()) {

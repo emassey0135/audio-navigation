@@ -7,6 +7,8 @@ import net.minecraft.network.codec.PacketCodecs
 import net.minecraft.util.Identifier
 import net.minecraft.util.dynamic.Codecs
 import net.minecraft.util.math.BlockPos
+import dev.emassey0135.audionavigation.AudioNavigation
+import dev.emassey0135.audionavigation.Database
 import dev.emassey0135.audionavigation.Geometry
 
 enum class PoiType {
@@ -30,6 +32,12 @@ data class Poi(val type: PoiType, val identifier: Identifier, val point: Point) 
   }
   fun distance(pos: BlockPos): Double {
     return distance(Geometry.blockPosToPoint(pos))
+  }
+  fun addToDatabase() {
+    check(type==PoiType.FEATURE)
+    val statement = Database.connection.createStatement()
+    val wkbHex = Geometry.geometryToWKBHex(point)
+    statement.executeUpdate("INSERT INTO features (id, name, location) VALUES(NULL, '${identifier.getPath()}', ST_GeomFromWKB(x'${wkbHex}'))")
   }
   companion object {
     @JvmField val CODEC = RecordCodecBuilder.create { instance ->

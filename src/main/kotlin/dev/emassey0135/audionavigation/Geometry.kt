@@ -16,10 +16,10 @@ object Geometry {
   val wktWriter = WKTWriter(3)
   fun pointToBlockPos(point: Point): BlockPos {
     val coord = point.getCoordinate()
-    return BlockPos(round(coord.x).toInt(), round(coord.y).toInt(), round(coord.z).toInt())
+    return BlockPos(round(coord.x).toInt(), round(coord.z).toInt(), round(coord.y).toInt())
   }
   fun blockPosToPoint(pos: BlockPos): Point {
-    return geometryFactory.createPoint(Coordinate(pos.getX().toDouble(), pos.getY().toDouble(), pos.getZ().toDouble()))
+    return geometryFactory.createPoint(Coordinate(pos.getX().toDouble(), pos.getZ().toDouble(), pos.getY().toDouble()))
   }
   fun writeWKT(geometry: Geometry): String {
     return wktWriter.write(geometry)

@@ -16,8 +16,7 @@ object AudioNavigation : ModInitializer {
     PayloadTypeRegistry.playS2C().register(PoiListPayload.ID, PoiListPayload.CODEC)
     ServerPlayNetworking.registerGlobalReceiver(PoiRequestPayload.ID, { payload: PoiRequestPayload, context: ServerPlayNetworking.Context ->
         val poiList = PoiList.getNearest(payload.pos, payload.radius)
-        if (poiList!=null)
-          context.responseSender().sendPacket(PoiListPayload(poiList))
+        context.responseSender().sendPacket(PoiListPayload(poiList))
       })
   }
 }

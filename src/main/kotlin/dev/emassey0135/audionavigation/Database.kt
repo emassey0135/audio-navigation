@@ -2,21 +2,26 @@ package dev.emassey0135.audionavigation
 
 import java.sql.Connection
 import java.sql.DriverManager
+import kotlin.math.pow
+import kotlin.math.sqrt
+import org.sqlite.Function
 import org.sqlite.SQLiteConfig
 
 object Database {
   @JvmField var connection: Connection
+  class DistanceFunction(): Function() {
+    override protected fun xFunc() {
+      if (args()!=6)
+        error("Invalid number of arguments passed to distance function")
+      result(sqrt((value_double(0)-value_double(3)).pow(2.0) + (value_double(1)-value_double(4)).pow(2.0) + (value_double(2)-value_double(5)).pow(2.0)))
+    }
+  }
   init {
     val config = SQLiteConfig()
     config.enableLoadExtension(true)
     connection = DriverManager.getConnection("jdbc:sqlite:poi.db", config.toProperties())
     val statement = connection.createStatement()
-    statement.execute("SELECT load_extension('/usr/lib/mod_spatialite.so')")
-    statement.execute("SELECT InitSpatialMetadata(1)")
-    if (!statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='features'").next()) {
-      statement.execute("CREATE TABLE IF NOT EXISTS features (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)")
-      statement.execute("SELECT AddGeometryColumn('features', 'location', -1, 'POINTZ', 'XYZ')")
-      statement.execute("SELECT CreateSpatialIndex('features', 'location')")
-    }
+    statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS features USING RTREE(id, minX, maxX, minY, maxY, minZ, maxZ, +name TEXT, +x REAL, +y REAL, +z REAL)")
+    Function.create(connection, "distance", DistanceFunction(), 6, Function.FLAG_DETERMINISTIC)
   }
 }

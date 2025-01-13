@@ -54,7 +54,7 @@ object AudioNavigationClient : ClientModInitializer {
         if (ClientPlayNetworking.canSend(PoiRequestPayload.ID)) {
           val player = minecraftClient.player
           if (player!=null) {
-            ClientPlayNetworking.send(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), 25.0))
+            ClientPlayNetworking.send(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), 25.0, 10))
             thread { waitForAndSpeakPoiList() }
           }
         }

@@ -60,12 +60,12 @@ class PoiList(list: List<Poi>) {
     return PoiList(poiList-poiList2.toList())
   }
   companion object {
-    fun getNearest(origin: BlockPos, radius: Double): PoiList {
+    fun getNearest(origin: BlockPos, radius: Double, maxItems: Int): PoiList {
       val statement = Database.connection.createStatement()
       val x = origin.getX().toDouble()
       val y = origin.getY().toDouble()
       val z = origin.getZ().toDouble()
-      val results = statement.executeQuery("SELECT id, name, x, y, z, distance($x, $y, $z, x, y, z) AS distance FROM features WHERE distance <= $radius AND minX >= ${x-radius} AND maxX <= ${x+radius} AND minY >= ${y-radius} AND maxY <= ${y+radius} AND minZ >= ${z-radius} AND maxZ <= ${z+radius} ORDER BY distance")
+      val results = statement.executeQuery("SELECT id, name, x, y, z, distance($x, $y, $z, x, y, z) AS distance FROM features WHERE distance <= $radius AND minX >= ${x-radius} AND maxX <= ${x+radius} AND minY >= ${y-radius} AND maxY <= ${y+radius} AND minZ >= ${z-radius} AND maxZ <= ${z+radius} ORDER BY distance LIMIT $maxItems")
       val poiList = PoiList()
       while (results.next()) {
         poiList.addPoi(Poi(PoiType.FEATURE, Identifier.of(results.getString("name")), BlockPos(results.getDouble("x").toInt(), results.getDouble("y").toInt(), results.getDouble("z").toInt())))

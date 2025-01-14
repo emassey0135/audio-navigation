@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "audio_navigation",
+  "version": "${version}",
+  "name": "Audio Navigation",
+  "description": "A mod that announces points of interest around the player, inspired by Soundscape",
+  "authors": [
+    "Elijah Massey"
+  ],
+  "contact": {
+    "homepage": "https://github.com/emassey0135/audio-navigation",
+    "sources": "https://github.com/emassey0135/audio-navigation"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/audio-navigation/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "dev.emassey0135.audionavigation.fabric.AudioNavigationFabric",
+        "adapter": "kotlin"
+      }
+    ],
+    "client": [
+      {
+        "value": "dev.emassey0135.audionavigation.fabric.AudioNavigationClientFabric",
+        "adapter": "kotlin"
+      }
+    ]
+  },
+  "mixins": [
+    "audio_navigation-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.10",
+    "minecraft": "~1.21.4",
+    "java": ">=21",
+    "architectury": ">=15.0.1",
+    "fabric-api": "*",
+    "fabric-language-kotlin": "*"
+  },
+  "suggests": {
+    "minecraft-access": "*"
+  }
+}

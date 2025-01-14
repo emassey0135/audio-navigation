@@ -6,7 +6,7 @@ import dev.emassey0135.audionavigation.Database
 
 object AudioNavigation {
   const val MOD_ID = "audio_navigation"
-  @JvmField val logger = LoggerFactory.getLogger("audio-navigation")
+  @JvmField val logger = LoggerFactory.getLogger(MOD_ID)
   fun initialize() {
     logger.info("Audio Navigation has been initialized.")
   }

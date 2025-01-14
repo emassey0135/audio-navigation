@@ -1,6 +1,5 @@
 package dev.emassey0135.audionavigation
 
-import java.lang.Thread
 import java.util.concurrent.locks.ReentrantLock
 import java.util.concurrent.SynchronousQueue
 import kotlin.concurrent.thread
@@ -12,6 +11,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Interval
+import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.PoiList
@@ -20,7 +20,7 @@ import dev.emassey0135.audionavigation.Speech
 
 object AudioNavigationClient {
   private val interval = Interval.sec(5)
-  val poiListQueue = SynchronousQueue<PoiList>()
+  private val poiListQueue = SynchronousQueue<PoiList>()
   private var oldPoiList = PoiList(listOf())
   private var mutex = ReentrantLock()
   private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi) {
@@ -43,6 +43,9 @@ object AudioNavigationClient {
   }
   @JvmStatic @ExpectPlatform fun sendPoiRequest(poiRequestPayload: PoiRequestPayload) {
     error("This function is not implemented.")
+  }
+  fun handlePoiList(payload: PoiListPayload) {
+    thread { poiListQueue.put(payload.poiList) }
   }
   fun initialize() {
     val minecraftClient = MinecraftClient.getInstance()

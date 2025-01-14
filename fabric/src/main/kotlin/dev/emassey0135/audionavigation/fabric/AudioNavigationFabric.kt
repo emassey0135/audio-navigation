@@ -6,15 +6,13 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
-import dev.emassey0135.audionavigation.PoiList
 
 object AudioNavigationFabric: ModInitializer {
   override fun onInitialize() {
     PayloadTypeRegistry.playC2S().register(PoiRequestPayload.ID, PoiRequestPayload.CODEC)
     PayloadTypeRegistry.playS2C().register(PoiListPayload.ID, PoiListPayload.CODEC)
     ServerPlayNetworking.registerGlobalReceiver(PoiRequestPayload.ID, { payload: PoiRequestPayload, context: ServerPlayNetworking.Context ->
-        val poiList = PoiList.getNearest(payload.pos, payload.radius, payload.maxItems)
-        context.responseSender().sendPacket(PoiListPayload(poiList))
+        context.responseSender().sendPacket(AudioNavigation.respondToPoiRequest(payload))
       })
     AudioNavigation.initialize()
   }

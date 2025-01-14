@@ -10,12 +10,12 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import dev.emassey0135.audionavigation.AudioNavigation
+import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.Interval
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.PoiList
-import dev.emassey0135.audionavigation.SoundPlayer
 import dev.emassey0135.audionavigation.Speech
 
 object AudioNavigationClient {
@@ -55,7 +55,7 @@ object AudioNavigationClient {
       if (interval.isReady()) {
         val player = minecraftClient.player
         if (player!=null) {
-          sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), 25.0, 10))
+          sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), Configs.clientConfig.announcementRadius.get().toDouble(), Configs.clientConfig.maxAnnouncements.get()))
           thread { waitForAndSpeakPoiList() }
         }
       }

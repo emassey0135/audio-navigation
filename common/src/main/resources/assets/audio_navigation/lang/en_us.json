@@ -2,5 +2,7 @@
   "audio_navigation.client_config.announcementRadius": "Announcement Radius",
   "audio_navigation.client_config.announcementRadius.desc": "Only announce points of interest within this radius",
   "audio_navigation.client_config.maxAnnouncements": "Max announcements",
-  "audio_navigation.client_config.maxAnnouncements.desc": "Announce no more than this many points of interest at one time"
+  "audio_navigation.client_config.maxAnnouncements.desc": "Announce no more than this many points of interest at one time",
+  "category.audio_navigation": "Audio Navigation",
+  "key.audio_navigation.open_config_screen": "Open Configuration Screen"
 }

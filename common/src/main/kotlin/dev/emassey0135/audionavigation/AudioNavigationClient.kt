@@ -6,6 +6,9 @@ import kotlin.concurrent.thread
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import dev.architectury.injectables.annotations.ExpectPlatform
 import dev.architectury.event.events.client.ClientTickEvent
+import dev.architectury.registry.client.keymappings.KeyMappingRegistry
+import net.minecraft.client.option.KeyBinding
+import net.minecraft.client.util.InputUtil
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
@@ -20,14 +23,12 @@ import dev.emassey0135.audionavigation.PoiList
 import dev.emassey0135.audionavigation.Speech
 
 object AudioNavigationClient {
-  private val interval = Interval.sec(5)
-  private val interval2 = Interval.sec(60)
-  private val poiListQueue = SynchronousQueue<PoiList>()
-  private var oldPoiList = PoiList(listOf())
-  private var mutex = ReentrantLock()
   private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi) {
     Speech.speakText(poi.identifier.getPath(), origin, orientation, poi.pos)
   }
+  private val poiListQueue = SynchronousQueue<PoiList>()
+  private var oldPoiList = PoiList(listOf())
+  private var mutex = ReentrantLock()
   private fun waitForAndSpeakPoiList() {
     mutex.lock()
     val poiList = poiListQueue.take()
@@ -49,22 +50,23 @@ object AudioNavigationClient {
   fun handlePoiList(payload: PoiListPayload) {
     thread { poiListQueue.put(payload.poiList) }
   }
+  private val interval = Interval.sec(5)
+  private val OPEN_CONFIG_SCREEN_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.open_config_screen", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F6, "category.${AudioNavigation.MOD_ID}")
   fun initialize() {
     Speech.initialize()
+    KeyMappingRegistry.register(OPEN_CONFIG_SCREEN_KEYBINDING)
+    interval.beReady()
     AudioNavigation.logger.info("The mod has been initialized.")
     val minecraftClient = MinecraftClient.getInstance()
-    interval.beReady()
-    interval2.beReady()
     ClientTickEvent.CLIENT_LEVEL_PRE.register { world ->
+      while (OPEN_CONFIG_SCREEN_KEYBINDING.wasPressed())
+        ConfigApi.openScreen(AudioNavigation.MOD_ID)
       if (interval.isReady()) {
         val player = minecraftClient.player
         if (player!=null) {
           sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), Configs.clientConfig.announcementRadius.get().toDouble(), Configs.clientConfig.maxAnnouncements.get()))
           thread { waitForAndSpeakPoiList() }
         }
-      }
-      if (interval2.isReady()) {
-        ConfigApi.openScreen(AudioNavigation.MOD_ID)
       }
     }
   }

@@ -25,7 +25,7 @@ import dev.emassey0135.audionavigation.Speech
 
 object AudioNavigationClient {
   private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi, distance: Double) {
-    val text = if (Configs.clientConfig.detailedAnnouncements.get())
+    val text = if (Configs.clientConfig.announcements.detailedAnnouncements.get())
       Text.translatable("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.identifier.getPath(), distance.toInt())
       else
       Text.translatable("${AudioNavigation.MOD_ID}.poi_announcement", poi.identifier.getPath())
@@ -69,7 +69,7 @@ object AudioNavigationClient {
       if (interval.isReady()) {
         val player = minecraftClient.player
         if (player!=null) {
-          sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), Configs.clientConfig.announcementRadius.get().toDouble(), Configs.clientConfig.maxAnnouncements.get()))
+          sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), Configs.clientConfig.announcements.announcementRadius.get().toDouble(), Configs.clientConfig.announcements.maxAnnouncements.get()))
           thread { waitForAndSpeakPoiList() }
         }
       }

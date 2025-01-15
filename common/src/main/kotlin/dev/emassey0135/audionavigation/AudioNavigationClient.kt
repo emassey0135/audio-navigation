@@ -69,7 +69,7 @@ object AudioNavigationClient {
       if (interval.isReady()) {
         val player = minecraftClient.player
         if (player!=null) {
-          sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), Configs.clientConfig.announcements.announcementRadius.get().toDouble(), Configs.clientConfig.announcements.maxAnnouncements.get()))
+          sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), Configs.clientConfig.announcements.announcementRadius.get().toDouble(), Configs.clientConfig.announcements.maxAnnouncements.get(), Configs.clientConfig.announcements.enableVerticalLimit.get(), Configs.clientConfig.announcements.verticalLimit.get().toDouble()))
           thread { waitForAndSpeakPoiList() }
         }
       }

@@ -68,17 +68,26 @@ class PoiList(list: List<PoiAndDistance>) {
     return PoiList(poiList-poiList2.toList())
   }
   companion object {
-    fun getNearest(origin: BlockPos, radius: Double, maxItems: Int): PoiList {
+    fun getFromDatabase(query: String): PoiList {
       val statement = Database.connection.createStatement()
-      val x = origin.getX().toDouble()
-      val y = origin.getY().toDouble()
-      val z = origin.getZ().toDouble()
-      val results = statement.executeQuery("SELECT id, name, x, y, z, distance($x, $y, $z, x, y, z) AS distance FROM features WHERE distance <= $radius AND minX >= ${x-radius} AND maxX <= ${x+radius} AND minY >= ${y-radius} AND maxY <= ${y+radius} AND minZ >= ${z-radius} AND maxZ <= ${z+radius} ORDER BY distance LIMIT $maxItems")
+      val results = statement.executeQuery(query)
       val poiList = PoiList()
       while (results.next()) {
         poiList.addPoi(Poi(PoiType.FEATURE, Identifier.of(results.getString("name")), BlockPos(results.getDouble("x").toInt(), results.getDouble("y").toInt(), results.getDouble("z").toInt())), results.getDouble("distance"))
       }
       return poiList
+    }
+    fun getNearest(origin: BlockPos, radius: Double, maxItems: Int): PoiList {
+      val x = origin.getX().toDouble()
+      val y = origin.getY().toDouble()
+      val z = origin.getZ().toDouble()
+      return getFromDatabase("SELECT id, name, x, y, z, distance($x, $y, $z, x, y, z) AS distance FROM features WHERE distance <= $radius AND minX >= ${x-radius} AND maxX <= ${x+radius} AND minY >= ${y-radius} AND maxY <= ${y+radius} AND minZ >= ${z-radius} AND maxZ <= ${z+radius} ORDER BY distance LIMIT $maxItems")
+    }
+    fun getNearestWithVerticalLimit(origin: BlockPos, radius: Double, maxItems: Int, verticalLimit: Double): PoiList {
+      val x = origin.getX().toDouble()
+      val y = origin.getY().toDouble()
+      val z = origin.getZ().toDouble()
+      return getFromDatabase("SELECT id, name, x, y, z, distance($x, $y, $z, x, y, z) AS distance FROM features WHERE y >= ${y-verticalLimit} AND y <= ${y+verticalLimit} AND distance <= $radius AND minX >= ${x-radius} AND maxX <= ${x+radius} AND minY >= ${y-verticalLimit} AND maxY <= ${y+verticalLimit} AND minZ >= ${z-radius} AND maxZ <= ${z+radius} ORDER BY distance LIMIT $maxItems")
     }
     @JvmField val PACKET_CODEC = PacketCodec.tuple(
       PoiAndDistance.PACKET_CODEC.collect(PacketCodecs.toList()), PoiList::toList,

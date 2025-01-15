@@ -10,7 +10,10 @@ object AudioNavigation {
   const val MOD_ID = "audio_navigation"
   @JvmField val logger = LoggerFactory.getLogger(MOD_ID)
   fun respondToPoiRequest(payload: PoiRequestPayload): PoiListPayload {
-    val poiList = PoiList.getNearest(payload.pos, payload.radius, payload.maxItems)
+    val poiList = if (payload.enableVerticalLimit)
+      PoiList.getNearestWithVerticalLimit(payload.pos, payload.radius, payload.maxItems, payload.verticalLimit)
+      else
+      PoiList.getNearest(payload.pos, payload.radius, payload.maxItems)
     return PoiListPayload(poiList)
   }
   fun initialize() {

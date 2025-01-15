@@ -21,6 +21,8 @@ object Database {
     val config = SQLiteConfig()
     config.enableLoadExtension(true)
     connection = DriverManager.getConnection("jdbc:sqlite:poi.db", config.toProperties())
+  }
+  fun initialize() {
     val statement = connection.createStatement()
     statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS features USING RTREE(id, minX, maxX, minY, maxY, minZ, maxZ, +name TEXT, +x REAL, +y REAL, +z REAL)")
     Function.create(connection, "distance", DistanceFunction(), 6, Function.FLAG_DETERMINISTIC)

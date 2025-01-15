@@ -3,6 +3,7 @@ package dev.emassey0135.audionavigation
 import java.util.concurrent.locks.ReentrantLock
 import java.util.concurrent.SynchronousQueue
 import kotlin.concurrent.thread
+import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import dev.architectury.injectables.annotations.ExpectPlatform
 import dev.architectury.event.events.client.ClientTickEvent
 import net.minecraft.client.MinecraftClient
@@ -20,6 +21,7 @@ import dev.emassey0135.audionavigation.Speech
 
 object AudioNavigationClient {
   private val interval = Interval.sec(5)
+  private val interval2 = Interval.sec(60)
   private val poiListQueue = SynchronousQueue<PoiList>()
   private var oldPoiList = PoiList(listOf())
   private var mutex = ReentrantLock()
@@ -48,9 +50,11 @@ object AudioNavigationClient {
     thread { poiListQueue.put(payload.poiList) }
   }
   fun initialize() {
-    val minecraftClient = MinecraftClient.getInstance()
+    Speech.initialize()
     AudioNavigation.logger.info("The mod has been initialized.")
+    val minecraftClient = MinecraftClient.getInstance()
     interval.beReady()
+    interval2.beReady()
     ClientTickEvent.CLIENT_LEVEL_PRE.register { world ->
       if (interval.isReady()) {
         val player = minecraftClient.player
@@ -58,6 +62,9 @@ object AudioNavigationClient {
           sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), Configs.clientConfig.announcementRadius.get().toDouble(), Configs.clientConfig.maxAnnouncements.get()))
           thread { waitForAndSpeakPoiList() }
         }
+      }
+      if (interval2.isReady()) {
+        ConfigApi.openScreen(AudioNavigation.MOD_ID)
       }
     }
   }

@@ -6,4 +6,6 @@ import dev.emassey0135.audionavigation.ClientConfig
 
 object Configs {
   var clientConfig = ConfigApi.registerAndLoadConfig(::ClientConfig, RegisterType.CLIENT)
+  fun initialize() {
+  }
 }

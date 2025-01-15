@@ -12,7 +12,6 @@
     "sources": "https://github.com/emassey0135/audio-navigation"
   },
   "license": "GPL-3.0",
-  "icon": "assets/audio-navigation/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [

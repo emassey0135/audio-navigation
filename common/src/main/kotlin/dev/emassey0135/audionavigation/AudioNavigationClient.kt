@@ -4,7 +4,6 @@ import java.util.concurrent.locks.ReentrantLock
 import java.util.concurrent.SynchronousQueue
 import kotlin.concurrent.thread
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
-import dev.architectury.injectables.annotations.ExpectPlatform
 import dev.architectury.event.events.client.ClientTickEvent
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry
 import net.minecraft.client.option.KeyBinding
@@ -16,6 +15,7 @@ import net.minecraft.util.math.Direction
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.Interval
+import dev.emassey0135.audionavigation.packets.PacketIdentifiers
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
@@ -44,8 +44,9 @@ object AudioNavigationClient {
     }
     mutex.unlock()
   }
-  @JvmStatic @ExpectPlatform fun sendPoiRequest(poiRequestPayload: PoiRequestPayload) {
-    error("This function is not implemented.")
+  fun sendPoiRequest(payload: PoiRequestPayload) {
+    if (ConfigApi.network().canSend(PacketIdentifiers.POI_REQUEST_ID, null))
+      ConfigApi.network().send(payload, null)
   }
   fun handlePoiList(payload: PoiListPayload) {
     thread { poiListQueue.put(payload.poiList) }

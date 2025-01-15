@@ -10,6 +10,7 @@ import dev.architectury.registry.client.keymappings.KeyMappingRegistry
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.client.MinecraftClient
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -23,8 +24,12 @@ import dev.emassey0135.audionavigation.PoiList
 import dev.emassey0135.audionavigation.Speech
 
 object AudioNavigationClient {
-  private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi) {
-    Speech.speakText(poi.identifier.getPath(), origin, orientation, poi.pos)
+  private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi, distance: Double) {
+    val text = if (Configs.clientConfig.detailedAnnouncements.get())
+      Text.translatable("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.identifier.getPath(), distance.toInt())
+      else
+      Text.translatable("${AudioNavigation.MOD_ID}.poi_announcement", poi.identifier.getPath())
+    Speech.speakText(text.getString(), origin, orientation, poi.pos)
   }
   private val poiListQueue = SynchronousQueue<PoiList>()
   private var oldPoiList = PoiList(listOf())
@@ -40,7 +45,7 @@ object AudioNavigationClient {
       oldPoiList = poiList
       val origin = BlockPos.ofFloored(player.getPos())
       val orientation = player.getFacing()
-      newPoiList.toList().forEach { poi -> speakPoi(origin, orientation, poi) }
+      newPoiList.toList().forEach { poi -> speakPoi(origin, orientation, poi.poi, poi.distance) }
     }
     mutex.unlock()
   }

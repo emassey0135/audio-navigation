@@ -36,9 +36,10 @@
     "java": ">=21",
     "architectury": ">=15.0.1",
     "fabric-api": "*",
-    "fabric-language-kotlin": "*"
+    "fabric-language-kotlin": "*",
+    "fzzy_config": "*"
   },
   "suggests": {
-    "minecraft-access": "*"
+    "minecraft_access": "*"
   }
 }

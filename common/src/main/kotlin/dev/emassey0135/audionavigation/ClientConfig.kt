@@ -17,6 +17,14 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
     var maxAnnouncements = ValidatedInt(10, 25, 1)
     var detailedAnnouncements = ValidatedBoolean(true)
   }
+  var manualAnnouncements = ManualAnnouncementsSection()
+  class ManualAnnouncementsSection: ConfigSection() {
+    var announcementRadius = ValidatedInt(100, 100, 1)
+    var enableVerticalLimit = ValidatedBoolean(true)
+    var verticalLimit = ValidatedInt(10, 25, 1)
+    var maxAnnouncements = ValidatedInt(25, 25, 1)
+    var detailedAnnouncements = ValidatedBoolean(true)
+  }
   var speech = SpeechSection()
   class SpeechSection: ConfigSection() {
     var rate = ValidatedInt(175, 900, 80).also { it.listenToEntry { value -> Speech.setRate(value.get()) }}

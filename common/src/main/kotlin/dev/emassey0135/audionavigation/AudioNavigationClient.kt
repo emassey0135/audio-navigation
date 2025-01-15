@@ -49,23 +49,46 @@ object AudioNavigationClient {
     }
     mutex.unlock()
   }
+  private fun waitForAndSpeakCompletePoiList() {
+    mutex.lock()
+    val poiList = poiListQueue.take()
+    val minecraftClient = MinecraftClient.getInstance()
+    val player = minecraftClient.player
+    if (player==null) return
+    val origin = BlockPos.ofFloored(player.getPos())
+    val orientation = player.getFacing()
+    poiList.toList().forEach { poi -> speakPoi(origin, orientation, poi.poi, poi.distance) }
+    mutex.unlock()
+  }
   @JvmStatic @ExpectPlatform fun sendPoiRequest(poiRequestPayload: PoiRequestPayload) {
     error("This function is not implemented.")
   }
   fun handlePoiList(payload: PoiListPayload) {
     thread { poiListQueue.put(payload.poiList) }
   }
+  fun announceNearbyPois() {
+    val minecraftClient = MinecraftClient.getInstance()
+    val player = minecraftClient.player
+    if (player!=null) {
+      sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), Configs.clientConfig.manualAnnouncements.announcementRadius.get().toDouble(), Configs.clientConfig.manualAnnouncements.maxAnnouncements.get(), Configs.clientConfig.manualAnnouncements.enableVerticalLimit.get(), Configs.clientConfig.manualAnnouncements.verticalLimit.get().toDouble()))
+      thread { waitForAndSpeakCompletePoiList() }
+    }
+  }
   private val interval = Interval.sec(5)
   private val OPEN_CONFIG_SCREEN_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.open_config_screen", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F6, "category.${AudioNavigation.MOD_ID}")
+  private val SPEAK_NEARBY_POIS_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.speak_nearby_pois", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F7, "category.${AudioNavigation.MOD_ID}")
   fun initialize() {
     Speech.initialize()
     KeyMappingRegistry.register(OPEN_CONFIG_SCREEN_KEYBINDING)
+    KeyMappingRegistry.register(SPEAK_NEARBY_POIS_KEYBINDING)
     interval.beReady()
     AudioNavigation.logger.info("The mod has been initialized.")
     val minecraftClient = MinecraftClient.getInstance()
     ClientTickEvent.CLIENT_LEVEL_PRE.register { world ->
       while (OPEN_CONFIG_SCREEN_KEYBINDING.wasPressed())
         ConfigApi.openScreen(AudioNavigation.MOD_ID)
+      while (SPEAK_NEARBY_POIS_KEYBINDING.wasPressed())
+        announceNearbyPois()
       if (interval.isReady()) {
         val player = minecraftClient.player
         if (player!=null) {

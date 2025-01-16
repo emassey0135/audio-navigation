@@ -4,8 +4,10 @@ import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
 import net.minecraft.network.codec.PacketCodec
 import net.minecraft.network.codec.PacketCodecs
+import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
+import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Database
 
 enum class PoiType {
@@ -22,15 +24,16 @@ data class Poi(val type: PoiType, val identifier: Identifier, val pos: BlockPos)
   fun distance(poi: Poi): Double {
     return distance(poi.pos)
   }
-  fun addToDatabase() {
+  fun addToDatabase(world: ServerWorld) {
     addToDatabaseMutex.lock()
     if (addToDatabaseStatement == null)
-      addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO pois (id, minX, maxX, minY, maxY, minZ, maxZ, type, name, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?4, ?5, ?1, ?2, ?3)")
+      addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO pois (id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?6, ?4, ?5, ?1, ?2, ?3)")
     addToDatabaseStatement?.setDouble(1, pos.getX().toDouble())
     addToDatabaseStatement?.setDouble(2, pos.getY().toDouble())
     addToDatabaseStatement?.setDouble(3, pos.getZ().toDouble())
     addToDatabaseStatement?.setInt(4, type.ordinal)
     addToDatabaseStatement?.setString(5, identifier.getPath())
+    addToDatabaseStatement?.setString(6, AudioNavigation.getWorldUUID(world).toString())
     addToDatabaseStatement?.executeUpdate()
     addToDatabaseMutex.unlock()
     Database.scheduleCommitIfNeeded()
@@ -88,31 +91,33 @@ class PoiList(list: List<PoiAndDistance>) {
     }
     var getNearestStatement: PreparedStatement? = null
     val getNearestMutex = ReentrantLock()
-    fun getNearest(origin: BlockPos, radius: Double, maxItems: Int): PoiList {
+    fun getNearest(world: ServerWorld, origin: BlockPos, radius: Double, maxItems: Int): PoiList {
       getNearestMutex.lock()
       if (getNearestStatement==null)
-        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM pois WHERE distance <= ?4 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM pois WHERE distance <= ?4 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
       getNearestStatement?.setDouble(1, origin.getX().toDouble())
       getNearestStatement?.setDouble(2, origin.getY().toDouble())
       getNearestStatement?.setDouble(3, origin.getZ().toDouble())
       getNearestStatement?.setDouble(4, radius)
       getNearestStatement?.setInt(5, maxItems)
+      getNearestStatement?.setString(6, AudioNavigation.getWorldUUID(world).toString())
       val result = getFromDatabase(getNearestStatement!!)
       getNearestMutex.unlock()
       return result
     }
     var getNearestWithVerticalLimitStatement: PreparedStatement? = null
     val getNearestWithVerticalLimitMutex = ReentrantLock()
-    fun getNearestWithVerticalLimit(origin: BlockPos, radius: Double, maxItems: Int, verticalLimit: Double): PoiList {
+    fun getNearestWithVerticalLimit(world: ServerWorld, origin: BlockPos, radius: Double, maxItems: Int, verticalLimit: Double): PoiList {
       getNearestWithVerticalLimitMutex.lock()
       if (getNearestWithVerticalLimitStatement==null)
-        getNearestWithVerticalLimitStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM pois WHERE y >= ?2-?6 AND y <= ?2+?6 AND distance <= ?4 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?6 AND maxY <= ?2+?6 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+        getNearestWithVerticalLimitStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM pois WHERE y >= ?2-?6 AND y <= ?2+?6 AND distance <= ?4 AND world = ?7 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?6 AND maxY <= ?2+?6 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
       getNearestWithVerticalLimitStatement?.setDouble(1, origin.getX().toDouble())
       getNearestWithVerticalLimitStatement?.setDouble(2, origin.getY().toDouble())
       getNearestWithVerticalLimitStatement?.setDouble(3, origin.getZ().toDouble())
       getNearestWithVerticalLimitStatement?.setDouble(4, radius)
       getNearestWithVerticalLimitStatement?.setInt(5, maxItems)
       getNearestWithVerticalLimitStatement?.setDouble(6, verticalLimit)
+      getNearestWithVerticalLimitStatement?.setString(7, AudioNavigation.getWorldUUID(world).toString())
       val result = getFromDatabase(getNearestWithVerticalLimitStatement!!)
       getNearestWithVerticalLimitMutex.unlock()
       return result

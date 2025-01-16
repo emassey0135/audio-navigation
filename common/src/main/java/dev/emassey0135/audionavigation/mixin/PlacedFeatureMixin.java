@@ -54,7 +54,7 @@ public class PlacedFeatureMixin {
                     mutableBoolean.setTrue();
 
                     if (key.isPresent()) {
-                        new Poi(PoiType.FEATURE, key.get().getValue(), blockPos).addToDatabase();
+                        new Poi(PoiType.FEATURE, key.get().getValue(), blockPos).addToDatabase(context.getWorld().toServerWorld());
                     }
             }
         });

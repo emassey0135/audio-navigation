@@ -25,8 +25,9 @@ object Database {
     queryConnection = DriverManager.getConnection("jdbc:sqlite:poi.db", config.toProperties())
   }
   fun initialize() {
-    val statement = updateConnection.createStatement()
-    statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS features USING RTREE(id, minX, maxX, minY, maxY, minZ, maxZ, +name TEXT, +x REAL, +y REAL, +z REAL)")
+    updateConnection.createStatement().use {
+      it.execute("CREATE VIRTUAL TABLE IF NOT EXISTS features USING RTREE(id, minX, maxX, minY, maxY, minZ, maxZ, +name TEXT, +x REAL, +y REAL, +z REAL)")
+    }
     Function.create(queryConnection, "distance", DistanceFunction(), 6, Function.FLAG_DETERMINISTIC)
     AudioNavigation.logger.info("Database initialized.")
   }

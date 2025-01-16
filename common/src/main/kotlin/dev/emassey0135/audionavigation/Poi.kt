@@ -77,10 +77,11 @@ class PoiList(list: List<PoiAndDistance>) {
   }
   companion object {
     fun getFromDatabase(query: PreparedStatement): PoiList {
-      val results = query.executeQuery()
       val poiList = PoiList()
-      while (results.next()) {
-        poiList.addPoi(Poi(PoiType.FEATURE, Identifier.of(results.getString("name")), BlockPos(results.getDouble("x").toInt(), results.getDouble("y").toInt(), results.getDouble("z").toInt())), results.getDouble("distance"))
+      query.executeQuery().use {
+        while (it.next()) {
+          poiList.addPoi(Poi(PoiType.FEATURE, Identifier.of(it.getString("name")), BlockPos(it.getDouble("x").toInt(), it.getDouble("y").toInt(), it.getDouble("z").toInt())), it.getDouble("distance"))
+        }
       }
       return poiList
     }

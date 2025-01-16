@@ -9,7 +9,8 @@ import org.sqlite.SQLiteConfig
 import dev.emassey0135.audionavigation.AudioNavigation
 
 object Database {
-  @JvmField val connection: Connection
+  @JvmField val queryConnection: Connection
+  @JvmField val updateConnection: Connection
   class DistanceFunction(): Function() {
     override protected fun xFunc() {
       if (args()!=6)
@@ -20,12 +21,13 @@ object Database {
   init {
     val config = SQLiteConfig()
     config.enableLoadExtension(true)
-    connection = DriverManager.getConnection("jdbc:sqlite:poi.db", config.toProperties())
+    updateConnection = DriverManager.getConnection("jdbc:sqlite:poi.db", config.toProperties())
+    queryConnection = DriverManager.getConnection("jdbc:sqlite:poi.db", config.toProperties())
   }
   fun initialize() {
-    val statement = connection.createStatement()
+    val statement = updateConnection.createStatement()
     statement.execute("CREATE VIRTUAL TABLE IF NOT EXISTS features USING RTREE(id, minX, maxX, minY, maxY, minZ, maxZ, +name TEXT, +x REAL, +y REAL, +z REAL)")
-    Function.create(connection, "distance", DistanceFunction(), 6, Function.FLAG_DETERMINISTIC)
+    Function.create(queryConnection, "distance", DistanceFunction(), 6, Function.FLAG_DETERMINISTIC)
     AudioNavigation.logger.info("Database initialized.")
   }
 }

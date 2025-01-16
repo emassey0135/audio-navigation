@@ -23,14 +23,14 @@ data class Poi(val type: PoiType, val identifier: Identifier, val pos: BlockPos)
     return distance(poi.pos)
   }
   fun addToDatabase() {
-    check(type==PoiType.FEATURE)
     addToDatabaseMutex.lock()
     if (addToDatabaseStatement == null)
-      addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO features (id, minX, maxX, minY, maxY, minZ, maxZ, name, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?4, ?1, ?2, ?3)")
+      addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO pois (id, minX, maxX, minY, maxY, minZ, maxZ, type, name, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?4, ?5, ?1, ?2, ?3)")
     addToDatabaseStatement?.setDouble(1, pos.getX().toDouble())
     addToDatabaseStatement?.setDouble(2, pos.getY().toDouble())
     addToDatabaseStatement?.setDouble(3, pos.getZ().toDouble())
-    addToDatabaseStatement?.setString(4, identifier.getPath())
+    addToDatabaseStatement?.setInt(4, type.ordinal)
+    addToDatabaseStatement?.setString(5, identifier.getPath())
     addToDatabaseStatement?.executeUpdate()
     addToDatabaseMutex.unlock()
     Database.scheduleCommitIfNeeded()
@@ -81,7 +81,7 @@ class PoiList(list: List<PoiAndDistance>) {
       val poiList = PoiList()
       query.executeQuery().use {
         while (it.next()) {
-          poiList.addPoi(Poi(PoiType.FEATURE, Identifier.of(it.getString("name")), BlockPos(it.getDouble("x").toInt(), it.getDouble("y").toInt(), it.getDouble("z").toInt())), it.getDouble("distance"))
+          poiList.addPoi(Poi(PoiType.entries.get(it.getInt("type")), Identifier.of(it.getString("name")), BlockPos(it.getDouble("x").toInt(), it.getDouble("y").toInt(), it.getDouble("z").toInt())), it.getDouble("distance"))
         }
       }
       return poiList
@@ -91,7 +91,7 @@ class PoiList(list: List<PoiAndDistance>) {
     fun getNearest(origin: BlockPos, radius: Double, maxItems: Int): PoiList {
       getNearestMutex.lock()
       if (getNearestStatement==null)
-        getNearestStatement = Database.connection.prepareStatement("SELECT id, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM features WHERE distance <= ?4 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM pois WHERE distance <= ?4 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
       getNearestStatement?.setDouble(1, origin.getX().toDouble())
       getNearestStatement?.setDouble(2, origin.getY().toDouble())
       getNearestStatement?.setDouble(3, origin.getZ().toDouble())
@@ -106,7 +106,7 @@ class PoiList(list: List<PoiAndDistance>) {
     fun getNearestWithVerticalLimit(origin: BlockPos, radius: Double, maxItems: Int, verticalLimit: Double): PoiList {
       getNearestWithVerticalLimitMutex.lock()
       if (getNearestWithVerticalLimitStatement==null)
-        getNearestWithVerticalLimitStatement = Database.connection.prepareStatement("SELECT id, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM features WHERE y >= ?2-?6 AND y <= ?2+?6 AND distance <= ?4 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?6 AND maxY <= ?2+?6 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+        getNearestWithVerticalLimitStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM pois WHERE y >= ?2-?6 AND y <= ?2+?6 AND distance <= ?4 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?6 AND maxY <= ?2+?6 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
       getNearestWithVerticalLimitStatement?.setDouble(1, origin.getX().toDouble())
       getNearestWithVerticalLimitStatement?.setDouble(2, origin.getY().toDouble())
       getNearestWithVerticalLimitStatement?.setDouble(3, origin.getZ().toDouble())

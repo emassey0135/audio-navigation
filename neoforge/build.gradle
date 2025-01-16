@@ -34,7 +34,7 @@ dependencies {
   neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
   // Architectury API. This is optional, and you can comment it out if you don't need it.
   modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
-  implementation "thedarkcolour:kotlinforforge:$rootProject.kotlin_for_forge_version"
+  implementation "thedarkcolour:kotlinforforge-neoforge:$rootProject.kotlin_for_forge_version"
   modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+neoforge"
   include "org.xerial:sqlite-jdbc:3.47.2.0"
   common(project(path: ':common', configuration: 'namedElements')) { transitive false }

@@ -10,7 +10,6 @@ import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.InputUtil
 import net.minecraft.client.MinecraftClient
-import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import dev.emassey0135.audionavigation.AudioNavigation
@@ -27,9 +26,9 @@ import dev.emassey0135.audionavigation.Speech
 object AudioNavigationClient {
   private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi, distance: Double) {
     val text = if (Configs.clientConfig.announcements.detailedAnnouncements.get())
-      I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.identifier.getPath(), distance.toInt())
+      I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.name, distance.toInt())
       else
-      I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement", poi.identifier.getPath())
+      I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement", poi.name)
     Speech.speakText(text, origin, orientation, poi.pos)
   }
   private val poiListQueue = SynchronousQueue<PoiList>()

@@ -3,7 +3,6 @@ package dev.emassey0135.audionavigation
 import java.util.UUID
 import dev.architectury.injectables.annotations.ExpectPlatform
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import org.slf4j.LoggerFactory
 import dev.emassey0135.audionavigation.Configs
@@ -26,7 +25,7 @@ object AudioNavigation {
     return PoiListPayload(poiList)
   }
   fun addLandmark(world: ServerWorld, name: String, pos: BlockPos) {
-    Poi(PoiType.LANDMARK, Identifier.of("landmark", name), pos).addToDatabase(world)
+    Poi(PoiType.LANDMARK, name, pos).addToDatabase(world)
   }
   fun initialize() {
     Configs.initialize()

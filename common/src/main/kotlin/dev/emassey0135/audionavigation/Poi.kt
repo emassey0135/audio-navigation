@@ -5,7 +5,6 @@ import java.util.concurrent.locks.ReentrantLock
 import net.minecraft.network.codec.PacketCodec
 import net.minecraft.network.codec.PacketCodecs
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Database
@@ -17,7 +16,7 @@ enum class PoiType {
   }
 }
 
-data class Poi(val type: PoiType, val identifier: Identifier, val pos: BlockPos) {
+data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
   fun distance(pos2: BlockPos): Double {
     return pos.getSquaredDistance(pos2)
   }
@@ -32,7 +31,7 @@ data class Poi(val type: PoiType, val identifier: Identifier, val pos: BlockPos)
     addToDatabaseStatement?.setDouble(2, pos.getY().toDouble())
     addToDatabaseStatement?.setDouble(3, pos.getZ().toDouble())
     addToDatabaseStatement?.setInt(4, type.ordinal)
-    addToDatabaseStatement?.setString(5, identifier.getPath())
+    addToDatabaseStatement?.setString(5, name)
     addToDatabaseStatement?.setString(6, AudioNavigation.getWorldUUID(world).toString())
     addToDatabaseStatement?.executeUpdate()
     addToDatabaseMutex.unlock()
@@ -43,7 +42,7 @@ data class Poi(val type: PoiType, val identifier: Identifier, val pos: BlockPos)
     private val addToDatabaseMutex = ReentrantLock()
     @JvmField val PACKET_CODEC = PacketCodec.tuple(
       PoiType.PACKET_CODEC, Poi::type,
-      Identifier.PACKET_CODEC, Poi::identifier,
+      PacketCodecs.STRING, Poi::name,
       BlockPos.PACKET_CODEC, Poi::pos,
       ::Poi)
   }
@@ -84,7 +83,7 @@ class PoiList(list: List<PoiAndDistance>) {
       val poiList = PoiList()
       query.executeQuery().use {
         while (it.next()) {
-          poiList.addPoi(Poi(PoiType.entries.get(it.getInt("type")), Identifier.of(it.getString("name")), BlockPos(it.getDouble("x").toInt(), it.getDouble("y").toInt(), it.getDouble("z").toInt())), it.getDouble("distance"))
+          poiList.addPoi(Poi(PoiType.entries.get(it.getInt("type")), it.getString("name"), BlockPos(it.getDouble("x").toInt(), it.getDouble("y").toInt(), it.getDouble("z").toInt())), it.getDouble("distance"))
         }
       }
       return poiList

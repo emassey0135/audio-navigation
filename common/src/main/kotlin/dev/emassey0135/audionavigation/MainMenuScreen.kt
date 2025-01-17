@@ -9,14 +9,25 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
 
 class MainMenuScreen(): Screen(Text.translatable("${AudioNavigation.MOD_ID}.main_menu")) {
+  private var centerX = 0
+  private val buttonHeight = 20
+  private val marginY = buttonHeight/4
+  private var calculatedButtonY = 0
+  fun buildButton(label: Text, tooltip: Text, pressAction: ButtonWidget.PressAction): ButtonWidget {
+  calculatedButtonY += marginY
+  return ButtonWidget.builder(label, pressAction)
+    .dimensions(centerX, calculatedButtonY, textRenderer.getWidth(label)+35, buttonHeight)
+    .tooltip(Tooltip.of(tooltip))
+    .build()
+  }
   override fun init() {
-    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.main_menu.speak_nearby_pois_button"), { button -> close(); AudioNavigationClient.announceNearbyPois() })
-      .dimensions(width/2, 20, 200, 20)
-      .tooltip(Tooltip.of(Text.translatable("${AudioNavigation.MOD_ID}.main_menu.speak_nearby_pois_button.tooltip")))
-      .build())
-    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.main_menu.open_config_screen_button"), { button -> close(); ConfigApi.openScreen(AudioNavigation.MOD_ID) })
-      .dimensions(width/2, 20, 100, 20)
-      .tooltip(Tooltip.of(Text.translatable("${AudioNavigation.MOD_ID}.main_menu.open_config_screen_button.tooltip")))
-      .build())
+    centerX = width/2
+    calculatedButtonY = height/6-marginY
+    addDrawableChild(buildButton(Text.translatable("${AudioNavigation.MOD_ID}.main_menu.speak_nearby_pois_button"),
+      Text.translatable("${AudioNavigation.MOD_ID}.main_menu.speak_nearby_pois_button.tooltip"),
+      { button -> close(); AudioNavigationClient.announceNearbyPois() }))
+    addDrawableChild(buildButton(Text.translatable("${AudioNavigation.MOD_ID}.main_menu.open_config_screen_button"),
+      Text.translatable("${AudioNavigation.MOD_ID}.main_menu.open_config_screen_button.tooltip"),
+      { button -> close(); ConfigApi.openScreen(AudioNavigation.MOD_ID) }))
   }
 }

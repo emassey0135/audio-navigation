@@ -1,6 +1,4 @@
 {
-  "audio_navigation.poi_announcement": "%1$s",
-  "audio_navigation.poi_announcement_detailed": "%1$s, %2$s blocks away",
   "audio_navigation.client_config": "Client Settings",
   "audio_navigation.client_config.announcements": "Automatic Announcements Settings",
   "audio_navigation.client_config.announcements.announcementRadius": "Announcement Radius",
@@ -33,6 +31,13 @@
   "audio_navigation.client_config.speech.pitch.desc": "Speech pitch",
   "audio_navigation.client_config.speech.pitchRange": "Pitch Range",
   "audio_navigation.client_config.speech.pitchRange.desc": "How much the pitch changes for things like commas and capitals",
+  "audio_navigation.main_menu": "Audio Navigation Menu",
+  "audio_navigation.main_menu.speak_nearby_pois_button": "Speak Nearby POI's",
+  "audio_navigation.main_menu.speak_nearby_pois_button.tooltip": "Speak nearby points of interest using the settings for manual announcements",
+  "audio_navigation.main_menu.open_config_screen_button": "Settings",
+  "audio_navigation.main_menu.open_config_screen_button.tooltip": "Open settings menu",
+  "audio_navigation.poi_announcement": "%1$s",
+  "audio_navigation.poi_announcement_detailed": "%1$s, %2$s blocks away",
   "category.audio_navigation": "Audio Navigation",
   "key.audio_navigation.open_config_screen": "Open Configuration Screen",
   "key.audio_navigation.speak_nearby_pois": "Speak Nearby POI's"

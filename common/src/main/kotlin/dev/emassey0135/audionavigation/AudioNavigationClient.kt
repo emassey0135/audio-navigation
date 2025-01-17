@@ -3,7 +3,6 @@ package dev.emassey0135.audionavigation
 import java.util.concurrent.locks.ReentrantLock
 import java.util.concurrent.SynchronousQueue
 import kotlin.concurrent.thread
-import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import dev.architectury.injectables.annotations.ExpectPlatform
 import dev.architectury.event.events.client.ClientTickEvent
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry
@@ -17,6 +16,7 @@ import net.minecraft.util.math.Direction
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.Interval
+import dev.emassey0135.audionavigation.MainMenuScreen
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
@@ -86,7 +86,7 @@ object AudioNavigationClient {
     val minecraftClient = MinecraftClient.getInstance()
     ClientTickEvent.CLIENT_LEVEL_PRE.register { world ->
       while (OPEN_CONFIG_SCREEN_KEYBINDING.wasPressed())
-        ConfigApi.openScreen(AudioNavigation.MOD_ID)
+        minecraftClient.setScreen(MainMenuScreen())
       while (SPEAK_NEARBY_POIS_KEYBINDING.wasPressed())
         announceNearbyPois()
       if (interval.isReady()) {

@@ -8,9 +8,9 @@ import dev.architectury.injectables.annotations.ExpectPlatform
 import dev.architectury.event.events.client.ClientTickEvent
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry
 import net.minecraft.client.option.KeyBinding
+import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.InputUtil
 import net.minecraft.client.MinecraftClient
-import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -26,10 +26,10 @@ import dev.emassey0135.audionavigation.Speech
 object AudioNavigationClient {
   private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi, distance: Double) {
     val text = if (Configs.clientConfig.announcements.detailedAnnouncements.get())
-      Text.translatable("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.identifier.getPath(), distance.toInt())
+      I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.identifier.getPath(), distance.toInt())
       else
-      Text.translatable("${AudioNavigation.MOD_ID}.poi_announcement", poi.identifier.getPath())
-    Speech.speakText(text.getString(), origin, orientation, poi.pos)
+      I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement", poi.identifier.getPath())
+    Speech.speakText(text, origin, orientation, poi.pos)
   }
   private val poiListQueue = SynchronousQueue<PoiList>()
   private var oldPoiList = PoiList(listOf())

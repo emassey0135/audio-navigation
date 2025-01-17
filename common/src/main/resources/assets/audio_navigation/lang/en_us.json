@@ -36,7 +36,7 @@
   "audio_navigation.screens.add_landmark": "Add Landmark",
   "audio_navigation.screens.add_landmark.landmark_name_text_field": "Landmark Name",
   "audio_navigation.screens.add_landmark.save_button": "Save",
-  "audio_navigation.screens.add_landmark.Cancel_button": "Cancel",
+  "audio_navigation.screens.add_landmark.cancel_button": "Cancel",
   "audio_navigation.screens.main_menu": "Audio Navigation Menu",
   "audio_navigation.screens.main_menu.speak_nearby_pois_button": "Speak Nearby POI's",
   "audio_navigation.screens.main_menu.speak_nearby_pois_button.tooltip": "Speak nearby points of interest using the settings for manual announcements",

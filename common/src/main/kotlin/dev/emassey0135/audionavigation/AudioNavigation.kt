@@ -4,10 +4,13 @@ import java.util.UUID
 import dev.architectury.injectables.annotations.ExpectPlatform
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.Identifier
+import net.minecraft.util.math.BlockPos
 import org.slf4j.LoggerFactory
 import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
+import dev.emassey0135.audionavigation.Poi
+import dev.emassey0135.audionavigation.PoiType
 
 object AudioNavigation {
   const val MOD_ID = "audio_navigation"
@@ -21,6 +24,9 @@ object AudioNavigation {
       else
       PoiList.getNearest(world, payload.pos, payload.radius, payload.maxItems)
     return PoiListPayload(poiList)
+  }
+  fun addLandmark(world: ServerWorld, name: String, pos: BlockPos) {
+    Poi(PoiType.LANDMARK, Identifier.of("landmark", name), pos).addToDatabase(world)
   }
   fun initialize() {
     Configs.initialize()

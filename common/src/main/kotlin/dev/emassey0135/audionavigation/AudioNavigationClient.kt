@@ -17,6 +17,7 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.Interval
 import dev.emassey0135.audionavigation.MainMenuScreen
+import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
@@ -63,6 +64,9 @@ object AudioNavigationClient {
   @JvmStatic @ExpectPlatform fun sendPoiRequest(poiRequestPayload: PoiRequestPayload) {
     error("This function is not implemented.")
   }
+  @JvmStatic @ExpectPlatform fun sendAddLandmark(addLandmarkPayload: AddLandmarkPayload) {
+    error("This function is not implemented.")
+  }
   fun handlePoiList(payload: PoiListPayload) {
     thread { poiListQueue.put(payload.poiList) }
   }
@@ -73,6 +77,12 @@ object AudioNavigationClient {
       sendPoiRequest(PoiRequestPayload(BlockPos.ofFloored(player.getPos()), Configs.clientConfig.manualAnnouncements.announcementRadius.get().toDouble(), Configs.clientConfig.manualAnnouncements.maxAnnouncements.get(), Configs.clientConfig.manualAnnouncements.enableVerticalLimit.get(), Configs.clientConfig.manualAnnouncements.verticalLimit.get().toDouble()))
       thread { waitForAndSpeakCompletePoiList() }
     }
+  }
+  fun addLandmark(name: String) {
+    val minecraftClient = MinecraftClient.getInstance()
+    val player = minecraftClient.player
+    if (player!=null)
+      sendAddLandmark(AddLandmarkPayload(name, BlockPos.ofFloored(player.getPos())))
   }
   private val interval = Interval.sec(5)
   private val OPEN_CONFIG_SCREEN_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.open_config_screen", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F6, "category.${AudioNavigation.MOD_ID}")

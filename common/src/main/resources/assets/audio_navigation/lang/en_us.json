@@ -45,6 +45,6 @@
   "audio_navigation.screens.main_menu.open_config_screen_button": "Settings",
   "audio_navigation.screens.main_menu.open_config_screen_button.tooltip": "Open settings menu",
   "category.audio_navigation": "Audio Navigation",
-  "key.audio_navigation.open_config_screen": "Open Configuration Screen",
+  "key.audio_navigation.open_main_menu": "Open Main Menu",
   "key.audio_navigation.speak_nearby_pois": "Speak Nearby POI's"
 }

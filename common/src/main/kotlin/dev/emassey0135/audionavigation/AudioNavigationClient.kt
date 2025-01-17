@@ -84,17 +84,17 @@ object AudioNavigationClient {
       sendAddLandmark(AddLandmarkPayload(name, BlockPos.ofFloored(player.getPos())))
   }
   private val interval = Interval.sec(5)
-  private val OPEN_CONFIG_SCREEN_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.open_config_screen", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F6, "category.${AudioNavigation.MOD_ID}")
+  private val OPEN_MAIN_MENU_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.open_main_menu", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F6, "category.${AudioNavigation.MOD_ID}")
   private val SPEAK_NEARBY_POIS_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.speak_nearby_pois", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F7, "category.${AudioNavigation.MOD_ID}")
   fun initialize() {
     Speech.initialize()
-    KeyMappingRegistry.register(OPEN_CONFIG_SCREEN_KEYBINDING)
+    KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYBINDING)
     KeyMappingRegistry.register(SPEAK_NEARBY_POIS_KEYBINDING)
     interval.beReady()
     AudioNavigation.logger.info("The mod has been initialized.")
     val minecraftClient = MinecraftClient.getInstance()
     ClientTickEvent.CLIENT_LEVEL_PRE.register { world ->
-      while (OPEN_CONFIG_SCREEN_KEYBINDING.wasPressed())
+      while (OPEN_MAIN_MENU_KEYBINDING.wasPressed())
         minecraftClient.setScreen(MainMenuScreen())
       while (SPEAK_NEARBY_POIS_KEYBINDING.wasPressed())
         announceNearbyPois()

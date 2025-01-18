@@ -1,7 +1,7 @@
 package dev.emassey0135.audionavigation
 
 import java.util.concurrent.locks.ReentrantLock
-import java.util.concurrent.SynchronousQueue
+import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
 import dev.architectury.injectables.annotations.ExpectPlatform
 import dev.architectury.event.events.client.ClientTickEvent
@@ -31,7 +31,7 @@ object AudioNavigationClient {
       I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement", poi.name)
     Speech.speakText(text, origin, orientation, poi.pos)
   }
-  private val poiListQueue = SynchronousQueue<PoiList>()
+  private val poiListQueue = ArrayBlockingQueue<PoiList>(16)
   private var oldPoiList = PoiList(listOf())
   private var mutex = ReentrantLock()
   private fun waitForAndSpeakPoiList() {

@@ -6,6 +6,7 @@ import net.minecraft.network.codec.PacketCodec
 import net.minecraft.network.codec.PacketCodecs
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.Uuids
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Database
 
@@ -32,7 +33,7 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
     addToDatabaseStatement?.setDouble(3, pos.getZ().toDouble())
     addToDatabaseStatement?.setInt(4, type.ordinal)
     addToDatabaseStatement?.setString(5, name)
-    addToDatabaseStatement?.setString(6, AudioNavigation.getWorldUUID(world).toString())
+    addToDatabaseStatement?.setBytes(6, Uuids.toByteArray(AudioNavigation.getWorldUUID(world)))
     addToDatabaseStatement?.executeUpdate()
     addToDatabaseMutex.unlock()
     Database.scheduleCommitIfNeeded()
@@ -99,7 +100,7 @@ class PoiList(list: List<PoiAndDistance>) {
       getNearestStatement?.setDouble(3, origin.getZ().toDouble())
       getNearestStatement?.setDouble(4, radius)
       getNearestStatement?.setInt(5, maxItems)
-      getNearestStatement?.setString(6, AudioNavigation.getWorldUUID(world).toString())
+      getNearestStatement?.setBytes(6, Uuids.toByteArray(AudioNavigation.getWorldUUID(world)))
       val result = getFromDatabase(getNearestStatement!!)
       getNearestMutex.unlock()
       return result
@@ -116,7 +117,7 @@ class PoiList(list: List<PoiAndDistance>) {
       getNearestWithVerticalLimitStatement?.setDouble(4, radius)
       getNearestWithVerticalLimitStatement?.setInt(5, maxItems)
       getNearestWithVerticalLimitStatement?.setDouble(6, verticalLimit)
-      getNearestWithVerticalLimitStatement?.setString(7, AudioNavigation.getWorldUUID(world).toString())
+      getNearestWithVerticalLimitStatement?.setBytes(7, Uuids.toByteArray(AudioNavigation.getWorldUUID(world)))
       val result = getFromDatabase(getNearestWithVerticalLimitStatement!!)
       getNearestWithVerticalLimitMutex.unlock()
       return result

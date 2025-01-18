@@ -30,7 +30,7 @@ object Database {
   }
   fun initialize() {
     connection.createStatement().use {
-      it.execute("CREATE VIRTUAL TABLE IF NOT EXISTS pois USING RTREE(id, minX, maxX, minY, maxY, minZ, maxZ, +world TEXT, +type INTEGER, +name TEXT, +x REAL, +y REAL, +z REAL)")
+      it.execute("CREATE VIRTUAL TABLE IF NOT EXISTS pois USING RTREE(id, minX, maxX, minY, maxY, minZ, maxZ, +world BLOB, +type INTEGER, +name TEXT, +x REAL, +y REAL, +z REAL)")
     }
     Function.create(connection, "distance", DistanceFunction(), 6, Function.FLAG_DETERMINISTIC)
     connection.setAutoCommit(false)

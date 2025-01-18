@@ -36,7 +36,7 @@ dependencies {
   modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
   implementation "thedarkcolour:kotlinforforge-neoforge:$rootProject.kotlin_for_forge_version"
   modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+neoforge"
-  include "org.xerial:sqlite-jdbc:3.47.2.0"
+  include "org.xerial:sqlite-jdbc:3.48.0.0"
   common(project(path: ':common', configuration: 'namedElements')) { transitive false }
   shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }

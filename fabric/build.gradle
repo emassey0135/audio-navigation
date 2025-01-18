@@ -28,7 +28,7 @@ dependencies {
   modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
   modImplementation "net.fabricmc:fabric-language-kotlin:$rootProject.fabric_kotlin_version"
   modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
-  include "org.xerial:sqlite-jdbc:3.47.2.0"
+  include "org.xerial:sqlite-jdbc:3.48.0.0"
   common(project(path: ':common', configuration: 'namedElements')) { transitive false }
   shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }

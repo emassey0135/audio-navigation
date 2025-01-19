@@ -40,6 +40,11 @@ dependencies {
   implementation platform("org.lwjgl:lwjgl-bom:3.3.3")
   shadow "org.lwjgl:lwjgl-opus:3.3.3"
   shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-linux"
+  shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-linux-arm64"
+  shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-macos"
+  shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-macos-arm64"
+  shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-windows"
+  shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-windows-arm64"
   common(project(path: ':common', configuration: 'namedElements')) { transitive false }
   shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }

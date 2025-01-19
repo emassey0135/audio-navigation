@@ -18,6 +18,7 @@ import dev.emassey0135.audionavigation.AudioNavigation
 object SoundPlayer {
   private val sources: HashMap<String, Int> = HashMap()
   private val tasks = ArrayBlockingQueue<() -> Unit>(16)
+  var isInitialized = false
   fun initialize() {
     thread {
       val alDevice = ALC11.nalcOpenDevice(0L)
@@ -29,12 +30,16 @@ object SoundPlayer {
       EXTThreadLocalContext.alcSetThreadContext(alContext!!)
       val alcCapabilities = ALC.createCapabilities(alDevice)
       val alCapabilities = AL.createCapabilities(alcCapabilities)
+      isInitialized = true
       AudioNavigation.logger.info("OpenAL initialized.")
       var task: () -> Unit
       while (true) {
         task = tasks.take()
         task()
       }
+    }
+    while (!isInitialized) {
+      Thread.sleep(10)
     }
   }
   fun addSource(name: String) {

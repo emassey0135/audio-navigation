@@ -2,6 +2,9 @@ package dev.emassey0135.audionavigation
 
 import java.io.ByteArrayOutputStream
 import java.lang.Thread
+import java.nio.ByteBuffer
+import java.nio.FloatBuffer
+import java.nio.ShortBuffer
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
@@ -37,7 +40,10 @@ private class SynthCallbackCollectAudio (val stream: ByteArrayOutputStream): Syn
     return 0
   }
 }
-private data class SpeechRequest(val text: String, val listenerPos: BlockPos, val listenerOrientation: Direction, val sourcePos: BlockPos)
+private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundRequest: PlaySoundRequest?, val listenerPos: BlockPos, val listenerOrientation: Direction, val sourcePos: BlockPos) {
+  data class SpeakRequest(val text: String)
+  data class PlaySoundRequest(val format: Int, val sampleRate: Int, val byteBuffer: ByteBuffer?, val shortBuffer: ShortBuffer?, val floatBuffer: FloatBuffer?)
+}
 object Speech {
   private val espeak = Espeak.INSTANCE
   fun setRate(rate: Int) {
@@ -70,17 +76,29 @@ object Speech {
       var isPlaying = AtomicBoolean()
       while (true) {
         speechRequest = speechRequests.take()
-        AudioNavigation.logger.info("Speaking text: ${speechRequest.text}")
-        val callback = SynthCallbackCollectAudio(ByteArrayOutputStream())
-        espeak.espeak_SetSynthCallback(callback)
-        espeak.espeak_Synth(speechRequest.text, size_t((speechRequest.text.length+1).toLong()), 0, 1, 0, 0, Pointer(0), Pointer(0))
-        val array = callback.stream.toByteArray()
-        val buffer = BufferUtils.createByteBuffer(array.size)
-        buffer.put(array)
-        buffer.flip()
         SoundPlayer.setListenerPosition(speechRequest.listenerPos, speechRequest.listenerOrientation)
         SoundPlayer.setSourcePosition("speech", speechRequest.sourcePos)
-        SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, 22050, buffer)
+        if (speechRequest.speakRequest!=null) {
+          val callback = SynthCallbackCollectAudio(ByteArrayOutputStream())
+          espeak.espeak_SetSynthCallback(callback)
+          espeak.espeak_Synth(speechRequest.speakRequest.text, size_t((speechRequest.speakRequest.text.length+1).toLong()), 0, 1, 0, 0, Pointer(0), Pointer(0))
+          val array = callback.stream.toByteArray()
+          val buffer = BufferUtils.createByteBuffer(array.size)
+          buffer.put(array)
+          buffer.flip()
+          SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, 22050, buffer)
+        }
+        else if (speechRequest.playSoundRequest!=null) {
+          when {
+            speechRequest.playSoundRequest.byteBuffer!=null -> SoundPlayer.play("speech", speechRequest.playSoundRequest.format, speechRequest.playSoundRequest.sampleRate, speechRequest.playSoundRequest.byteBuffer)
+            speechRequest.playSoundRequest.shortBuffer!=null -> SoundPlayer.play("speech", speechRequest.playSoundRequest.format, speechRequest.playSoundRequest.sampleRate, speechRequest.playSoundRequest.shortBuffer)
+            speechRequest.playSoundRequest.floatBuffer!=null -> SoundPlayer.play("speech", speechRequest.playSoundRequest.format, speechRequest.playSoundRequest.sampleRate, speechRequest.playSoundRequest.floatBuffer)
+            else -> error("No sound data in play sound request")
+          }
+        }
+        else {
+          error("Empty speech request")
+        }
         isPlaying.set(true)
         while (isPlaying.get()) {
           Thread.sleep(10)
@@ -94,6 +112,15 @@ object Speech {
     SoundPlayer.stop("speech")
   }
   fun speak(text: String, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
-    speechRequests.offer(SpeechRequest(text, listenerPos, listenerOrientation, sourcePos))
+    speechRequests.offer(SpeechRequest(SpeechRequest.SpeakRequest(text), null, listenerPos, listenerOrientation, sourcePos))
+  }
+  fun playSound(format: Int, sampleRate: Int, data: ByteBuffer, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
+    speechRequests.offer(SpeechRequest(null, SpeechRequest.PlaySoundRequest(format, sampleRate, data, null, null), listenerPos, listenerOrientation, sourcePos))
+  }
+  fun playSound(format: Int, sampleRate: Int, data: ShortBuffer, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
+    speechRequests.offer(SpeechRequest(null, SpeechRequest.PlaySoundRequest(format, sampleRate, null, data, null), listenerPos, listenerOrientation, sourcePos))
+  }
+  fun playSound(format: Int, sampleRate: Int, data: FloatBuffer, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
+    speechRequests.offer(SpeechRequest(null, SpeechRequest.PlaySoundRequest(format, sampleRate, null, null, data), listenerPos, listenerOrientation, sourcePos))
   }
 }

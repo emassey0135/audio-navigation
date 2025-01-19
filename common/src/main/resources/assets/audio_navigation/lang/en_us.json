@@ -43,13 +43,13 @@
   "audio_navigation.screens.add_landmark.save_button": "Save",
   "audio_navigation.screens.add_landmark.cancel_button": "Cancel",
   "audio_navigation.screens.main_menu": "Audio Navigation Menu",
-  "audio_navigation.screens.main_menu.speak_nearby_pois_button": "Speak Nearby POI's",
-  "audio_navigation.screens.main_menu.speak_nearby_pois_button.tooltip": "Speak nearby points of interest using the settings for manual announcements",
+  "audio_navigation.screens.main_menu.announce_nearby_pois_button": "Announce Nearby POI's",
+  "audio_navigation.screens.main_menu.announce_nearby_pois_button.tooltip": "Announce nearby points of interest using the settings for manual announcements",
   "audio_navigation.screens.main_menu.add_landmark_button": "Add Landmark",
   "audio_navigation.screens.main_menu.add_landmark_button.tooltip": "Create a landmark at your current position",
   "audio_navigation.screens.main_menu.open_config_screen_button": "Settings",
   "audio_navigation.screens.main_menu.open_config_screen_button.tooltip": "Open settings menu",
   "category.audio_navigation": "Audio Navigation",
   "key.audio_navigation.open_main_menu": "Open Main Menu",
-  "key.audio_navigation.speak_nearby_pois": "Speak Nearby POI's"
+  "key.audio_navigation.announce_nearby_pois": "Announce Nearby POI's"
 }

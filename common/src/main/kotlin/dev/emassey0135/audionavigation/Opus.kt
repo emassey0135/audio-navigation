@@ -8,11 +8,15 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.openal.EXTFloat32
 import org.lwjgl.util.opus.OpusFile
 import dev.architectury.platform.Platform
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.SoundPlayer
+import dev.emassey0135.audionavigation.Speech
 
 object Opus {
-  fun playOpus(source: String, data: ByteBuffer) {
+  data class PcmAndChannels(val channels: Int, val pcm: FloatBuffer)
+  fun decodeOpus(data: ByteBuffer): PcmAndChannels {
     val opusFile = OpusFile.op_open_memory(data, null)
     if (opusFile==0L)
       error("Invalid OPUS data")
@@ -41,10 +45,10 @@ object Opus {
     val result = BufferUtils.createFloatBuffer(size)
     arrays.forEach { array -> result.put(array) }
     result.flip()
-    SoundPlayer.play(source, (if (channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, result)
     OpusFile.op_free(opusFile)
+    return PcmAndChannels((if (channels==1) 1 else 2), result)
   }
-  fun playOpusFromResource(source: String, resourcePath: String) {
+  fun decodeOpusFromResource(resourcePath: String): PcmAndChannels {
     val path = Platform.getMod(AudioNavigation.MOD_ID).findResource(resourcePath)
     if (!path.isPresent())
       error("Invalid resource path: ${resourcePath}")
@@ -52,6 +56,22 @@ object Opus {
     val buffer = BufferUtils.createByteBuffer(data.size)
     buffer.put(data)
     buffer.flip()
-    playOpus(source, buffer)
+    return decodeOpus(buffer)
+  }
+  fun playOpus(source: String, data: ByteBuffer) {
+    val audio = decodeOpus(data)
+    SoundPlayer.play(source, (if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm)
+  }
+  fun playOpusWithSpeech(data: ByteBuffer, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
+    val audio = decodeOpus(data)
+    Speech.playSound((if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm, listenerPos, listenerOrientation, sourcePos)
+  }
+  fun playOpusFromResource(source: String, resourcePath: String) {
+    val audio = decodeOpusFromResource(resourcePath)
+    SoundPlayer.play(source, (if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm)
+  }
+  fun playOpusWithSpeechFromResource(resourcePath: String, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
+    val audio = decodeOpusFromResource(resourcePath)
+    Speech.playSound((if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm, listenerPos, listenerOrientation, sourcePos)
   }
 }

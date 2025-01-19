@@ -1,10 +1,12 @@
 package dev.emassey0135.audionavigation
 
-import kotlin.concurrent.thread
+import java.nio.ByteBuffer
+import java.nio.FloatBuffer
+import java.nio.ShortBuffer
 import java.util.concurrent.ArrayBlockingQueue
+import kotlin.concurrent.thread
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.ALC
 import org.lwjgl.openal.AL11
@@ -78,16 +80,37 @@ object SoundPlayer {
       }
     }
   }
-  fun play(name: String, format: Int, sampleRate: Int, bytes: ByteArray) {
+  fun play(name: String, format: Int, sampleRate: Int, data: ByteBuffer) {
     thread {
       tasks.put {
         if (!sources.containsKey(name))
           error("Source has not been added: ${name}")
         val buffer = AL11.alGenBuffers()
-        val byteBuffer = BufferUtils.createByteBuffer(bytes.size)
-        byteBuffer.put(bytes)
-        byteBuffer.flip()
-        AL11.alBufferData(buffer, format, byteBuffer, sampleRate)
+        AL11.alBufferData(buffer, format, data, sampleRate)
+        AL11.alSourcei(sources.get(name)!!, AL11.AL_BUFFER, buffer)
+        AL11.alSourcePlay(sources.get(name)!!)
+      }
+    }
+  }
+  fun play(name: String, format: Int, sampleRate: Int, data: ShortBuffer) {
+    thread {
+      tasks.put {
+        if (!sources.containsKey(name))
+          error("Source has not been added: ${name}")
+        val buffer = AL11.alGenBuffers()
+        AL11.alBufferData(buffer, format, data, sampleRate)
+        AL11.alSourcei(sources.get(name)!!, AL11.AL_BUFFER, buffer)
+        AL11.alSourcePlay(sources.get(name)!!)
+      }
+    }
+  }
+  fun play(name: String, format: Int, sampleRate: Int, data: FloatBuffer) {
+    thread {
+      tasks.put {
+        if (!sources.containsKey(name))
+          error("Source has not been added: ${name}")
+        val buffer = AL11.alGenBuffers()
+        AL11.alBufferData(buffer, format, data, sampleRate)
         AL11.alSourcei(sources.get(name)!!, AL11.AL_BUFFER, buffer)
         AL11.alSourcePlay(sources.get(name)!!)
       }

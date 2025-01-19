@@ -5,6 +5,7 @@ import java.lang.Thread
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
+import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -73,9 +74,13 @@ object Speech {
         val callback = SynthCallbackCollectAudio(ByteArrayOutputStream())
         espeak.espeak_SetSynthCallback(callback)
         espeak.espeak_Synth(speechRequest.text, size_t((speechRequest.text.length+1).toLong()), 0, 1, 0, 0, Pointer(0), Pointer(0))
+        val array = callback.stream.toByteArray()
+        val buffer = BufferUtils.createByteBuffer(array.size)
+        buffer.put(array)
+        buffer.flip()
         SoundPlayer.setListenerPosition(speechRequest.listenerPos, speechRequest.listenerOrientation)
         SoundPlayer.setSourcePosition("speech", speechRequest.sourcePos)
-        SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, 22050, callback.stream.toByteArray())
+        SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, 22050, buffer)
         isPlaying.set(true)
         while (isPlaying.get()) {
           Thread.sleep(10)

@@ -42,12 +42,20 @@ object SoundPlayer {
       }
     }
   }
-  fun setSourceDistanceModifiers(name: String, maxDistance: Float, rolloffFactor: Float) {
+  fun setSourceMaxDistance(name: String, maxDistance: Float) {
     thread {
       tasks.put {
         if (!sources.containsKey(name))
           error("Source has not been added: ${name}")
         AL11.alSourcef(sources.get(name)!!, AL11.AL_MAX_DISTANCE, maxDistance)
+      }
+    }
+  }
+  fun setSourceRolloffFactor(name: String, rolloffFactor: Float) {
+    thread {
+      tasks.put {
+        if (!sources.containsKey(name))
+          error("Source has not been added: ${name}")
         AL11.alSourcef(sources.get(name)!!, AL11.AL_ROLLOFF_FACTOR, rolloffFactor)
       }
     }

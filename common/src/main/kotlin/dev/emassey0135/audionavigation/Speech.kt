@@ -52,6 +52,7 @@ object Speech {
     espeak.espeak_SetParameter(4, pitchRange, 0)
   }
   private val speechRequests = ArrayBlockingQueue<SpeechRequest>(64)
+  var isInitialized = false
   fun initialize() {
     espeak.espeak_Initialize(2, 0, null, 0)
     setRate(Configs.clientConfig.speech.rate.get())
@@ -59,7 +60,9 @@ object Speech {
     setPitch(Configs.clientConfig.speech.pitch.get())
     setPitchRange(Configs.clientConfig.speech.pitchRange.get())
     SoundPlayer.addSource("speech")
-    SoundPlayer.setSourceDistanceModifiers("speech", 100f, 0.1f)
+    SoundPlayer.setSourceMaxDistance("speech", Configs.clientConfig.sound.maxDistance.get().toFloat())
+    SoundPlayer.setSourceRolloffFactor("speech", Configs.clientConfig.sound.rolloffFactor.get())
+    isInitialized = true
     AudioNavigation.logger.info("eSpeak initialized.")
     thread {
       var speechRequest: SpeechRequest

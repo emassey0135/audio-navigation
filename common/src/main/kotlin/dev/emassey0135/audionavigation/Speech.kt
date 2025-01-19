@@ -1,6 +1,11 @@
 package dev.emassey0135.audionavigation
 
 import java.io.ByteArrayOutputStream
+import java.lang.Thread
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.thread
+import org.lwjgl.openal.AL11
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import com.sun.jna.Callback
@@ -31,6 +36,7 @@ private class SynthCallbackCollectAudio (val stream: ByteArrayOutputStream): Syn
     return 0
   }
 }
+private data class SpeechRequest(val text: String, val listenerPos: BlockPos, val listenerOrientation: Direction, val sourcePos: BlockPos)
 object Speech {
   private val espeak = Espeak.INSTANCE
   fun setRate(rate: Int) {
@@ -45,19 +51,41 @@ object Speech {
   fun setPitchRange(pitchRange: Int) {
     espeak.espeak_SetParameter(4, pitchRange, 0)
   }
+  private val speechRequests = ArrayBlockingQueue<SpeechRequest>(64)
   fun initialize() {
     espeak.espeak_Initialize(2, 0, null, 0)
     setRate(Configs.clientConfig.speech.rate.get())
     setVolume(Configs.clientConfig.speech.volume.get())
     setPitch(Configs.clientConfig.speech.pitch.get())
     setPitchRange(Configs.clientConfig.speech.pitchRange.get())
+    SoundPlayer.addSource("speech")
+    SoundPlayer.setSourceDistanceModifiers("speech", 100f, 0.1f)
     AudioNavigation.logger.info("eSpeak initialized.")
+    thread {
+      var speechRequest: SpeechRequest
+      var isPlaying = AtomicBoolean()
+      while (true) {
+        speechRequest = speechRequests.take()
+        AudioNavigation.logger.info("Speaking text: ${speechRequest.text}")
+        val callback = SynthCallbackCollectAudio(ByteArrayOutputStream())
+        espeak.espeak_SetSynthCallback(callback)
+        espeak.espeak_Synth(speechRequest.text, size_t((speechRequest.text.length+1).toLong()), 0, 1, 0, 0, Pointer(0), Pointer(0))
+        SoundPlayer.setListenerPosition(speechRequest.listenerPos, speechRequest.listenerOrientation)
+        SoundPlayer.setSourcePosition("speech", speechRequest.sourcePos)
+        SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, 22050, callback.stream.toByteArray())
+        isPlaying.set(true)
+        while (isPlaying.get()) {
+          Thread.sleep(10)
+          SoundPlayer.getSourceState("speech", { state -> isPlaying.set(state==AL11.AL_PLAYING) })
+        }
+      }
+    }
   }
-  fun speakText(text: String, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
-    AudioNavigation.logger.info("Speaking text: $text")
-    val callback = SynthCallbackCollectAudio(ByteArrayOutputStream())
-    espeak.espeak_SetSynthCallback(callback)
-    espeak.espeak_Synth(text, size_t((text.length+1).toLong()), 0, 1, 0, 0, Pointer(0), Pointer(0))
-    SoundPlayer.playSound(callback.stream.toByteArray(), listenerPos, listenerOrientation, sourcePos)
+  fun interrupt() {
+    speechRequests.clear()
+    SoundPlayer.stop("speech")
+  }
+  fun speak(text: String, listenerPos: BlockPos, listenerOrientation: Direction, sourcePos: BlockPos) {
+    speechRequests.offer(SpeechRequest(text, listenerPos, listenerOrientation, sourcePos))
   }
 }

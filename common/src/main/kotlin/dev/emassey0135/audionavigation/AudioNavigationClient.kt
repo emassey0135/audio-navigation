@@ -21,6 +21,7 @@ import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.PoiList
+import dev.emassey0135.audionavigation.SoundPlayer
 import dev.emassey0135.audionavigation.Speech
 
 object AudioNavigationClient {
@@ -29,7 +30,7 @@ object AudioNavigationClient {
       I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.name, distance.toInt())
       else
       I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement", poi.name)
-    Speech.speakText(text, origin, orientation, poi.pos)
+    Speech.speak(text, origin, orientation, poi.pos)
   }
   private val poiListQueue = ArrayBlockingQueue<PoiList>(16)
   private var oldPoiList = PoiList(listOf())
@@ -57,6 +58,7 @@ object AudioNavigationClient {
     if (player==null) return
     val origin = BlockPos.ofFloored(player.getPos())
     val orientation = player.getFacing()
+    Speech.interrupt()
     poiList.toList().forEach { poi -> speakPoi(origin, orientation, poi.poi, poi.distance) }
     mutex.unlock()
   }
@@ -87,6 +89,7 @@ object AudioNavigationClient {
   private val OPEN_MAIN_MENU_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.open_main_menu", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F6, "category.${AudioNavigation.MOD_ID}")
   private val SPEAK_NEARBY_POIS_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.speak_nearby_pois", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F7, "category.${AudioNavigation.MOD_ID}")
   fun initialize() {
+    SoundPlayer.initialize()
     Speech.initialize()
     KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYBINDING)
     KeyMappingRegistry.register(SPEAK_NEARBY_POIS_KEYBINDING)

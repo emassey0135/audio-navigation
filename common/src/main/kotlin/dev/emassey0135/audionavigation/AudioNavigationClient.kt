@@ -16,6 +16,7 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.Interval
 import dev.emassey0135.audionavigation.MainMenuScreen
+import dev.emassey0135.audionavigation.Opus
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
@@ -26,6 +27,12 @@ import dev.emassey0135.audionavigation.Speech
 
 object AudioNavigationClient {
   private fun speakPoi(origin: BlockPos, orientation: Direction, poi: Poi, distance: Double) {
+    val sound = when (poi.type) {
+      PoiType.LANDMARK -> "landmark.ogg"
+      PoiType.FEATURE -> "feature.ogg"
+      PoiType.STRUCTURE -> "structure.ogg"
+    }
+    Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/sounds/$sound", origin, orientation, poi.pos)
     val text = if (Configs.clientConfig.announcements.detailedAnnouncements.get())
       I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.name, distance.toInt())
       else

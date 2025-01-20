@@ -6,7 +6,7 @@ import kotlin.concurrent.thread
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec2f
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
 import dev.emassey0135.audionavigation.Configs
@@ -18,7 +18,7 @@ import dev.emassey0135.audionavigation.PoiType
 import dev.emassey0135.audionavigation.Speech
 
 object PoiAnnouncements {
-  fun announcePoi(origin: BlockPos, orientation: Direction, poi: Poi, distance: Double, detailed: Boolean) {
+  fun announcePoi(origin: BlockPos, orientation: Vec2f, poi: Poi, distance: Double, detailed: Boolean) {
     val sound = when (poi.type) {
       PoiType.LANDMARK -> "landmark.ogg"
       PoiType.FEATURE -> "feature.ogg"
@@ -39,7 +39,7 @@ object PoiAnnouncements {
     val player = minecraftClient.player
     if (player!=null) {
       val origin = BlockPos.ofFloored(player.getPos())
-      val orientation = player.getFacing()
+      val orientation = player.getRotationClient()
       AudioNavigationClient.sendPoiRequest(PoiRequestPayload(origin, radius, maxAnnouncements, enableVerticalLimit, verticalLimit))
       thread {
         mutex.lock()

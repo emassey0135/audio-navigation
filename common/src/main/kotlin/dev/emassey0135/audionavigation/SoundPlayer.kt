@@ -5,8 +5,11 @@ import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
+import kotlin.math.cos
+import kotlin.math.PI
+import kotlin.math.sin
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
+import net.minecraft.util.math.Vec2f
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.ALC
 import org.lwjgl.openal.AL11
@@ -76,12 +79,16 @@ object SoundPlayer {
       }
     }
   }
-  fun setListenerPosition(pos: BlockPos, orientation: Direction) {
+  fun setListenerPosition(pos: BlockPos, orientation: Vec2f) {
     thread {
       tasks.put {
         AL11.alListener3f(AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), pos.getZ().toFloat())
-        val vector = orientation.getUnitVector()
-        AL11.alListenerfv(AL11.AL_ORIENTATION, floatArrayOf(vector.x, vector.y, vector.z, 0f, 1f, 0f))
+        val verticalAngle = orientation.x/180*PI
+        val horizontalAngle = orientation.y/180*PI
+        val x = sin(horizontalAngle)
+        val y = -sin(horizontalAngle)
+        val z = cos(horizontalAngle)
+        AL11.alListenerfv(AL11.AL_ORIENTATION, floatArrayOf(x.toFloat(), y.toFloat(), z.toFloat(), 0f, 1f, 0f))
       }
     }
   }

@@ -7,7 +7,6 @@ import kotlin.concurrent.thread
 import org.lwjgl.openal.AL11
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Opus
 import dev.emassey0135.audionavigation.Poi
@@ -29,7 +28,7 @@ object Beacon {
           val player = minecraftClient.player
           if (player!=null) {
             val origin = BlockPos.ofFloored(player.getPos())
-            val orientation = player.getFacing()
+            val orientation = player.getRotationClient()
             SoundPlayer.setListenerPosition(origin, orientation)
             SoundPlayer.setSourcePosition("beacon", currentBeacon.get().pos)
             Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OffAxis.ogg")

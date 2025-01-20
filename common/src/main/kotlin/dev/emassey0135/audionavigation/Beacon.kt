@@ -4,7 +4,6 @@ import java.lang.Thread
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.Optional
 import kotlin.concurrent.thread
-import kotlin.math.abs
 import org.lwjgl.openal.AL11
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.BlockPos
@@ -36,7 +35,7 @@ object Beacon {
           SoundPlayer.updateListenerPosition()
           SoundPlayer.setSourcePosition("beacon", currentBeacon.get().pos)
           val angleBetween = Orientation.horizontalAngleBetween(origin, currentBeacon.get().pos)
-          if (abs(angleBetween.horizontalAngle()-orientation.horizontalAngle()) <= Configs.clientConfig.beacons.maxOnAxisAngle.get().toFloat())
+          if (orientation.horizontalDifference(angleBetween) <= Configs.clientConfig.beacons.maxOnAxisAngle.get().toFloat())
             Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OnAxis.ogg")
           else
             Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OffAxis.ogg")

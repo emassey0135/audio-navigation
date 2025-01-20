@@ -9,6 +9,7 @@ import org.lwjgl.openal.AL11
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
+import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.Opus
 import dev.emassey0135.audionavigation.Orientation
 import dev.emassey0135.audionavigation.Poi
@@ -34,7 +35,7 @@ object Beacon {
             SoundPlayer.setListenerPosition(origin, orientation)
             SoundPlayer.setSourcePosition("beacon", currentBeacon.get().pos)
             val angleBetween = Orientation.horizontalAngleBetween(origin, currentBeacon.get().pos)
-            if (abs(angleBetween.horizontalAngle()-orientation.horizontalAngle()) <= 30)
+            if (abs(angleBetween.horizontalAngle()-orientation.horizontalAngle()) <= Configs.clientConfig.beacons.maxOnAxisAngle.get().toFloat())
               Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OnAxis.ogg")
             else
               Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OffAxis.ogg")

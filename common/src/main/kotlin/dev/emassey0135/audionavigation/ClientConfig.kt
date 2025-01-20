@@ -34,6 +34,10 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
     var pitch = ValidatedInt(50, 100, 0).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setPitch(value.get()) }}
     var pitchRange = ValidatedInt(50, 100, 0).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setPitchRange(value.get()) }}
   }
+  var beacons = BeaconsSection()
+  class BeaconsSection: ConfigSection() {
+    var maxOnAxisAngle = ValidatedInt(15, 90, 0)
+  }
   var sound = SoundSection()
   class SoundSection: ConfigSection() {
     var maxDistance = ValidatedInt(100).also { it.listenToEntry { value -> if (Speech.isInitialized) SoundPlayer.setSourceMaxDistance("speech", value.get().toFloat()) }}

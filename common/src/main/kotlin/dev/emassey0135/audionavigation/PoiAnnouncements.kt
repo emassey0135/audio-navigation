@@ -27,7 +27,7 @@ object PoiAnnouncements {
     val text = if (detailed)
       I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.name, distance.toInt())
       else
-      I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement", poi.name)
+      poi.name
     Speech.speak(text, poi.pos)
   }
   private val poiListQueue = ArrayBlockingQueue<PoiList>(16)

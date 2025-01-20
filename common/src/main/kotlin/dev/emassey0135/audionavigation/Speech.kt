@@ -10,7 +10,6 @@ import kotlin.concurrent.thread
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec2f
 import com.sun.jna.Callback
 import com.sun.jna.Library
 import com.sun.jna.Native
@@ -18,6 +17,7 @@ import com.sun.jna.Pointer
 import com.sun.jna.platform.unix.LibCAPI.size_t
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Configs
+import dev.emassey0135.audionavigation.Orientation
 import dev.emassey0135.audionavigation.SoundPlayer
 
 private interface SynthCallback: Callback {
@@ -39,7 +39,7 @@ private class SynthCallbackCollectAudio (val stream: ByteArrayOutputStream): Syn
     return 0
   }
 }
-private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundRequest: PlaySoundRequest?, val listenerPos: BlockPos, val listenerOrientation: Vec2f, val sourcePos: BlockPos) {
+private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundRequest: PlaySoundRequest?, val listenerPos: BlockPos, val listenerOrientation: Orientation, val sourcePos: BlockPos) {
   data class SpeakRequest(val text: String)
   data class PlaySoundRequest(val format: Int, val sampleRate: Int, val byteBuffer: ByteBuffer?, val shortBuffer: ShortBuffer?, val floatBuffer: FloatBuffer?)
 }
@@ -110,16 +110,16 @@ object Speech {
     speechRequests.clear()
     SoundPlayer.stop("speech")
   }
-  fun speak(text: String, listenerPos: BlockPos, listenerOrientation: Vec2f, sourcePos: BlockPos) {
+  fun speak(text: String, listenerPos: BlockPos, listenerOrientation: Orientation, sourcePos: BlockPos) {
     speechRequests.offer(SpeechRequest(SpeechRequest.SpeakRequest(text), null, listenerPos, listenerOrientation, sourcePos))
   }
-  fun playSound(format: Int, sampleRate: Int, data: ByteBuffer, listenerPos: BlockPos, listenerOrientation: Vec2f, sourcePos: BlockPos) {
+  fun playSound(format: Int, sampleRate: Int, data: ByteBuffer, listenerPos: BlockPos, listenerOrientation: Orientation, sourcePos: BlockPos) {
     speechRequests.offer(SpeechRequest(null, SpeechRequest.PlaySoundRequest(format, sampleRate, data, null, null), listenerPos, listenerOrientation, sourcePos))
   }
-  fun playSound(format: Int, sampleRate: Int, data: ShortBuffer, listenerPos: BlockPos, listenerOrientation: Vec2f, sourcePos: BlockPos) {
+  fun playSound(format: Int, sampleRate: Int, data: ShortBuffer, listenerPos: BlockPos, listenerOrientation: Orientation, sourcePos: BlockPos) {
     speechRequests.offer(SpeechRequest(null, SpeechRequest.PlaySoundRequest(format, sampleRate, null, data, null), listenerPos, listenerOrientation, sourcePos))
   }
-  fun playSound(format: Int, sampleRate: Int, data: FloatBuffer, listenerPos: BlockPos, listenerOrientation: Vec2f, sourcePos: BlockPos) {
+  fun playSound(format: Int, sampleRate: Int, data: FloatBuffer, listenerPos: BlockPos, listenerOrientation: Orientation, sourcePos: BlockPos) {
     speechRequests.offer(SpeechRequest(null, SpeechRequest.PlaySoundRequest(format, sampleRate, null, null, data), listenerPos, listenerOrientation, sourcePos))
   }
 }

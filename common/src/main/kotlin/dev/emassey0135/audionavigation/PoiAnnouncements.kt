@@ -10,7 +10,6 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
 import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.Opus
-import dev.emassey0135.audionavigation.Orientation
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.PoiList
@@ -18,18 +17,18 @@ import dev.emassey0135.audionavigation.PoiType
 import dev.emassey0135.audionavigation.Speech
 
 object PoiAnnouncements {
-  fun announcePoi(origin: BlockPos, orientation: Orientation, poi: Poi, distance: Double, detailed: Boolean) {
+  fun announcePoi(poi: Poi, distance: Double, detailed: Boolean) {
     val sound = when (poi.type) {
       PoiType.LANDMARK -> "landmark.ogg"
       PoiType.FEATURE -> "feature.ogg"
       PoiType.STRUCTURE -> "structure.ogg"
     }
-    Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/sounds/$sound", origin, orientation, poi.pos)
+    Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/sounds/$sound", poi.pos)
     val text = if (detailed)
       I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.name, distance.toInt())
       else
       I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement", poi.name)
-    Speech.speak(text, origin, orientation, poi.pos)
+    Speech.speak(text, poi.pos)
   }
   private val poiListQueue = ArrayBlockingQueue<PoiList>(16)
   private var oldPoiList = PoiList(listOf())
@@ -37,23 +36,22 @@ object PoiAnnouncements {
   fun announceNearbyPois(interruptSpeech: Boolean, excludePrevious: Boolean, detailed: Boolean, radius: Double, maxAnnouncements: Int, enableVerticalLimit: Boolean, verticalLimit: Double) {
     val minecraftClient = MinecraftClient.getInstance()
     val player = minecraftClient.player
-    if (player!=null) {
-      val origin = BlockPos.ofFloored(player.getPos())
-      val orientation = Orientation(player.getRotationClient())
-      AudioNavigationClient.sendPoiRequest(PoiRequestPayload(origin, radius, maxAnnouncements, enableVerticalLimit, verticalLimit))
-      thread {
-        mutex.lock()
-        var poiList = poiListQueue.take()
-        if (excludePrevious) {
-          val newPoiList = poiList.subtract(oldPoiList)
-          oldPoiList = poiList
-          poiList = newPoiList
-        }
-        if (interruptSpeech)
-          Speech.interrupt()
-        poiList.toList().forEach { poi -> announcePoi(origin, orientation, poi.poi, poi.distance, detailed) }
-        mutex.unlock()
+    if (player==null)
+      return
+    val origin = BlockPos.ofFloored(player.getPos())
+    AudioNavigationClient.sendPoiRequest(PoiRequestPayload(origin, radius, maxAnnouncements, enableVerticalLimit, verticalLimit))
+    thread {
+      mutex.lock()
+      var poiList = poiListQueue.take()
+      if (excludePrevious) {
+        val newPoiList = poiList.subtract(oldPoiList)
+        oldPoiList = poiList
+        poiList = newPoiList
       }
+      if (interruptSpeech)
+        Speech.interrupt()
+      poiList.toList().forEach { poi -> announcePoi(poi.poi, poi.distance, detailed) }
+      mutex.unlock()
     }
   }
   fun receivePoiList(poiList: PoiList) {

@@ -5,6 +5,7 @@ import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
+import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.BlockPos
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.ALC
@@ -76,13 +77,19 @@ object SoundPlayer {
       }
     }
   }
-  fun setListenerPosition(pos: BlockPos, orientation: Orientation) {
+  fun updateListenerPosition() {
     thread {
-      tasks.put {
+      tasks.put(fun(): Unit {
+        val minecraftClient = MinecraftClient.getInstance()
+        val player = minecraftClient.player
+        if (player==null)
+          return
+        val pos = BlockPos.ofFloored(player.getPos())
+        val orientation = Orientation(player.getRotationClient())
         AL11.alListener3f(AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), pos.getZ().toFloat())
         val vector = orientation.toVector()
         AL11.alListenerfv(AL11.AL_ORIENTATION, floatArrayOf(vector.x.toFloat(), vector.y.toFloat(), vector.z.toFloat(), 0f, 1f, 0f))
-      }
+      })
     }
   }
   fun play(name: String, format: Int, sampleRate: Int, data: ByteBuffer) {

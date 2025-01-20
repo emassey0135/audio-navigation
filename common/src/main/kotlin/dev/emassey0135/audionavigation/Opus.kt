@@ -10,7 +10,6 @@ import org.lwjgl.util.opus.OpusFile
 import dev.architectury.platform.Platform
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.Orientation
 import dev.emassey0135.audionavigation.SoundPlayer
 import dev.emassey0135.audionavigation.Speech
 
@@ -62,16 +61,16 @@ object Opus {
     val audio = decodeOpus(data)
     SoundPlayer.play(source, (if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm)
   }
-  fun playOpusWithSpeech(data: ByteBuffer, listenerPos: BlockPos, listenerOrientation: Orientation, sourcePos: BlockPos) {
+  fun playOpusWithSpeech(data: ByteBuffer, sourcePos: BlockPos) {
     val audio = decodeOpus(data)
-    Speech.playSound((if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm, listenerPos, listenerOrientation, sourcePos)
+    Speech.playSound((if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm, sourcePos)
   }
   fun playOpusFromResource(source: String, resourcePath: String) {
     val audio = decodeOpusFromResource(resourcePath)
     SoundPlayer.play(source, (if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm)
   }
-  fun playOpusWithSpeechFromResource(resourcePath: String, listenerPos: BlockPos, listenerOrientation: Orientation, sourcePos: BlockPos) {
+  fun playOpusWithSpeechFromResource(resourcePath: String, sourcePos: BlockPos) {
     val audio = decodeOpusFromResource(resourcePath)
-    Speech.playSound((if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm, listenerPos, listenerOrientation, sourcePos)
+    Speech.playSound((if (audio.channels==1) EXTFloat32.AL_FORMAT_MONO_FLOAT32 else EXTFloat32.AL_FORMAT_STEREO_FLOAT32), 48000, audio.pcm, sourcePos)
   }
 }

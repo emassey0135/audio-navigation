@@ -29,21 +29,21 @@ object Beacon {
         if (currentBeacon.isPresent()) {
           val minecraftClient = MinecraftClient.getInstance()
           val player = minecraftClient.player
-          if (player!=null) {
-            val origin = BlockPos.ofFloored(player.getPos())
-            val orientation = Orientation(player.getRotationClient())
-            SoundPlayer.setListenerPosition(origin, orientation)
-            SoundPlayer.setSourcePosition("beacon", currentBeacon.get().pos)
-            val angleBetween = Orientation.horizontalAngleBetween(origin, currentBeacon.get().pos)
-            if (abs(angleBetween.horizontalAngle()-orientation.horizontalAngle()) <= Configs.clientConfig.beacons.maxOnAxisAngle.get().toFloat())
-              Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OnAxis.ogg")
-            else
-              Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OffAxis.ogg")
-            isPlaying = true
-            while (isPlaying) {
-              Thread.sleep(10)
-              SoundPlayer.getSourceState("beacon", { state -> isPlaying = state==AL11.AL_PLAYING })
-            }
+          if (player==null)
+            continue
+          val origin = BlockPos.ofFloored(player.getPos())
+          val orientation = Orientation(player.getRotationClient())
+          SoundPlayer.updateListenerPosition()
+          SoundPlayer.setSourcePosition("beacon", currentBeacon.get().pos)
+          val angleBetween = Orientation.horizontalAngleBetween(origin, currentBeacon.get().pos)
+          if (abs(angleBetween.horizontalAngle()-orientation.horizontalAngle()) <= Configs.clientConfig.beacons.maxOnAxisAngle.get().toFloat())
+            Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OnAxis.ogg")
+          else
+            Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OffAxis.ogg")
+          isPlaying = true
+          while (isPlaying) {
+            Thread.sleep(10)
+            SoundPlayer.getSourceState("beacon", { state -> isPlaying = state==AL11.AL_PLAYING })
           }
         }
         else {

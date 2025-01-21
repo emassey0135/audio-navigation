@@ -9,6 +9,7 @@ import net.minecraft.text.Text
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
 import dev.emassey0135.audionavigation.AddLandmarkScreen
+import dev.emassey0135.audionavigation.LandmarkListScreen
 import dev.emassey0135.audionavigation.PoiAnnouncements
 
 class MainMenuScreen(): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu")) {
@@ -32,6 +33,9 @@ class MainMenuScreen(): Screen(Text.translatable("${AudioNavigation.MOD_ID}.scre
     addDrawableChild(buildButton(Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.add_landmark_button"),
       Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.add_landmark_button.tooltip"),
       { button -> MinecraftClient.getInstance()?.setScreen(AddLandmarkScreen(this)) }))
+    addDrawableChild(buildButton(Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.landmark_list_button"),
+      Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.landmark_list_button.tooltip"),
+      { button -> LandmarkListScreen.openLandmarkListScreen(this) }))
     addDrawableChild(buildButton(Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.open_config_screen_button"),
       Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.open_config_screen_button.tooltip"),
       { button -> close(); ConfigApi.openScreen(AudioNavigation.MOD_ID) }))

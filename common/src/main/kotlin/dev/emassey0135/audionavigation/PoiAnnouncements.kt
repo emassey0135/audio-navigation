@@ -32,7 +32,7 @@ object PoiAnnouncements {
       poi.name
     Speech.speak(text, poi.pos)
   }
-  private var oldPoiList = PoiList(listOf())
+  private var oldPoiList = PoiList()
   private var mutex = ReentrantLock()
   fun announceNearbyPois(interruptSpeech: Boolean, excludePrevious: Boolean, detailed: Boolean, radius: Double, maxAnnouncements: Int, enableVerticalLimit: Boolean, verticalLimit: Double) {
     val minecraftClient = MinecraftClient.getInstance()

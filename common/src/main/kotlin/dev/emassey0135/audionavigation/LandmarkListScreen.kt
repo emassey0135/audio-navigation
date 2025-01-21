@@ -1,5 +1,9 @@
 package dev.emassey0135.audionavigation
 
+import java.util.concurrent.SynchronousQueue
+import java.util.Optional
+import java.util.UUID
+import kotlin.concurrent.thread
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
@@ -13,12 +17,13 @@ import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
+import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.PoiAndDistance
 import dev.emassey0135.audionavigation.PoiList
 import dev.emassey0135.audionavigation.PoiType
 
-class LandmarkListScreen(val parent: Screen): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
+class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClient, val poiList: PoiList): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
   private class LandmarkEntry(val textRenderer: TextRenderer, val poi: PoiAndDistance): AlwaysSelectedEntryListWidget.Entry<LandmarkEntry>() {
     override fun getNarration(): Text {
       return Text.literal("${poi.poi.name}, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt())}, ${poi.poi.positionAsNarratableString()}")
@@ -42,10 +47,27 @@ class LandmarkListScreen(val parent: Screen): Screen(Text.translatable("${AudioN
     MinecraftClient.getInstance()?.setScreen(parent)
   }
   override fun init() {
-    val landmarkList = LandmarkList(MinecraftClient.getInstance(), 10, 10, width/2-20, height-20, textRenderer, PoiList(listOf(PoiAndDistance(Poi(PoiType.LANDMARK, "test", BlockPos(0,0,0)), 100.0))))
+    val landmarkList = LandmarkList(minecraftClient, 10, 10, width/2-20, height-20, textRenderer, poiList)
     addDrawableChild(landmarkList)
     addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.back_button"), { button -> goUp() })
       .dimensions(width/2+10, 10, 50, 20)
       .build())
+  }
+  companion object {
+    fun openLandmarkListScreen(parent: Screen) {
+      thread(block = fun(): Unit {
+        val minecraftClient = MinecraftClient.getInstance()
+        val player = minecraftClient.player
+        if (player==null)
+          return
+        val origin = BlockPos.ofFloored(player.getPos())
+        val poiListQueue = SynchronousQueue<PoiList>()
+        val requestID = UUID.randomUUID()
+        AudioNavigationClient.registerPoiListHandler(requestID, { payload -> poiListQueue.put(payload.poiList) })
+        AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, origin, 100.0, 1000, false, Optional.empty(), true, Optional.of(PoiType.LANDMARK)))
+        val poiList = poiListQueue.take()
+        minecraftClient.execute { minecraftClient.setScreen(LandmarkListScreen(parent, minecraftClient, poiList)) }
+      })
+    }
   }
 }

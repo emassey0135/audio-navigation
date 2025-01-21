@@ -40,16 +40,16 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
     Database.scheduleCommitIfNeeded()
   }
   fun positionAsString(): String {
-    return "(${pos.getX().toString()},${pos.getY().toString()},${pos.getZ().toString()})"
+    return "(${pos.getX().toString()}, ${pos.getY().toString()}, ${pos.getZ().toString()})"
   }
   fun positionAsNarratableString(): String {
     val x = pos.getX()
-    val xString = if (x<0) I18n.translate("${AudioNavigation.MOD_ID}.number.negative", x) else x.toString()
+    val xString = if (x<0) I18n.translate("${AudioNavigation.MOD_ID}.number.negative", -x) else x.toString()
     val y = pos.getY()
-    val yString = if (y<0) I18n.translate("${AudioNavigation.MOD_ID}.number.negative", y) else y.toString()
+    val yString = if (y<0) I18n.translate("${AudioNavigation.MOD_ID}.number.negative", -y) else y.toString()
     val z = pos.getZ()
-    val zString = if (z<0) I18n.translate("${AudioNavigation.MOD_ID}.number.negative", z) else z.toString()
-    return "($xString,$yString,$zString)"
+    val zString = if (z<0) I18n.translate("${AudioNavigation.MOD_ID}.number.negative", -z) else z.toString()
+    return "($xString, $yString, $zString)"
   }
   companion object {
     private var addToDatabaseStatement: PreparedStatement? = null
@@ -93,7 +93,7 @@ class PoiList(list: List<PoiAndDistance>) {
     return PoiList(poiList-poiList2.toList())
   }
   companion object {
-    fun getFromDatabase(query: PreparedStatement): PoiList {
+    private fun getFromDatabase(query: PreparedStatement): PoiList {
       val poiList = PoiList()
       query.executeQuery().use {
         while (it.next()) {

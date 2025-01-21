@@ -28,7 +28,7 @@ import dev.emassey0135.audionavigation.PoiListItem
 import dev.emassey0135.audionavigation.PoiList
 import dev.emassey0135.audionavigation.PoiType
 
-class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClient, val poiList: PoiList): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
+class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClient, val poiList: PoiList, val startingRadius: Double): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
   private class LandmarkEntry(val textRenderer: TextRenderer, val poi: PoiListItem): AlwaysSelectedEntryListWidget.Entry<LandmarkEntry>() {
     override fun getNarration(): Text {
       return Text.literal("${poi.poi.name}, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt())}, ${poi.poi.positionAsNarratableString()}")
@@ -74,7 +74,7 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
         { choice ->
           if (choice) {
             AudioNavigationClient.sendDeleteLandmark(DeleteLandmarkPayload(selectedEntry.poi.id))
-            minecraftClient.setScreen(LandmarkListScreen(parent, minecraftClient, poiList.also { it.delete(selectedEntry.poi.id) }))
+            minecraftClient.setScreen(LandmarkListScreen(parent, minecraftClient, poiList.also { it.delete(selectedEntry.poi.id) }, startingRadius))
           }
           else {
             minecraftClient.setScreen(this)
@@ -91,8 +91,11 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
     addDrawableChild(landmarkList)
     addDrawableChild(CyclingButtonWidget.builder<Double>({ value -> Text.literal(value.toInt().toString()) })
       .values((6..26).map { exponent -> (2.0).pow(exponent) })
-      .initially((2.0).pow(6))
-      .build(width/2+10, 40, 50, 20, Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.radius_button")))
+      .initially(startingRadius)
+      .build(width/2+10, 40, 50, 20, Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.radius_button"), { widget, radius ->
+        close()
+        openLandmarkListScreen(parent, radius)
+      }))
     addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.start_beacon_button"), { button -> startBeacon() })
       .dimensions(width/2+10, 40, 50, 20)
       .build())
@@ -104,7 +107,7 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
       .build())
   }
   companion object {
-    fun openLandmarkListScreen(parent: Screen) {
+    fun openLandmarkListScreen(parent: Screen, startingRadius: Double) {
       thread(block = fun(): Unit {
         val minecraftClient = MinecraftClient.getInstance()
         val player = minecraftClient.player
@@ -114,10 +117,13 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
         val poiListQueue = SynchronousQueue<PoiList>()
         val requestID = UUID.randomUUID()
         AudioNavigationClient.registerPoiListHandler(requestID, { payload -> poiListQueue.put(payload.poiList) })
-        AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, origin, 100.0, 1000, false, Optional.empty(), true, Optional.of(PoiType.LANDMARK)))
+        AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, origin, startingRadius, 1000, false, Optional.empty(), true, Optional.of(PoiType.LANDMARK)))
         val poiList = poiListQueue.take()
-        minecraftClient.execute { minecraftClient.setScreen(LandmarkListScreen(parent, minecraftClient, poiList)) }
+        minecraftClient.execute { minecraftClient.setScreen(LandmarkListScreen(parent, minecraftClient, poiList, startingRadius)) }
       })
+    }
+    fun openLandmarkListScreen(parent: Screen) {
+      openLandmarkListScreen(parent, 64.0)
     }
   }
 }

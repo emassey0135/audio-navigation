@@ -15,6 +15,13 @@ import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.SoundPlayer
 
 object Beacon {
+  private fun waitUntilStopped() {
+    var isPlaying = true
+    while (isPlaying) {
+      Thread.sleep(10)
+      SoundPlayer.getSourceState("beacon", { state -> isPlaying = state==AL11.AL_PLAYING })
+    }
+  }
   private val beaconQueue = ArrayBlockingQueue<Optional<Poi>>(16)
   private var currentBeacon: Optional<Poi> = Optional.empty()
   var isInitialized = false
@@ -24,10 +31,12 @@ object Beacon {
     SoundPlayer.setSourceRolloffFactor("beacon", Configs.clientConfig.sound.rolloffFactor.get())
     isInitialized = true
     thread {
-      var isPlaying = false
+      var oldBeacon = currentBeacon
       while (true) {
-        if (beaconQueue.peek()!=null)
+        if (beaconQueue.peek()!=null) {
+          oldBeacon = currentBeacon
           currentBeacon = beaconQueue.poll()
+        }
         if (currentBeacon.isPresent()) {
           val minecraftClient = MinecraftClient.getInstance()
           val player = minecraftClient.player
@@ -37,16 +46,34 @@ object Beacon {
           val orientation = Orientation(player.getRotationClient())
           SoundPlayer.updateListenerPosition()
           SoundPlayer.setSourcePosition("beacon", currentBeacon.get().pos)
-          val angleBetween = Orientation.horizontalAngleBetween(origin, currentBeacon.get().pos)
-          if (orientation.horizontalDifference(angleBetween) <= Configs.clientConfig.beacons.maxOnAxisAngle.get().toFloat())
-            Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OnAxis.ogg")
-          else
-            Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/beacons/Classic_OffAxis.ogg")
-          isPlaying = true
-          while (isPlaying) {
-            Thread.sleep(10)
-            SoundPlayer.getSourceState("beacon", { state -> isPlaying = state==AL11.AL_PLAYING })
+          val config = Configs.clientConfig.beacons
+          if (currentBeacon!=oldBeacon && config.playStartAndArrivalSounds.get()) {
+            oldBeacon = currentBeacon
+            Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/Route/Route_Start.ogg")
+            waitUntilStopped()
           }
+          val angleBetween = Orientation.horizontalAngleBetween(origin, currentBeacon.get().pos)
+          val angleDifference = orientation.horizontalDifference(angleBetween)
+          val distance = currentBeacon.get().distance(origin)
+          if (distance <= config.arrivalDistance.get()) {
+            if (config.playStartAndArrivalSounds.get()) {
+              Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/Route/Route_End.ogg")
+              waitUntilStopped()
+            }
+            currentBeacon = Optional.empty()
+            continue
+          }
+          Opus.playOpusFromResource("beacon", when {
+            angleDifference <= config.maxOnAxisAngle.get().toFloat() ->
+            "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/${config.sound.get().onAxisSound}"
+            angleDifference <= config.maxCloseToAxisAngle.get().toFloat() ->
+            "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/${config.sound.get().closeToAxisSound ?: config.sound.get().offAxisSound}"
+            angleDifference >= config.minBehindAngle.get().toFloat() ->
+            "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/${config.sound.get().behindSound ?: config.sound.get().offAxisSound}"
+            else ->
+            "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/${config.sound.get().offAxisSound}"
+          })
+          waitUntilStopped()
         }
         else {
           Thread.sleep(10)

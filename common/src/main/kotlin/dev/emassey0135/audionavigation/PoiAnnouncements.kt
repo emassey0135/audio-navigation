@@ -21,9 +21,9 @@ import dev.emassey0135.audionavigation.Speech
 object PoiAnnouncements {
   fun announcePoi(poi: Poi, distance: Double, detailed: Boolean) {
     val sound = when (poi.type) {
-      PoiType.LANDMARK -> "landmark.ogg"
-      PoiType.FEATURE -> "feature.ogg"
-      PoiType.STRUCTURE -> "structure.ogg"
+      PoiType.LANDMARK -> "sense_mobility.ogg"
+      PoiType.FEATURE -> "sense_poi.ogg"
+      PoiType.STRUCTURE -> "sense_location.ogg"
     }
     Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/sounds/$sound", poi.pos)
     val text = if (detailed)

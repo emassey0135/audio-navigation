@@ -8,6 +8,7 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber
 import net.minecraft.util.Identifier
 import dev.emassey0135.audionavigation.AudioNavigation
+import dev.emassey0135.audionavigation.Beacon
 import dev.emassey0135.audionavigation.SoundPlayer
 import dev.emassey0135.audionavigation.Speech
 
@@ -38,10 +39,11 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
   var beacons = BeaconsSection()
   class BeaconsSection: ConfigSection() {
     var maxOnAxisAngle = ValidatedInt(15, 90, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
+    var maxSoundDistance = ValidatedInt(5).also { it.listenToEntry { value -> if (Beacon.isInitialized) SoundPlayer.setSourceMaxDistance("beacon", value.get().toFloat()) }}
   }
   var sound = SoundSection()
   class SoundSection: ConfigSection() {
     var maxDistance = ValidatedInt(100).also { it.listenToEntry { value -> if (Speech.isInitialized) SoundPlayer.setSourceMaxDistance("speech", value.get().toFloat()) }}
-    var rolloffFactor = ValidatedFloat(0.2f).also { it.listenToEntry { value -> if (Speech.isInitialized) SoundPlayer.setSourceRolloffFactor("speech", value.get()) }}
+    var rolloffFactor = ValidatedFloat(0.2f).also { it.listenToEntry { value -> if (Speech.isInitialized) SoundPlayer.setSourceRolloffFactor("speech", value.get()); if (Beacon.isInitialized) SoundPlayer.setSourceRolloffFactor("beacon", value.get()) }}
   }
 }

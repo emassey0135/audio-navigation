@@ -17,9 +17,12 @@ import dev.emassey0135.audionavigation.SoundPlayer
 object Beacon {
   private val beaconQueue = ArrayBlockingQueue<Optional<Poi>>(16)
   private var currentBeacon: Optional<Poi> = Optional.empty()
+  var isInitialized = false
   fun initialize() {
     SoundPlayer.addSource("beacon")
-    SoundPlayer.setSourceMaxDistance("beacon", 2.0f)
+    SoundPlayer.setSourceMaxDistance("beacon", Configs.clientConfig.beacons.maxSoundDistance.get().toFloat())
+    SoundPlayer.setSourceRolloffFactor("beacon", Configs.clientConfig.sound.rolloffFactor.get())
+    isInitialized = true
     thread {
       var isPlaying = false
       while (true) {
@@ -56,6 +59,7 @@ object Beacon {
   }
   fun stopBeacon() {
     beaconQueue.offer(Optional.empty())
+    SoundPlayer.stop("beacon")
   }
   fun isBeaconActive(): Boolean {
     return currentBeacon.isPresent()

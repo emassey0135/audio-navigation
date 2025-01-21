@@ -6,9 +6,10 @@ import net.minecraft.client.gui.tooltip.Tooltip
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
+import dev.emassey0135.audionavigation.AddLandmarkScreen
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
-import dev.emassey0135.audionavigation.AddLandmarkScreen
+import dev.emassey0135.audionavigation.Beacon
 import dev.emassey0135.audionavigation.LandmarkListScreen
 import dev.emassey0135.audionavigation.PoiAnnouncements
 
@@ -30,6 +31,10 @@ class MainMenuScreen(): Screen(Text.translatable("${AudioNavigation.MOD_ID}.scre
     addDrawableChild(buildButton(Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.announce_nearby_pois_button"),
       Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.announce_nearby_pois_button.tooltip"),
       { button -> close(); PoiAnnouncements.triggerManualAnnouncements() }))
+    if (Beacon.isBeaconActive())
+      addDrawableChild(buildButton(Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.stop_beacon_button"),
+        Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.stop_beacon_button.tooltip"),
+        { button -> close(); Beacon.stopBeacon() }))
     addDrawableChild(buildButton(Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.add_landmark_button"),
       Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu.add_landmark_button.tooltip"),
       { button -> MinecraftClient.getInstance()?.setScreen(AddLandmarkScreen(this)) }))

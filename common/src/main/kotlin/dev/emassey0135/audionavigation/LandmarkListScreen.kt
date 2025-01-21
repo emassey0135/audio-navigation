@@ -47,13 +47,26 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
     }
   }
   private var landmarkList: LandmarkList? = null
+  fun startBeacon() {
+    val selectedEntry = landmarkList!!.getSelectedOrNull()
+    if (selectedEntry==null) {
+      minecraftClient.setScreen(NoticeScreen(
+        { minecraftClient.setScreen(this) },
+        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.notice_none_selected.title"),
+        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.notice_none_selected.message")))
+    }
+    else {
+      Beacon.startBeacon(selectedEntry.poi.poi)
+      close()
+    }
+  }
   fun delete() {
     val selectedEntry = landmarkList!!.getSelectedOrNull()
     if (selectedEntry==null)
       minecraftClient.setScreen(NoticeScreen(
         { minecraftClient.setScreen(this) },
-        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_notice_none_selected.title"),
-        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_notice_none_selected.message")))
+        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.notice_none_selected.title"),
+        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.notice_none_selected.message")))
     else
       minecraftClient.setScreen(ConfirmScreen(
         { choice ->
@@ -74,11 +87,14 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
   override fun init() {
     landmarkList = LandmarkList(minecraftClient, 10, 10, width/2-20, height-20, textRenderer, poiList)
     addDrawableChild(landmarkList)
-    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_button"), { button -> delete() })
+    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.start_beacon_button"), { button -> startBeacon() })
       .dimensions(width/2+10, 10, 50, 20)
       .build())
-    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.back_button"), { button -> goUp() })
+    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_button"), { button -> delete() })
       .dimensions(width/2+40, 10, 50, 20)
+      .build())
+    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.back_button"), { button -> goUp() })
+      .dimensions(width/2+70, 10, 50, 20)
       .build())
   }
   companion object {

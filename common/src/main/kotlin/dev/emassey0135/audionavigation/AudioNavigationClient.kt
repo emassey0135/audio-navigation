@@ -8,6 +8,7 @@ import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.client.MinecraftClient
 import dev.emassey0135.audionavigation.AudioNavigation
+import dev.emassey0135.audionavigation.Beacon
 import dev.emassey0135.audionavigation.Interval
 import dev.emassey0135.audionavigation.MainMenuScreen
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
@@ -45,6 +46,7 @@ object AudioNavigationClient {
   fun initialize() {
     SoundPlayer.initialize()
     Speech.initialize()
+    Beacon.initialize()
     KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYBINDING)
     KeyMappingRegistry.register(ANNOUNCE_NEARBY_POIS_KEYBINDING)
     interval.beReady()

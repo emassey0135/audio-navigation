@@ -54,6 +54,17 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
   companion object {
     private var addToDatabaseStatement: PreparedStatement? = null
     private val addToDatabaseMutex = ReentrantLock()
+    private var deleteLandmarkStatement: PreparedStatement? = null
+    private val deleteLandmarkMutex = ReentrantLock()
+    fun deleteLandmark(id: Int) {
+      deleteLandmarkMutex.lock()
+      if (deleteLandmarkStatement==null)
+        deleteLandmarkStatement = Database.connection.prepareStatement("DELETE FROM pois WHERE id = ?1")
+      deleteLandmarkStatement?.setInt(1, id)
+      deleteLandmarkStatement?.executeUpdate()
+      deleteLandmarkMutex.unlock()
+      Database.scheduleCommitIfNeeded()
+    }
     @JvmField val PACKET_CODEC = PacketCodec.tuple(
       PoiType.PACKET_CODEC, Poi::type,
       PacketCodecs.STRING, Poi::name,
@@ -89,6 +100,9 @@ class PoiList(list: List<PoiListItem>) {
   }
   fun addPoi(poi: Poi, distance: Double, id: Int) {
     poiList.add(PoiListItem(poi, distance, id))
+  }
+  fun delete(id: Int) {
+    poiList.removeAll(poiList.filter { poi -> poi.id==id })
   }
   fun subtract(poiList2: PoiList): PoiList {
     return PoiList(poiList-poiList2.toList())

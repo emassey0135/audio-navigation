@@ -15,6 +15,7 @@ import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
+import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 
@@ -35,6 +36,9 @@ object AudioNavigationNeoforge {
       })
     registrar.playToServer(AddLandmarkPayload.ID, AddLandmarkPayload.CODEC, { payload: AddLandmarkPayload, context: IPayloadContext ->
         AudioNavigation.addLandmark(context.player().getWorld() as ServerWorld, payload.name, payload.pos)
+      })
+    registrar.playToServer(DeleteLandmarkPayload.ID, DeleteLandmarkPayload.CODEC, { payload: DeleteLandmarkPayload, context: IPayloadContext ->
+        AudioNavigation.deleteLandmark(payload.landmarkID)
       })
   }
   init {

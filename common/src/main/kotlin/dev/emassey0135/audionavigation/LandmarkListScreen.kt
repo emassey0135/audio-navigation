@@ -6,6 +6,8 @@ import java.util.UUID
 import kotlin.concurrent.thread
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.screen.ConfirmScreen
+import net.minecraft.client.gui.screen.NoticeScreen
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.tooltip.Tooltip
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget
@@ -17,6 +19,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
+import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.PoiListItem
@@ -43,14 +46,39 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
       poiList.toList().forEach { poi -> addEntry(LandmarkEntry(textRenderer, poi)) }
     }
   }
+  private var landmarkList: LandmarkList? = null
+  fun delete() {
+    val selectedEntry = landmarkList!!.getSelectedOrNull()
+    if (selectedEntry==null)
+      minecraftClient.setScreen(NoticeScreen(
+        { minecraftClient.setScreen(this) },
+        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_notice_none_selected.title"),
+        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_notice_none_selected.message")))
+    else
+      minecraftClient.setScreen(ConfirmScreen(
+        { choice ->
+          if (choice) {
+            AudioNavigationClient.sendDeleteLandmark(DeleteLandmarkPayload(selectedEntry.poi.id))
+            minecraftClient.setScreen(LandmarkListScreen(parent, minecraftClient, poiList.also { it.delete(selectedEntry.poi.id) }))
+          }
+          else {
+            minecraftClient.setScreen(this)
+          }
+        },
+        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_confirm.title"),
+        Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_confirm.message", selectedEntry.poi.poi.name)))
+  }
   fun goUp() {
     MinecraftClient.getInstance()?.setScreen(parent)
   }
   override fun init() {
-    val landmarkList = LandmarkList(minecraftClient, 10, 10, width/2-20, height-20, textRenderer, poiList)
+    landmarkList = LandmarkList(minecraftClient, 10, 10, width/2-20, height-20, textRenderer, poiList)
     addDrawableChild(landmarkList)
-    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.back_button"), { button -> goUp() })
+    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_button"), { button -> delete() })
       .dimensions(width/2+10, 10, 50, 20)
+      .build())
+    addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.back_button"), { button -> goUp() })
+      .dimensions(width/2+40, 10, 50, 20)
       .build())
   }
   companion object {

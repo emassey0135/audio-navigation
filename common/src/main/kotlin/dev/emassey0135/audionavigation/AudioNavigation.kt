@@ -35,6 +35,9 @@ object AudioNavigation {
   fun addLandmark(world: ServerWorld, name: String, pos: BlockPos) {
     Poi(PoiType.LANDMARK, name, pos).addToDatabase(world)
   }
+  fun deleteLandmark(id: Int) {
+    Poi.deleteLandmark(id)
+  }
   fun initialize() {
     Configs.initialize()
     Database.initialize()

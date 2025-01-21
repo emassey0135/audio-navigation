@@ -73,6 +73,7 @@
   "audio_navigation.screens.landmark_list": "Landmarks",
   "audio_navigation.screens.landmark_list.notice_none_selected.title": "No Landmark Selected",
   "audio_navigation.screens.landmark_list.notice_none_selected.message": "No landmark is currently selected.",
+  "audio_navigation.screens.landmark_list.radius_button": "Radius",
   "audio_navigation.screens.landmark_list.start_beacon_button": "Start Beacon",
   "audio_navigation.screens.landmark_list.delete_button": "Delete",
   "audio_navigation.screens.landmark_list.delete_confirm.title": "Confirm Deletion",

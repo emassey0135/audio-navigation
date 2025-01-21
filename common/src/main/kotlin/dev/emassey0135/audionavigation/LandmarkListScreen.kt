@@ -4,6 +4,7 @@ import java.util.concurrent.SynchronousQueue
 import java.util.Optional
 import java.util.UUID
 import kotlin.concurrent.thread
+import kotlin.math.pow
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ConfirmScreen
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.tooltip.Tooltip
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget
 import net.minecraft.client.gui.widget.ButtonWidget
+import net.minecraft.client.gui.widget.CyclingButtonWidget
 import net.minecraft.client.gui.widget.TextWidget
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.resource.language.I18n
@@ -87,14 +89,18 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
   override fun init() {
     landmarkList = LandmarkList(minecraftClient, 10, 10, width/2-20, height-20, textRenderer, poiList)
     addDrawableChild(landmarkList)
+    addDrawableChild(CyclingButtonWidget.builder<Double>({ value -> Text.literal(value.toInt().toString()) })
+      .values((6..26).map { exponent -> (2.0).pow(exponent) })
+      .initially((2.0).pow(6))
+      .build(width/2+10, 40, 50, 20, Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.radius_button")))
     addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.start_beacon_button"), { button -> startBeacon() })
-      .dimensions(width/2+10, 10, 50, 20)
+      .dimensions(width/2+10, 40, 50, 20)
       .build())
     addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_button"), { button -> delete() })
-      .dimensions(width/2+40, 10, 50, 20)
+      .dimensions(width/2+10, 70, 50, 20)
       .build())
     addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.back_button"), { button -> goUp() })
-      .dimensions(width/2+70, 10, 50, 20)
+      .dimensions(width/2+10, 100, 50, 20)
       .build())
   }
   companion object {

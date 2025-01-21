@@ -26,7 +26,7 @@ object PoiAnnouncements {
     }
     Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/sounds/$sound", poi.pos)
     val text = if (detailed)
-      I18n.translate("${AudioNavigation.MOD_ID}.poi_announcement_detailed", poi.name, distance.toInt())
+      "${poi.name}, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", distance.toInt())}"
       else
       poi.name
     Speech.speak(text, poi.pos)

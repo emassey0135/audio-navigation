@@ -8,6 +8,7 @@ import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.gui.widget.TextWidget
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.resource.language.I18n
 import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
@@ -20,16 +21,18 @@ import dev.emassey0135.audionavigation.PoiType
 class LandmarkListScreen(val parent: Screen): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
   private class LandmarkEntry(val textRenderer: TextRenderer, val poi: PoiAndDistance): AlwaysSelectedEntryListWidget.Entry<LandmarkEntry>() {
     override fun getNarration(): Text {
-      return Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.landmark_narration", poi.poi.name, poi.distance.toInt())
+      return Text.literal("${poi.poi.name}, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt())}, ${poi.poi.positionAsNarratableString()}")
     }
     override fun render(context: DrawContext, index: Int, y: Int, x: Int, entryWidth: Int, entryHeight: Int, mouseX: Int, mouseY: Int, hovered: Boolean, tickDelta: Float) {
       val landmarkNameText = TextWidget(x, y, entryWidth, 20, Text.literal(poi.poi.name), textRenderer)
-      val landmarkDistanceText = TextWidget(x, y+30, entryWidth, 20, Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.landmark_distance", poi.distance.toInt()), textRenderer)
+      val landmarkDistanceText = TextWidget(x, y+30, entryWidth, 20, Text.translatable("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt()), textRenderer)
+      val landmarkPositionText = TextWidget(x, y+60, entryWidth, 20, Text.literal(poi.poi.positionAsString()), textRenderer)
       landmarkNameText.renderWidget(context, mouseX, mouseY, tickDelta)
       landmarkDistanceText.renderWidget(context, mouseX, mouseY, tickDelta)
+      landmarkPositionText.renderWidget(context, mouseX, mouseY, tickDelta)
     }
   }
-  private class LandmarkList(minecraftClient: MinecraftClient, x: Int, y: Int, width: Int, height: Int, val textRenderer: TextRenderer, val poiList: PoiList): AlwaysSelectedEntryListWidget<LandmarkEntry>(minecraftClient, width, height, y, 50) {
+  private class LandmarkList(minecraftClient: MinecraftClient, x: Int, y: Int, width: Int, height: Int, val textRenderer: TextRenderer, val poiList: PoiList): AlwaysSelectedEntryListWidget<LandmarkEntry>(minecraftClient, width, height, y, 80) {
     init {
       setX(x)
       poiList.toList().forEach { poi -> addEntry(LandmarkEntry(textRenderer, poi)) }

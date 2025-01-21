@@ -2,6 +2,7 @@ package dev.emassey0135.audionavigation
 
 import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
+import net.minecraft.client.resource.language.I18n
 import net.minecraft.network.codec.PacketCodec
 import net.minecraft.network.codec.PacketCodecs
 import net.minecraft.server.world.ServerWorld
@@ -37,6 +38,18 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
     addToDatabaseStatement?.executeUpdate()
     addToDatabaseMutex.unlock()
     Database.scheduleCommitIfNeeded()
+  }
+  fun positionAsString(): String {
+    return "(${pos.getX().toString()},${pos.getY().toString()},${pos.getZ().toString()})"
+  }
+  fun positionAsNarratableString(): String {
+    val x = pos.getX()
+    val xString = if (x<0) I18n.translate("${AudioNavigation.MOD_ID}.number.negative", x) else x.toString()
+    val y = pos.getY()
+    val yString = if (y<0) I18n.translate("${AudioNavigation.MOD_ID}.number.negative", y) else y.toString()
+    val z = pos.getZ()
+    val zString = if (z<0) I18n.translate("${AudioNavigation.MOD_ID}.number.negative", z) else z.toString()
+    return "($xString,$yString,$zString)"
   }
   companion object {
     private var addToDatabaseStatement: PreparedStatement? = null

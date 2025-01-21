@@ -18,10 +18,18 @@ object AudioNavigation {
     error("This function is not implemented.")
   }
   fun respondToPoiRequest(world: ServerWorld, payload: PoiRequestPayload): PoiListPayload {
-    val poiList = if (payload.enableVerticalLimit)
-      PoiList.getNearestWithVerticalLimit(world, payload.pos, payload.radius, payload.maxItems, payload.verticalLimit)
+    val poiList = if (payload.filterByType) {
+      if (payload.enableVerticalLimit)
+        PoiList.getNearestWithVerticalLimitAndType(world, payload.pos, payload.radius, payload.maxItems, payload.verticalLimit.get(), payload.type.get())
       else
-      PoiList.getNearest(world, payload.pos, payload.radius, payload.maxItems)
+        PoiList.getNearestWithType(world, payload.pos, payload.radius, payload.maxItems, payload.type.get())
+    }
+    else {
+      if (payload.enableVerticalLimit)
+        PoiList.getNearestWithVerticalLimit(world, payload.pos, payload.radius, payload.maxItems, payload.verticalLimit.get())
+      else
+        PoiList.getNearest(world, payload.pos, payload.radius, payload.maxItems)
+    }
     return PoiListPayload(payload.requestID, poiList)
   }
   fun addLandmark(world: ServerWorld, name: String, pos: BlockPos) {

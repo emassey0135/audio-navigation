@@ -1,6 +1,7 @@
 package dev.emassey0135.audionavigation
 
 import java.util.concurrent.locks.ReentrantLock
+import java.util.Optional
 import java.util.UUID
 import kotlin.concurrent.thread
 import net.minecraft.client.MinecraftClient
@@ -53,7 +54,7 @@ object PoiAnnouncements {
       poiList.toList().forEach { poi -> announcePoi(poi.poi, poi.distance, detailed) }
       mutex.unlock()
     })
-    AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, origin, radius, maxAnnouncements, enableVerticalLimit, verticalLimit))
+    AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, origin, radius, maxAnnouncements, enableVerticalLimit, Optional.of(verticalLimit), false, Optional.empty()))
   }
   fun triggerAutomaticAnnouncements() {
     val config = Configs.clientConfig.announcements

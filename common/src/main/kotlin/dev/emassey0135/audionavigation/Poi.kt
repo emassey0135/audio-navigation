@@ -135,6 +135,41 @@ class PoiList(list: List<PoiAndDistance>) {
       getNearestWithVerticalLimitMutex.unlock()
       return result
     }
+    var getNearestWithTypeStatement: PreparedStatement? = null
+    val getNearestWithTypeMutex = ReentrantLock()
+    fun getNearestWithType(world: ServerWorld, origin: BlockPos, radius: Double, maxItems: Int, type: PoiType): PoiList {
+      getNearestWithTypeMutex.lock()
+      if (getNearestWithTypeStatement==null)
+        getNearestWithTypeStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM pois WHERE distance <= ?4 AND type = ?6 AND world = ?7 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+      getNearestWithTypeStatement?.setDouble(1, origin.getX().toDouble())
+      getNearestWithTypeStatement?.setDouble(2, origin.getY().toDouble())
+      getNearestWithTypeStatement?.setDouble(3, origin.getZ().toDouble())
+      getNearestWithTypeStatement?.setDouble(4, radius)
+      getNearestWithTypeStatement?.setInt(5, maxItems)
+      getNearestWithTypeStatement?.setInt(6, type.ordinal)
+      getNearestWithTypeStatement?.setBytes(7, Uuids.toByteArray(AudioNavigation.getWorldUUID(world)))
+      val result = getFromDatabase(getNearestWithTypeStatement!!)
+      getNearestWithTypeMutex.unlock()
+      return result
+    }
+    var getNearestWithVerticalLimitAndTypeStatement: PreparedStatement? = null
+    val getNearestWithVerticalLimitAndTypeMutex = ReentrantLock()
+    fun getNearestWithVerticalLimitAndType(world: ServerWorld, origin: BlockPos, radius: Double, maxItems: Int, verticalLimit: Double, type: PoiType): PoiList {
+      getNearestWithVerticalLimitAndTypeMutex.lock()
+      if (getNearestWithVerticalLimitAndTypeStatement==null)
+        getNearestWithVerticalLimitAndTypeStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, distance(?1, ?2, ?3, x, y, z) AS distance FROM pois WHERE y >= ?2-?6 AND y <= ?2+?6 AND distance <= ?4 AND type = ?7 AND world = ?8 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?6 AND maxY <= ?2+?6 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+      getNearestWithVerticalLimitAndTypeStatement?.setDouble(1, origin.getX().toDouble())
+      getNearestWithVerticalLimitAndTypeStatement?.setDouble(2, origin.getY().toDouble())
+      getNearestWithVerticalLimitAndTypeStatement?.setDouble(3, origin.getZ().toDouble())
+      getNearestWithVerticalLimitAndTypeStatement?.setDouble(4, radius)
+      getNearestWithVerticalLimitAndTypeStatement?.setInt(5, maxItems)
+      getNearestWithVerticalLimitAndTypeStatement?.setDouble(6, verticalLimit)
+      getNearestWithVerticalLimitAndTypeStatement?.setInt(7, type.ordinal)
+      getNearestWithVerticalLimitAndTypeStatement?.setBytes(8, Uuids.toByteArray(AudioNavigation.getWorldUUID(world)))
+      val result = getFromDatabase(getNearestWithVerticalLimitAndTypeStatement!!)
+      getNearestWithVerticalLimitAndTypeMutex.unlock()
+      return result
+    }
     @JvmField val PACKET_CODEC = PacketCodec.tuple(
       PoiAndDistance.PACKET_CODEC.collect(PacketCodecs.toList()), PoiList::toList,
       ::PoiList)

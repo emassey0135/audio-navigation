@@ -62,32 +62,33 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
   }
 }
 
-data class PoiAndDistance(val poi: Poi, val distance: Double) {
+data class PoiListItem(val poi: Poi, val distance: Double, val id: Int) {
   override fun equals(poi2: Any?): Boolean {
-    return (this === poi2) || ((poi2 is PoiAndDistance) && poi.equals(poi2.poi))
+    return (this === poi2) || ((poi2 is PoiListItem) && id.equals(poi2.id))
   }
   override fun hashCode(): Int {
-    return poi.hashCode()
+    return id.hashCode()
   }
   companion object {
     @JvmField val PACKET_CODEC = PacketCodec.tuple(
-      Poi.PACKET_CODEC, PoiAndDistance::poi,
-      PacketCodecs.DOUBLE, PoiAndDistance::distance,
-      ::PoiAndDistance)
+      Poi.PACKET_CODEC, PoiListItem::poi,
+      PacketCodecs.DOUBLE, PoiListItem::distance,
+      PacketCodecs.INTEGER, PoiListItem::id,
+      ::PoiListItem)
   }
 }
 
-class PoiList(list: List<PoiAndDistance>) {
+class PoiList(list: List<PoiListItem>) {
   private val poiList = list.toMutableList()
   constructor (): this(listOf())
-  fun toList(): List<PoiAndDistance> {
+  fun toList(): List<PoiListItem> {
     return poiList.toList()
   }
-  fun addPoi(poi: PoiAndDistance) {
+  fun addPoi(poi: PoiListItem) {
     poiList.add(poi)
   }
-  fun addPoi(poi: Poi, distance: Double) {
-    poiList.add(PoiAndDistance(poi, distance))
+  fun addPoi(poi: Poi, distance: Double, id: Int) {
+    poiList.add(PoiListItem(poi, distance, id))
   }
   fun subtract(poiList2: PoiList): PoiList {
     return PoiList(poiList-poiList2.toList())
@@ -97,7 +98,7 @@ class PoiList(list: List<PoiAndDistance>) {
       val poiList = PoiList()
       query.executeQuery().use {
         while (it.next()) {
-          poiList.addPoi(Poi(PoiType.entries.get(it.getInt("type")), it.getString("name"), BlockPos(it.getDouble("x").toInt(), it.getDouble("y").toInt(), it.getDouble("z").toInt())), it.getDouble("distance"))
+          poiList.addPoi(Poi(PoiType.entries.get(it.getInt("type")), it.getString("name"), BlockPos(it.getDouble("x").toInt(), it.getDouble("y").toInt(), it.getDouble("z").toInt())), it.getDouble("distance"), it.getInt("id"))
         }
       }
       return poiList
@@ -171,7 +172,7 @@ class PoiList(list: List<PoiAndDistance>) {
       return result
     }
     @JvmField val PACKET_CODEC = PacketCodec.tuple(
-      PoiAndDistance.PACKET_CODEC.collect(PacketCodecs.toList()), PoiList::toList,
+      PoiListItem.PACKET_CODEC.collect(PacketCodecs.toList()), PoiList::toList,
       ::PoiList)
   }
 }

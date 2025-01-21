@@ -19,12 +19,12 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
-import dev.emassey0135.audionavigation.PoiAndDistance
+import dev.emassey0135.audionavigation.PoiListItem
 import dev.emassey0135.audionavigation.PoiList
 import dev.emassey0135.audionavigation.PoiType
 
 class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClient, val poiList: PoiList): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
-  private class LandmarkEntry(val textRenderer: TextRenderer, val poi: PoiAndDistance): AlwaysSelectedEntryListWidget.Entry<LandmarkEntry>() {
+  private class LandmarkEntry(val textRenderer: TextRenderer, val poi: PoiListItem): AlwaysSelectedEntryListWidget.Entry<LandmarkEntry>() {
     override fun getNarration(): Text {
       return Text.literal("${poi.poi.name}, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt())}, ${poi.poi.positionAsNarratableString()}")
     }

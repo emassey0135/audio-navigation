@@ -73,7 +73,7 @@ object SoundPlayer {
       tasks.put {
         if (!sources.containsKey(name))
           error("Source has not been added: ${name}")
-        AL11.alSource3f(sources.get(name)!!, AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), pos.getZ().toFloat())
+        AL11.alSource3f(sources.get(name)!!, AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), -pos.getZ().toFloat())
       }
     }
   }
@@ -86,7 +86,7 @@ object SoundPlayer {
           return
         val pos = BlockPos.ofFloored(player.getPos())
         val orientation = Orientation(player.getRotationClient())
-        AL11.alListener3f(AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), pos.getZ().toFloat())
+        AL11.alListener3f(AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), -pos.getZ().toFloat())
         val vector = orientation.toVector()
         AL11.alListenerfv(AL11.AL_ORIENTATION, floatArrayOf(vector.x.toFloat(), vector.y.toFloat(), vector.z.toFloat(), 0f, 1f, 0f))
       })

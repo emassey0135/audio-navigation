@@ -9,46 +9,49 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec2f
 import net.minecraft.util.math.Vec3d
 
-class Orientation(val angles: Vec2f) {
-  constructor (x: Float, y: Float): this(Vec2f(x, y))
-  fun verticalAngle(): Float {
-    return angles.x
-  }
-  fun horizontalAngle(): Float {
-    return angles.y
-  }
+class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
+  constructor (angles: Vec2f): this(normalizeAngle(-angles.x.toDouble()), normalizeAngle(angles.y.toDouble()))
   fun toVector(): Vec3d {
-    val verticalAngle = angles.x/180*PI
-    val horizontalAngle = angles.y/180*PI
+    val verticalAngle = verticalAngle/180.0*PI
+    val horizontalAngle = horizontalAngle/180.0*PI
     val x = sin(horizontalAngle)
-    val y = -sin(horizontalAngle)
+    val y = sin(verticalAngle)
     val z = cos(horizontalAngle)
     return Vec3d(x, y, z)
   }
-  fun horizontalDifference(orientation: Orientation): Float {
-    var angle1 = horizontalAngle()
-    var angle2 = orientation.horizontalAngle()
-    if (angle1<0f)
-      angle1+=360f
-    if (angle2<0f)
-      angle2+=360f
-    if (angle1>360f)
-      angle1-=360f
-    if (angle2>360f)
-      angle2-=360f
-    return abs(angle1-angle2)
+  fun horizontalDifference(orientation: Orientation): Double {
+    var angle1 = horizontalAngle
+    var angle2 = orientation.horizontalAngle
+    if (angle1<0.0)
+      angle1+=360.0
+    if (angle2<0.0)
+      angle2+=360.0
+    if (angle1>360.0)
+      angle1-=360.0
+    if (angle2>360.0)
+      angle2-=360.0
+    val result =  abs(angle1-angle2)
+    return if (result>180.0) 360.0-result else result
   }
   companion object {
+    private fun normalizeAngle(angle: Double): Double {
+      var newAngle = angle%360.0
+      if (newAngle<-180.0)
+        newAngle+=360.0
+      if (newAngle>180.0)
+        newAngle-=360.0
+      return newAngle
+    }
     fun horizontalAngleBetween(pos1: BlockPos, pos2: BlockPos): Orientation {
       val newPos = pos2.subtract(pos1)
       val zeroAngle = atan2(1.0, 0.0)
-      val angleInRadians = atan2(newPos.getY().toDouble(), newPos.getX().toDouble())-zeroAngle
+      val angleInRadians = atan2(newPos.getZ().toDouble(), newPos.getX().toDouble())-zeroAngle
       var angleInDegrees = angleInRadians/PI*180
       if (angleInDegrees<-180.0)
         angleInDegrees+=360.0
       if (angleInDegrees>180.0)
         angleInDegrees-=360.0
-      return Orientation(0f, angleInDegrees.toFloat())
+      return Orientation(0.0, angleInDegrees.toDouble())
     }
   }
 }

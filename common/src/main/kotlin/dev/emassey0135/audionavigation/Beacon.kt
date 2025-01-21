@@ -19,7 +19,7 @@ object Beacon {
   private var currentBeacon: Optional<Poi> = Optional.empty()
   fun initialize() {
     SoundPlayer.addSource("beacon")
-    SoundPlayer.setSourceMaxDistance("beacon", 1.0f)
+    SoundPlayer.setSourceMaxDistance("beacon", 2.0f)
     thread {
       var isPlaying = false
       while (true) {

@@ -1,7 +1,7 @@
 package dev.emassey0135.audionavigation
 
 import java.util.concurrent.locks.ReentrantLock
-import java.util.concurrent.ArrayBlockingQueue
+import java.util.UUID
 import kotlin.concurrent.thread
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.resource.language.I18n
@@ -10,6 +10,7 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
 import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.Opus
+import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.PoiList
@@ -30,7 +31,6 @@ object PoiAnnouncements {
       poi.name
     Speech.speak(text, poi.pos)
   }
-  private val poiListQueue = ArrayBlockingQueue<PoiList>(16)
   private var oldPoiList = PoiList(listOf())
   private var mutex = ReentrantLock()
   fun announceNearbyPois(interruptSpeech: Boolean, excludePrevious: Boolean, detailed: Boolean, radius: Double, maxAnnouncements: Int, enableVerticalLimit: Boolean, verticalLimit: Double) {
@@ -39,10 +39,10 @@ object PoiAnnouncements {
     if (player==null)
       return
     val origin = BlockPos.ofFloored(player.getPos())
-    AudioNavigationClient.sendPoiRequest(PoiRequestPayload(origin, radius, maxAnnouncements, enableVerticalLimit, verticalLimit))
-    thread {
+    val requestID = UUID.randomUUID()
+    AudioNavigationClient.registerPoiListHandler(requestID, { payload ->
       mutex.lock()
-      var poiList = poiListQueue.take()
+      var poiList = payload.poiList
       if (excludePrevious) {
         val newPoiList = poiList.subtract(oldPoiList)
         oldPoiList = poiList
@@ -52,10 +52,8 @@ object PoiAnnouncements {
         Speech.interrupt()
       poiList.toList().forEach { poi -> announcePoi(poi.poi, poi.distance, detailed) }
       mutex.unlock()
-    }
-  }
-  fun receivePoiList(poiList: PoiList) {
-    poiListQueue.offer(poiList)
+    })
+    AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, origin, radius, maxAnnouncements, enableVerticalLimit, verticalLimit))
   }
   fun triggerAutomaticAnnouncements() {
     val config = Configs.clientConfig.announcements

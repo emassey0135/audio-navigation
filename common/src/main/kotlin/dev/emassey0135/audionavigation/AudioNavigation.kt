@@ -22,7 +22,7 @@ object AudioNavigation {
       PoiList.getNearestWithVerticalLimit(world, payload.pos, payload.radius, payload.maxItems, payload.verticalLimit)
       else
       PoiList.getNearest(world, payload.pos, payload.radius, payload.maxItems)
-    return PoiListPayload(poiList)
+    return PoiListPayload(payload.requestID, poiList)
   }
   fun addLandmark(world: ServerWorld, name: String, pos: BlockPos) {
     Poi(PoiType.LANDMARK, name, pos).addToDatabase(world)

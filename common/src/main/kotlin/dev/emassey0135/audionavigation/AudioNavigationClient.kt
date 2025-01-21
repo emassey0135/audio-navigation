@@ -1,5 +1,6 @@
 package dev.emassey0135.audionavigation
 
+import java.util.UUID
 import dev.architectury.injectables.annotations.ExpectPlatform
 import dev.architectury.event.events.client.ClientTickEvent
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry
@@ -23,8 +24,16 @@ object AudioNavigationClient {
   @JvmStatic @ExpectPlatform fun sendAddLandmark(addLandmarkPayload: AddLandmarkPayload) {
     error("This function is not implemented.")
   }
+  val poiListHandlers = HashMap<UUID, (PoiListPayload) -> Unit>()
+  fun registerPoiListHandler(requestID: UUID, handler: (PoiListPayload) -> Unit) {
+    poiListHandlers.put(requestID, handler)
+  }
   fun handlePoiList(payload: PoiListPayload) {
-    PoiAnnouncements.receivePoiList(payload.poiList)
+    if (poiListHandlers.containsKey(payload.requestID)) {
+      val handler = poiListHandlers.get(payload.requestID)
+      poiListHandlers.remove(payload.requestID)
+      handler!!(payload)
+    }
   }
   private val interval = Interval.sec(5)
   private val OPEN_MAIN_MENU_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.open_main_menu", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F6, "category.${AudioNavigation.MOD_ID}")

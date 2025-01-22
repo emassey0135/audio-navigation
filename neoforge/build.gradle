@@ -36,7 +36,7 @@ dependencies {
   modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
   implementation "thedarkcolour:kotlinforforge-neoforge:$rootProject.kotlin_for_forge_version"
   modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+neoforge"
-  include "org.xerial:sqlite-jdbc:3.48.0.0"
+  shadow "org.xerial:sqlite-jdbc:3.48.0.0"
   implementation platform("org.lwjgl:lwjgl-bom:3.3.3")
   shadow "org.lwjgl:lwjgl-opus:3.3.3"
   shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-linux"
@@ -59,6 +59,15 @@ shadowJar {
   archiveClassifier = 'dev-shadow'
   exclude 'org/lwjgl/*.class'
   exclude 'org/lwjgl/system/'
+exclude 'org/sqlite/native/*/arm/'
+exclude 'org/sqlite/native/*/armv6/'
+exclude 'org/sqlite/native/*/armv7/'
+exclude 'org/sqlite/native/*/ppc64/'
+exclude 'org/sqlite/native/*/riscv64/'
+exclude 'org/sqlite/native/*/x86/'
+exclude 'org/sqlite/native/FreeBSD/'
+exclude 'org/sqlite/native/Linux-Android/'
+exclude 'org/sqlite/native/Linux-Musl/'
 }
 remapJar {
   inputFile.set shadowJar.archiveFile

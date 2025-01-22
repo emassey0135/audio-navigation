@@ -41,6 +41,6 @@ object AudioNavigation {
   fun initialize() {
     Configs.initialize()
     Database.initialize()
-    logger.info("Audio Navigation has been initialized.")
+    logger.info("Audio Navigation common has been initialized.")
   }
 }

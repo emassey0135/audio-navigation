@@ -50,7 +50,7 @@ object AudioNavigationClient {
     KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYBINDING)
     KeyMappingRegistry.register(ANNOUNCE_NEARBY_POIS_KEYBINDING)
     interval.beReady()
-    AudioNavigation.logger.info("The mod has been initialized.")
+    AudioNavigation.logger.info("Audio Navigation client has been initialized.")
     val minecraftClient = MinecraftClient.getInstance()
     ClientTickEvent.CLIENT_LEVEL_PRE.register { world ->
       while (OPEN_MAIN_MENU_KEYBINDING.wasPressed())

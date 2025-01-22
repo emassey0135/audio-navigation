@@ -9,7 +9,7 @@ import net.minecraft.client.resource.language.I18n
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
-import dev.emassey0135.audionavigation.Configs
+import dev.emassey0135.audionavigation.ClientConfig
 import dev.emassey0135.audionavigation.Opus
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
@@ -57,11 +57,11 @@ object PoiAnnouncements {
     AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, origin, radius, maxAnnouncements, enableVerticalLimit, Optional.of(verticalLimit), false, Optional.empty()))
   }
   fun triggerAutomaticAnnouncements() {
-    val config = Configs.clientConfig.announcements
+    val config = ClientConfig.instance!!.announcements
     announceNearbyPois(false, true, config.detailedAnnouncements.get(), config.announcementRadius.get().toDouble(), config.maxAnnouncements.get(), config.enableVerticalLimit.get(), config.verticalLimit.get().toDouble())
   }
   fun triggerManualAnnouncements() {
-    val config = Configs.clientConfig.manualAnnouncements
+    val config = ClientConfig.instance!!.manualAnnouncements
     announceNearbyPois(true, false, config.detailedAnnouncements.get(), config.announcementRadius.get().toDouble(), config.maxAnnouncements.get(), config.enableVerticalLimit.get(), config.verticalLimit.get().toDouble())
   }
 }

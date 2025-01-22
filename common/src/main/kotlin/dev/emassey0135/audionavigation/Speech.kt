@@ -16,7 +16,7 @@ import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.platform.unix.LibCAPI.size_t
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.Configs
+import dev.emassey0135.audionavigation.ClientConfig
 import dev.emassey0135.audionavigation.SoundPlayer
 
 private interface SynthCallback: Callback {
@@ -60,13 +60,13 @@ object Speech {
   var isInitialized = false
   fun initialize() {
     espeak.espeak_Initialize(2, 0, null, 0)
-    setRate(Configs.clientConfig.speech.rate.get())
-    setVolume(Configs.clientConfig.speech.volume.get())
-    setPitch(Configs.clientConfig.speech.pitch.get())
-    setPitchRange(Configs.clientConfig.speech.pitchRange.get())
+    setRate(ClientConfig.instance!!.speech.rate.get())
+    setVolume(ClientConfig.instance!!.speech.volume.get())
+    setPitch(ClientConfig.instance!!.speech.pitch.get())
+    setPitchRange(ClientConfig.instance!!.speech.pitchRange.get())
     SoundPlayer.addSource("speech")
-    SoundPlayer.setSourceMaxDistance("speech", Configs.clientConfig.sound.maxDistance.get().toFloat())
-    SoundPlayer.setSourceRolloffFactor("speech", Configs.clientConfig.sound.rolloffFactor.get())
+    SoundPlayer.setSourceMaxDistance("speech", ClientConfig.instance!!.sound.maxDistance.get().toFloat())
+    SoundPlayer.setSourceRolloffFactor("speech", ClientConfig.instance!!.sound.rolloffFactor.get())
     isInitialized = true
     AudioNavigation.logger.info("eSpeak initialized.")
     thread {

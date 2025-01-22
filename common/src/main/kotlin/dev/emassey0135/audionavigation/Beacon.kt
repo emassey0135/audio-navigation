@@ -8,7 +8,7 @@ import org.lwjgl.openal.AL11
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.Configs
+import dev.emassey0135.audionavigation.ClientConfig
 import dev.emassey0135.audionavigation.Opus
 import dev.emassey0135.audionavigation.Orientation
 import dev.emassey0135.audionavigation.Poi
@@ -27,8 +27,8 @@ object Beacon {
   var isInitialized = false
   fun initialize() {
     SoundPlayer.addSource("beacon")
-    SoundPlayer.setSourceMaxDistance("beacon", Configs.clientConfig.beacons.maxSoundDistance.get().toFloat())
-    SoundPlayer.setSourceRolloffFactor("beacon", Configs.clientConfig.sound.rolloffFactor.get())
+    SoundPlayer.setSourceMaxDistance("beacon", ClientConfig.instance!!.beacons.maxSoundDistance.get().toFloat())
+    SoundPlayer.setSourceRolloffFactor("beacon", ClientConfig.instance!!.sound.rolloffFactor.get())
     isInitialized = true
     thread {
       var oldBeacon = currentBeacon
@@ -46,7 +46,7 @@ object Beacon {
           val orientation = Orientation(player.getRotationClient())
           SoundPlayer.updateListenerPosition()
           SoundPlayer.setSourcePosition("beacon", currentBeacon.get().pos)
-          val config = Configs.clientConfig.beacons
+          val config = ClientConfig.instance!!.beacons
           if (currentBeacon!=oldBeacon && config.playStartAndArrivalSounds.get()) {
             oldBeacon = currentBeacon
             Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/Route/Route_Start.ogg")

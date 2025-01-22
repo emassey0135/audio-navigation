@@ -5,7 +5,6 @@ import dev.architectury.injectables.annotations.ExpectPlatform
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import org.slf4j.LoggerFactory
-import dev.emassey0135.audionavigation.Configs
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
@@ -39,7 +38,6 @@ object AudioNavigation {
     Poi.deleteLandmark(id)
   }
   fun initialize() {
-    Configs.initialize()
     Database.initialize()
     logger.info("Audio Navigation common has been initialized.")
   }

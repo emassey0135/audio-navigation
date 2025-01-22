@@ -49,6 +49,8 @@ processResources {
 shadowJar {
   configurations = [project.configurations.shadowBundle, project.configurations.shadow]
   archiveClassifier = 'dev-shadow'
+  exclude 'org/lwjgl/*.class'
+  exclude 'org/lwjgl/system/'
 }
 remapJar {
   inputFile.set shadowJar.archiveFile

@@ -51,9 +51,10 @@ object AudioNavigationClient {
     interval.beReady()
     val minecraftClient = MinecraftClient.getInstance()
     ClientLifecycleEvent.CLIENT_STARTED.register { client ->
-      ClientConfig.initialize()
       SoundPlayer.initialize()
       Speech.initialize()
+      ClientConfig.initialize()
+      Speech.configure()
       Beacon.initialize()
       AudioNavigation.logger.info("Audio Navigation client has been initialized.")
     }

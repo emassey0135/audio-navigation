@@ -6,10 +6,13 @@ import me.fzzyhmstrs.fzzy_config.config.Config
 import me.fzzyhmstrs.fzzy_config.config.ConfigSection
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber
+import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Beacon
@@ -35,6 +38,7 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
   }
   var speech = SpeechSection()
   class SpeechSection: ConfigSection() {
+    var voice = ValidatedChoice(Speech.listVoices(MinecraftClient.getInstance().getLanguageManager().getLanguage()), ValidatedString()).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setVoice(value.get()) }}
     var rate = ValidatedInt(175, 900, 80, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setRate(value.get()) }}
     var volume = ValidatedInt(200, 200, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setVolume(value.get()) }}
     var pitch = ValidatedInt(50, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setPitch(value.get()) }}

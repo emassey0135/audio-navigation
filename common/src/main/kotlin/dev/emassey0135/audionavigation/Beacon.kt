@@ -16,10 +16,14 @@ import dev.emassey0135.audionavigation.SoundPlayer
 
 object Beacon {
   private fun waitUntilStopped() {
-    var isPlaying = true
-    while (isPlaying) {
-      Thread.sleep(10)
+    var isPlaying = false
+    while (!isPlaying) {
       SoundPlayer.getSourceState("beacon", { state -> isPlaying = state==AL11.AL_PLAYING })
+      Thread.sleep(10)
+    }
+    while (isPlaying) {
+      SoundPlayer.getSourceState("beacon", { state -> isPlaying = state==AL11.AL_PLAYING })
+      Thread.sleep(10)
     }
   }
   private val beaconQueue = ArrayBlockingQueue<Optional<Poi>>(16)

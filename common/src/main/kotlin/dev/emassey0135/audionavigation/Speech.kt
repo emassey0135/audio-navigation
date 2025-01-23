@@ -118,11 +118,14 @@ object Speech {
         else {
           error("Empty speech request")
         }
-        isPlaying = true
-        while (isPlaying) {
-          Thread.sleep(10)
-          SoundPlayer.getSourceState("speech", { state -> isPlaying = state==AL11.AL_PLAYING })
-        }
+      while (!isPlaying) {
+        SoundPlayer.getSourceState("speech", { state -> isPlaying = state==AL11.AL_PLAYING })
+        Thread.sleep(10)
+      }
+      while (isPlaying) {
+        SoundPlayer.getSourceState("speech", { state -> isPlaying = state==AL11.AL_PLAYING })
+        Thread.sleep(10)
+      }
       }
     }
   }

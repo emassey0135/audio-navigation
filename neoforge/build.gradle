@@ -36,8 +36,9 @@ dependencies {
   modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
   implementation "thedarkcolour:kotlinforforge-neoforge:$rootProject.kotlin_for_forge_version"
   modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}+neoforge"
+  implementation "org.xerial:sqlite-jdbc:3.48.0.0"
   shadow "org.xerial:sqlite-jdbc:3.48.0.0"
-  implementation platform("org.lwjgl:lwjgl-bom:3.3.3")
+  implementation "org.lwjgl:lwjgl-opus:3.3.3"
   shadow "org.lwjgl:lwjgl-opus:3.3.3"
   shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-linux"
   shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-linux-arm64"

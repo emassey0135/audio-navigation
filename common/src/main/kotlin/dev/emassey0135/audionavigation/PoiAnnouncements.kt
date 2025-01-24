@@ -25,7 +25,7 @@ object PoiAnnouncements {
       PoiType.FEATURE -> "sense_poi.ogg"
       PoiType.STRUCTURE -> "sense_location.ogg"
     }
-    Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/sounds/$sound", poi.pos)
+    Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/audio/$sound", poi.pos)
     val text = if (detailed)
       "${poi.name}, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", distance.toInt())}"
       else

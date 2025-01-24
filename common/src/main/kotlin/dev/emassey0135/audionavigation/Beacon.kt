@@ -53,7 +53,7 @@ object Beacon {
           val config = ClientConfig.instance!!.beacons
           if (currentBeacon!=oldBeacon && config.playStartAndArrivalSounds.get()) {
             oldBeacon = currentBeacon
-            Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/Route/Route_Start.ogg")
+            Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/audio/Beacons/Route/Route_Start.ogg")
             waitUntilStopped()
           }
           val angleBetween = Orientation.horizontalAngleBetween(origin, currentBeacon.get().pos)
@@ -61,7 +61,7 @@ object Beacon {
           val distance = currentBeacon.get().distance(origin)
           if (distance <= config.arrivalDistance.get()) {
             if (config.playStartAndArrivalSounds.get()) {
-              Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/Route/Route_End.ogg")
+              Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/audio/Beacons/Route/Route_End.ogg")
               waitUntilStopped()
             }
             currentBeacon = Optional.empty()
@@ -69,13 +69,13 @@ object Beacon {
           }
           Opus.playOpusFromResource("beacon", when {
             angleDifference <= config.maxOnAxisAngle.get().toFloat() ->
-            "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/${config.sound.get().onAxisSound}"
+            "assets/${AudioNavigation.MOD_ID}/audio/Beacons/${config.sound.get().onAxisSound}"
             angleDifference <= config.maxCloseToAxisAngle.get().toFloat() ->
-            "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/${config.sound.get().closeToAxisSound ?: config.sound.get().offAxisSound}"
+            "assets/${AudioNavigation.MOD_ID}/audio/Beacons/${config.sound.get().closeToAxisSound ?: config.sound.get().offAxisSound}"
             angleDifference >= config.minBehindAngle.get().toFloat() ->
-            "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/${config.sound.get().behindSound ?: config.sound.get().offAxisSound}"
+            "assets/${AudioNavigation.MOD_ID}/audio/Beacons/${config.sound.get().behindSound ?: config.sound.get().offAxisSound}"
             else ->
-            "assets/${AudioNavigation.MOD_ID}/sounds/Beacons/${config.sound.get().offAxisSound}"
+            "assets/${AudioNavigation.MOD_ID}/audio/Beacons/${config.sound.get().offAxisSound}"
           })
           waitUntilStopped()
         }

@@ -1,44 +1,26 @@
 package dev.emassey0135.audionavigation
 
-import java.io.ByteArrayOutputStream
 import java.lang.Thread
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
-import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
 import net.minecraft.util.math.BlockPos
-import com.sun.jna.Callback
 import com.sun.jna.Library
 import com.sun.jna.Native
 import com.sun.jna.Pointer
-import com.sun.jna.platform.unix.LibCAPI.size_t
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.ClientConfig
 import dev.emassey0135.audionavigation.EspeakVoice
 import dev.emassey0135.audionavigation.SoundPlayer
+import dev.emassey0135.audionavigation.speech.EspeakNative
 
-private interface SynthCallback: Callback {
-  fun invoke(wav: Pointer?, numsamples: Int, events: Pointer): Int
-}
 private interface Espeak: Library {
-  fun espeak_Initialize(output: Int, buflength: Int, path: String?, options: Int): Int
-  fun espeak_SetSynthCallback(synthCallback: SynthCallback)
-  fun espeak_Synth(text: String, size: size_t, position: Int, position_type: Int, end_position: Int, flags: Int, unique_identifier: Pointer, user_data: Pointer): Int
-  fun espeak_SetParameter(parameter: Int, value: Int, relative: Int): Int
   fun espeak_ListVoices(voice_spec: EspeakVoice?): Pointer
-  fun espeak_SetVoiceByName(name: String): Int
   companion object {
     val INSTANCE: Espeak = Native.load("espeak-ng", Espeak::class.java)
-  }
-}
-private class SynthCallbackCollectAudio (val stream: ByteArrayOutputStream): SynthCallback {
-  override fun invoke(wav: Pointer?, numsamples: Int, events: Pointer): Int {
-    if (wav!=null)
-      stream.write(wav.getByteArray(0, 2*numsamples), 0, 2*numsamples)
-    return 0
   }
 }
 private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundRequest: PlaySoundRequest?, val sourcePos: BlockPos) {
@@ -48,16 +30,16 @@ private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundR
 object Speech {
   private val espeak = Espeak.INSTANCE
   fun setRate(rate: Int) {
-    espeak.espeak_SetParameter(1, rate, 0)
+    EspeakNative.INSTANCE.setRate(rate)
   }
   fun setVolume(volume: Int) {
-    espeak.espeak_SetParameter(2, volume, 0)
+    EspeakNative.INSTANCE.setVolume(volume)
   }
   fun setPitch(pitch: Int) {
-    espeak.espeak_SetParameter(3, pitch, 0)
+    EspeakNative.INSTANCE.setPitch(pitch)
   }
   fun setPitchRange(pitchRange: Int) {
-    espeak.espeak_SetParameter(4, pitchRange, 0)
+    EspeakNative.INSTANCE.setPitchRange(pitchRange)
   }
   fun listVoices(language: String): List<String> {
     val voiceSpec = EspeakVoice()
@@ -81,12 +63,12 @@ object Speech {
     return result.toList()
   }
   fun setVoice(name: String) {
-    espeak.espeak_SetVoiceByName(name)
+    EspeakNative.INSTANCE.setVoice(name)
   }
   private val speechRequests = ArrayBlockingQueue<SpeechRequest>(64)
   var isInitialized = false
   fun initialize() {
-    espeak.espeak_Initialize(2, 0, null, 0)
+    EspeakNative.INSTANCE.initialize()
     SoundPlayer.addSource("speech")
     isInitialized = true
     AudioNavigation.logger.info("eSpeak initialized.")
@@ -98,13 +80,7 @@ object Speech {
         SoundPlayer.updateListenerPosition()
         SoundPlayer.setSourcePosition("speech", speechRequest.sourcePos)
         if (speechRequest.speakRequest!=null) {
-          val callback = SynthCallbackCollectAudio(ByteArrayOutputStream())
-          espeak.espeak_SetSynthCallback(callback)
-          espeak.espeak_Synth(speechRequest.speakRequest.text, size_t((speechRequest.speakRequest.text.length+1).toLong()), 0, 1, 0, 0, Pointer(0), Pointer(0))
-          val array = callback.stream.toByteArray()
-          val buffer = BufferUtils.createByteBuffer(array.size)
-          buffer.put(array)
-          buffer.flip()
+          val buffer = EspeakNative.INSTANCE.speak(speechRequest.speakRequest.text)
           SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, 22050, buffer)
         }
         else if (speechRequest.playSoundRequest!=null) {

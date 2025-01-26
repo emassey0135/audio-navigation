@@ -8,27 +8,16 @@ import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
 import org.lwjgl.openal.AL11
 import net.minecraft.util.math.BlockPos
-import com.sun.jna.Library
-import com.sun.jna.Native
-import com.sun.jna.Pointer
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.ClientConfig
-import dev.emassey0135.audionavigation.EspeakVoice
 import dev.emassey0135.audionavigation.SoundPlayer
 import dev.emassey0135.audionavigation.speech.EspeakNative
 
-private interface Espeak: Library {
-  fun espeak_ListVoices(voice_spec: EspeakVoice?): Pointer
-  companion object {
-    val INSTANCE: Espeak = Native.load("espeak-ng", Espeak::class.java)
-  }
-}
 private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundRequest: PlaySoundRequest?, val sourcePos: BlockPos) {
   data class SpeakRequest(val text: String)
   data class PlaySoundRequest(val format: Int, val sampleRate: Int, val byteBuffer: ByteBuffer?, val shortBuffer: ShortBuffer?, val floatBuffer: FloatBuffer?)
 }
 object Speech {
-  private val espeak = Espeak.INSTANCE
   fun setRate(rate: Int) {
     EspeakNative.INSTANCE.setRate(rate)
   }
@@ -42,25 +31,7 @@ object Speech {
     EspeakNative.INSTANCE.setPitchRange(pitchRange)
   }
   fun listVoices(language: String): List<String> {
-    val voiceSpec = EspeakVoice()
-    voiceSpec.name = null
-    voiceSpec.languages = language.replace('_', '-')
-    voiceSpec.identifier = null
-    voiceSpec.gender = 0
-    voiceSpec.age = 0
-    voiceSpec.variant = 0
-    val voices = espeak.espeak_ListVoices(voiceSpec)
-    if (Pointer.nativeValue(voices)==0L)
-      return listOf()
-    val result = mutableListOf<String>()
-    var offset = 0L
-    var voice: EspeakVoice
-    while (Pointer.nativeValue(voices.getPointer(offset))!=0L) {
-      voice = EspeakVoice(voices.getPointer(offset))
-      result.add(voice.name!!)
-      offset += 8L
-    }
-    return result.toList()
+    return EspeakNative.INSTANCE.listVoices(language.replace('_', '-')).toList()
   }
   fun setVoice(name: String) {
     EspeakNative.INSTANCE.setVoice(name)

@@ -6,6 +6,7 @@ import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
+import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
@@ -51,7 +52,10 @@ object Speech {
         SoundPlayer.updateListenerPosition()
         SoundPlayer.setSourcePosition("speech", speechRequest.sourcePos)
         if (speechRequest.speakRequest!=null) {
-          val buffer = EspeakNative.INSTANCE.speak(speechRequest.speakRequest.text)
+          val array = EspeakNative.INSTANCE.speak(speechRequest.speakRequest.text)
+          val buffer = BufferUtils.createByteBuffer(array.size)
+          buffer.put(array)
+          buffer.flip()
           SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, 22050, buffer)
         }
         else if (speechRequest.playSoundRequest!=null) {

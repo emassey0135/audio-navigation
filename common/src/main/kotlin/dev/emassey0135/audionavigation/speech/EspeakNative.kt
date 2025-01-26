@@ -1,10 +1,9 @@
 package dev.emassey0135.audionavigation.speech
 
-import java.nio.ByteBuffer
 
 class EspeakNative {
   external fun initialize()
-  external fun speak(text: String): ByteBuffer
+  external fun speak(text: String): ByteArray
   external fun setRate(rate: Int)
   external fun setVolume(volume: Int)
   external fun setPitch(pitch: Int)

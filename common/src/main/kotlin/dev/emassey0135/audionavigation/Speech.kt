@@ -8,6 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
+import dev.architectury.platform.Platform
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.ClientConfig
@@ -40,7 +41,7 @@ object Speech {
   private val speechRequests = ArrayBlockingQueue<SpeechRequest>(64)
   var isInitialized = false
   fun initialize() {
-    EspeakNative.INSTANCE.initialize()
+    EspeakNative.INSTANCE.initialize(Platform.getGameFolder().toString())
     SoundPlayer.addSource("speech")
     isInitialized = true
     AudioNavigation.logger.info("eSpeak initialized.")

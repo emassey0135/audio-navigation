@@ -4,7 +4,7 @@ import dev.architectury.platform.Platform
 import dev.emassey0135.audionavigation.AudioNavigation
 
 class EspeakNative {
-  external fun initialize()
+  external fun initialize(path: String)
   external fun speak(text: String): ByteArray
   external fun setRate(rate: Int)
   external fun setVolume(volume: Int)

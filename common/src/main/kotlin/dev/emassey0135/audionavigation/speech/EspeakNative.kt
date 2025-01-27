@@ -18,6 +18,7 @@ class EspeakNative {
       val file_name = when {
         os.startsWith("Windows") -> "audio_navigation_tts.dll"
         os.startsWith("Linux") -> "libaudio_navigation_tts.so"
+        os.startsWith("Mac") -> "libaudio_navigation_tts.dylib"
         else -> "libaudio_navigation_tts.so"
       }
       System.load(Platform.getGameFolder().resolve(file_name).toString())

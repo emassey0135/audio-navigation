@@ -14,7 +14,13 @@ class EspeakNative {
   external fun setVoice(name: String)
   companion object {
     init {
-      System.load(Platform.getGameFolder().resolve("libaudio_navigation_tts.so").toString())
+      val os = System.getProperty("os.name")
+      val file_name = when {
+        os.startsWith("Windows") -> "audio_navigation_tts.dll"
+        os.startsWith("Linux") -> "libaudio_navigation_tts.so"
+        else -> "libaudio_navigation_tts.so"
+      }
+      System.load(Platform.getGameFolder().resolve(file_name).toString())
     }
     val INSTANCE = EspeakNative()
   }

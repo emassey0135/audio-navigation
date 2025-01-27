@@ -1,5 +1,7 @@
 package dev.emassey0135.audionavigation.speech
 
+import dev.architectury.platform.Platform
+import dev.emassey0135.audionavigation.AudioNavigation
 
 class EspeakNative {
   external fun initialize()
@@ -12,7 +14,7 @@ class EspeakNative {
   external fun setVoice(name: String)
   companion object {
     init {
-      System.load("/home/elijah/.minecraft/libaudio_navigation_tts.so")
+      System.load(Platform.getGameFolder().resolve("libaudio_navigation_tts.so").toString())
     }
     val INSTANCE = EspeakNative()
   }

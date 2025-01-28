@@ -9,13 +9,15 @@ import org.apache.commons.lang3.SystemUtils
 import dev.emassey0135.audionavigation.UnzipUtility
 
 object Library {
+  private val IS_X86_64 = SystemUtils.OS_ARCH=="amd64" || SystemUtils.OS_ARCH=="x86_64"
+  private val IS_AARCH64 = SystemUtils.OS_ARCH=="aarch64"
   val libraryName = when {
-    SystemUtils.IS_OS_LINUX && SystemUtils.OS_ARCH == "amd64" -> "libaudio_navigation_tts_x86_64.so"
-    SystemUtils.IS_OS_LINUX && SystemUtils.OS_ARCH == "aarch64" -> "libaudio_navigation_tts_aarch64.so"
-    SystemUtils.IS_OS_WINDOWS && SystemUtils.OS_ARCH == "amd64" -> "audio_navigation_tts_x86_64.dll"
-    SystemUtils.IS_OS_WINDOWS && SystemUtils.OS_ARCH == "aarch64" -> "audio_navigation_tts_aarch64.dll"
-    SystemUtils.IS_OS_MAC && SystemUtils.OS_ARCH == "amd64" -> "libaudio_navigation_tts_x86_64.dylib"
-    SystemUtils.IS_OS_MAC && SystemUtils.OS_ARCH == "aarch64" -> "libaudio_navigation_tts_aarch64.dylib"
+    SystemUtils.IS_OS_LINUX && IS_X86_64 -> "libaudio_navigation_tts_x86_64.so"
+    SystemUtils.IS_OS_LINUX && IS_AARCH64 -> "libaudio_navigation_tts_aarch64.so"
+    SystemUtils.IS_OS_WINDOWS && IS_X86_64 -> "audio_navigation_tts_x86_64.dll"
+    SystemUtils.IS_OS_WINDOWS && IS_AARCH64 -> "audio_navigation_tts_aarch64.dll"
+    SystemUtils.IS_OS_MAC && IS_X86_64 -> "libaudio_navigation_tts_x86_64.dylib"
+    SystemUtils.IS_OS_MAC && IS_AARCH64 -> "libaudio_navigation_tts_aarch64.dylib"
     else -> error("The current operating system or CPU architecture is not supported by this mod.")
   }
   fun downloadLibrary() {

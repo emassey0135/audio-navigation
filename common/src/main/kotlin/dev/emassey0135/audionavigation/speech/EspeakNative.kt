@@ -1,7 +1,8 @@
 package dev.emassey0135.audionavigation.speech
 
-import dev.architectury.platform.Platform
+import java.nio.file.Paths
 import dev.emassey0135.audionavigation.AudioNavigation
+import dev.emassey0135.audionavigation.Library
 
 class EspeakNative {
   external fun initialize(path: String)
@@ -14,14 +15,7 @@ class EspeakNative {
   external fun setVoice(name: String)
   companion object {
     init {
-      val os = System.getProperty("os.name")
-      val file_name = when {
-        os.startsWith("Windows") -> "audio_navigation_tts.dll"
-        os.startsWith("Linux") -> "libaudio_navigation_tts.so"
-        os.startsWith("Mac") -> "libaudio_navigation_tts.dylib"
-        else -> "libaudio_navigation_tts.so"
-      }
-      System.load(Platform.getGameFolder().resolve(file_name).toString())
+      System.load(Paths.get(Library.libraryName).toAbsolutePath().toString())
     }
     val INSTANCE = EspeakNative()
   }

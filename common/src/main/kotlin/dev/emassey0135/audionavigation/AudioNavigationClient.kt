@@ -12,6 +12,7 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Beacon
 import dev.emassey0135.audionavigation.ClientConfig
 import dev.emassey0135.audionavigation.Interval
+import dev.emassey0135.audionavigation.Library
 import dev.emassey0135.audionavigation.MainMenuScreen
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
@@ -46,6 +47,7 @@ object AudioNavigationClient {
   private val OPEN_MAIN_MENU_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.open_main_menu", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F6, "category.${AudioNavigation.MOD_ID}")
   private val ANNOUNCE_NEARBY_POIS_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.announce_nearby_pois", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F7, "category.${AudioNavigation.MOD_ID}")
   fun initialize() {
+    Library.initialize()
     KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYBINDING)
     KeyMappingRegistry.register(ANNOUNCE_NEARBY_POIS_KEYBINDING)
     interval.beReady()

@@ -28,10 +28,8 @@ dependencies {
   modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
   modImplementation "net.fabricmc:fabric-language-kotlin:$rootProject.fabric_kotlin_version"
   modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
-  shadow "org.xerial:sqlite-jdbc:3.48.0.0"
-  implementation platform("org.lwjgl:lwjgl-bom:3.3.3")
-  implementation "org.xerial:sqlite-jdbc:3.48.0.0"
-  shadow "org.xerial:sqlite-jdbc:3.48.0.0"
+  implementation "org.xerial:sqlite-jdbc:3.49.0.0"
+  shadow "org.xerial:sqlite-jdbc:3.49.0.0"
   implementation "org.lwjgl:lwjgl-opus:3.3.3"
   shadow "org.lwjgl:lwjgl-opus:3.3.3"
   shadow "org.lwjgl:lwjgl-opus:3.3.3:natives-linux"

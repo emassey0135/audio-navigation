@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.ClientConfig
 import dev.emassey0135.audionavigation.SoundPlayer
-import dev.emassey0135.audionavigation.speech.EspeakNative
+import dev.emassey0135.audionavigation.speech.Native
 
 private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundRequest: PlaySoundRequest?, val sourcePos: BlockPos) {
   data class SpeakRequest(val text: String)
@@ -20,12 +20,12 @@ private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundR
 }
 object Speech {
   fun listVoices(language: String): List<String> {
-    return EspeakNative.INSTANCE.listVoices().map({ voice -> voice.name }).toList()
+    return Native.INSTANCE.listVoices().map({ voice -> voice.name }).toList()
   }
   private val speechRequests = ArrayBlockingQueue<SpeechRequest>(64)
   var isInitialized = false
   fun initialize() {
-    EspeakNative.INSTANCE.initialize()
+    Native.INSTANCE.initialize()
     SoundPlayer.addSource("speech")
     isInitialized = true
     AudioNavigation.logger.info("eSpeak initialized.")
@@ -38,7 +38,7 @@ object Speech {
         SoundPlayer.setSourcePosition("speech", speechRequest.sourcePos)
         if (speechRequest.speakRequest!=null) {
           val config = ClientConfig.instance!!.speech
-          val array = EspeakNative.INSTANCE.speak(config.voice.get(), config.rate.get(), config.volume.get(), config.pitch.get(), config.pitchRange.get(), speechRequest.speakRequest.text)
+          val array = Native.INSTANCE.speak(config.voice.get(), config.rate.get(), config.volume.get(), config.pitch.get(), config.pitchRange.get(), speechRequest.speakRequest.text)
           val buffer = BufferUtils.createByteBuffer(array.size)
           buffer.put(array)
           buffer.flip()

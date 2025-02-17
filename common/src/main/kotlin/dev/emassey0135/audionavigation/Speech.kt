@@ -8,7 +8,6 @@ import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
-import dev.architectury.platform.Platform
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.ClientConfig
@@ -20,28 +19,13 @@ private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundR
   data class PlaySoundRequest(val format: Int, val sampleRate: Int, val byteBuffer: ByteBuffer?, val shortBuffer: ShortBuffer?, val floatBuffer: FloatBuffer?)
 }
 object Speech {
-  fun setRate(rate: Int) {
-    EspeakNative.INSTANCE.setRate(rate)
-  }
-  fun setVolume(volume: Int) {
-    EspeakNative.INSTANCE.setVolume(volume)
-  }
-  fun setPitch(pitch: Int) {
-    EspeakNative.INSTANCE.setPitch(pitch)
-  }
-  fun setPitchRange(pitchRange: Int) {
-    EspeakNative.INSTANCE.setPitchRange(pitchRange)
-  }
   fun listVoices(language: String): List<String> {
-    return EspeakNative.INSTANCE.listVoices(language.replace('_', '-')).toList()
-  }
-  fun setVoice(name: String) {
-    EspeakNative.INSTANCE.setVoice(name)
+    return EspeakNative.INSTANCE.listVoices().map({ voice -> voice.name }).toList()
   }
   private val speechRequests = ArrayBlockingQueue<SpeechRequest>(64)
   var isInitialized = false
   fun initialize() {
-    EspeakNative.INSTANCE.initialize(Platform.getGameFolder().toString())
+    EspeakNative.INSTANCE.initialize()
     SoundPlayer.addSource("speech")
     isInitialized = true
     AudioNavigation.logger.info("eSpeak initialized.")
@@ -53,7 +37,8 @@ object Speech {
         SoundPlayer.updateListenerPosition()
         SoundPlayer.setSourcePosition("speech", speechRequest.sourcePos)
         if (speechRequest.speakRequest!=null) {
-          val array = EspeakNative.INSTANCE.speak(speechRequest.speakRequest.text)
+          val config = ClientConfig.instance!!.speech
+          val array = EspeakNative.INSTANCE.speak(config.voice.get(), config.rate.get(), config.volume.get(), config.pitch.get(), config.pitchRange.get(), speechRequest.speakRequest.text)
           val buffer = BufferUtils.createByteBuffer(array.size)
           buffer.put(array)
           buffer.flip()
@@ -82,11 +67,6 @@ object Speech {
     }
   }
   fun configure() {
-    setVoice(ClientConfig.instance!!.speech.voice.get())
-    setRate(ClientConfig.instance!!.speech.rate.get())
-    setVolume(ClientConfig.instance!!.speech.volume.get())
-    setPitch(ClientConfig.instance!!.speech.pitch.get())
-    setPitchRange(ClientConfig.instance!!.speech.pitchRange.get())
     SoundPlayer.setSourceMaxDistance("speech", ClientConfig.instance!!.sound.maxDistance.get().toFloat())
     SoundPlayer.setSourceRolloffFactor("speech", ClientConfig.instance!!.sound.rolloffFactor.get())
   }

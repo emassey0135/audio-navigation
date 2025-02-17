@@ -10,6 +10,7 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedByte
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber
 import net.minecraft.client.MinecraftClient
@@ -38,11 +39,11 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
   }
   var speech = SpeechSection()
   class SpeechSection: ConfigSection() {
-    var voice = ValidatedChoice(Speech.listVoices(MinecraftClient.getInstance().getLanguageManager().getLanguage()), ValidatedString()).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setVoice(value.get()) }}
-    var rate = ValidatedInt(175, 900, 80, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setRate(value.get()) }}
-    var volume = ValidatedInt(200, 200, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setVolume(value.get()) }}
-    var pitch = ValidatedInt(50, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setPitch(value.get()) }}
-    var pitchRange = ValidatedInt(50, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS).also { it.listenToEntry { value -> if (Speech.isInitialized) Speech.setPitchRange(value.get()) }}
+    var voice = ValidatedChoice(Speech.listVoices(MinecraftClient.getInstance().getLanguageManager().getLanguage()), ValidatedString())
+    var rate = ValidatedInt(175, 450, 80, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
+    var volume = ValidatedByte(100, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
+    var pitch = ValidatedByte(50, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
+    var pitchRange = ValidatedByte(50, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
   }
   var beacons = BeaconsSection()
   class BeaconsSection: ConfigSection() {

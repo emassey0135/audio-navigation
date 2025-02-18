@@ -66,14 +66,14 @@ object Speech {
       }
     }
   }
-  fun synthesizers(): Set<String> {
-    return voices.map { it.synthesizer }.toSet()
+  fun synthesizers(): List<String> {
+    return voices.map { it.synthesizer }.toSet().toList().sorted()
   }
-  fun languages(): Set<String> {
-    return voices.map { it.language }.toSet()
+  fun languages(): List<String> {
+    return voices.map { it.language }.toSet().toList().sorted()
   }
-  fun filterVoices(synthesizers: Set<String>, languages: Set<String>): List<Voice> {
-    return voices.filter { it.synthesizer in synthesizers && it.language in languages }
+  fun filterVoices(synthesizers: List<String>, languages: List<String>): List<Voice> {
+    return voices.filter { it.synthesizer in synthesizers && it.language in languages }.sortedBy { it.displayName.lowercase() }
   }
   fun configure() {
     SoundPlayer.setSourceMaxDistance("speech", ClientConfig.instance!!.sound.maxDistance.get().toFloat())

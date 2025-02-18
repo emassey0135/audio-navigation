@@ -3,8 +3,8 @@ package dev.emassey0135.audionavigation.speech
 import java.nio.file.Paths
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Library
+import dev.emassey0135.audionavigation.speech.Voice
 
-data class Voice(val synthesizer: String, val displayName: String, val name: String, val language: String)
 class Native {
   external fun initialize()
   external fun speak(voice: String, rate: Int, volume: Byte, pitch: Byte, pitch_range: Byte, text: String): ByteArray

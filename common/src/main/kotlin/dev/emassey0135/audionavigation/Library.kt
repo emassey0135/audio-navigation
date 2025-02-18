@@ -21,10 +21,10 @@ object Library {
     else -> error("The current operating system or CPU architecture is not supported by this mod.")
   }
   fun downloadLibrary() {
-    FileUtils.copyURLToFile(URI("https://github.com/emassey0135/audio-navigation-tts/releases/download/0.1.0/$libraryName").toURL(), File(libraryName))
+    FileUtils.copyURLToFile(URI("https://github.com/emassey0135/audio-navigation-tts/releases/download/0.2.0/$libraryName").toURL(), File(libraryName))
   }
   fun downloadAndExtractEspeakNGData() {
-    FileUtils.copyURLToFile(URI("https://github.com/emassey0135/audio-navigation-tts/releases/download/0.1.0/espeak-ng-data.zip").toURL(), File("espeak-ng-data.zip"))
+    FileUtils.copyURLToFile(URI("https://github.com/emassey0135/audio-navigation-tts/releases/download/0.2.0/espeak-ng-data.zip").toURL(), File("espeak-ng-data.zip"))
     if (Files.exists(Paths.get("espeak-ng-data")))
       FileUtils.deleteDirectory(File("espeak-ng-data"))
     UnzipUtility().unzip("espeak-ng-data.zip", ".")

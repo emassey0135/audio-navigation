@@ -13,22 +13,22 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.ClientConfig
 import dev.emassey0135.audionavigation.SoundPlayer
 import dev.emassey0135.audionavigation.speech.Native
+import dev.emassey0135.audionavigation.speech.Voice
 
 private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundRequest: PlaySoundRequest?, val sourcePos: BlockPos) {
   data class SpeakRequest(val text: String)
   data class PlaySoundRequest(val format: Int, val sampleRate: Int, val byteBuffer: ByteBuffer?, val shortBuffer: ShortBuffer?, val floatBuffer: FloatBuffer?)
 }
 object Speech {
-  fun listVoices(language: String): List<String> {
-    return Native.INSTANCE.listVoices().map({ voice -> voice.name }).toList()
-  }
+  private var voices: List<Voice> = listOf()
   private val speechRequests = ArrayBlockingQueue<SpeechRequest>(64)
   var isInitialized = false
   fun initialize() {
     Native.INSTANCE.initialize()
     SoundPlayer.addSource("speech")
+    voices = Native.INSTANCE.listVoices().toList()
     isInitialized = true
-    AudioNavigation.logger.info("eSpeak initialized.")
+    AudioNavigation.logger.info("Speech initialized.")
     thread {
       var speechRequest: SpeechRequest
       var isPlaying = false
@@ -38,7 +38,7 @@ object Speech {
         SoundPlayer.setSourcePosition("speech", speechRequest.sourcePos)
         if (speechRequest.speakRequest!=null) {
           val config = ClientConfig.instance!!.speech
-          val array = Native.INSTANCE.speak(config.voice.get(), config.rate.get(), config.volume.get(), config.pitch.get(), config.pitchRange.get(), speechRequest.speakRequest.text)
+          val array = Native.INSTANCE.speak(config.voice.get().name, config.rate.get(), config.volume.get(), config.pitch.get(), config.pitchRange.get(), speechRequest.speakRequest.text)
           val buffer = BufferUtils.createByteBuffer(array.size)
           buffer.put(array)
           buffer.flip()
@@ -55,16 +55,25 @@ object Speech {
         else {
           error("Empty speech request")
         }
-      while (!isPlaying) {
-        SoundPlayer.getSourceState("speech", { state -> isPlaying = state==AL11.AL_PLAYING })
-        Thread.sleep(10)
-      }
-      while (isPlaying) {
-        SoundPlayer.getSourceState("speech", { state -> isPlaying = state==AL11.AL_PLAYING })
-        Thread.sleep(10)
-      }
+        while (!isPlaying) {
+          SoundPlayer.getSourceState("speech", { state -> isPlaying = state==AL11.AL_PLAYING })
+          Thread.sleep(10)
+        }
+        while (isPlaying) {
+          SoundPlayer.getSourceState("speech", { state -> isPlaying = state==AL11.AL_PLAYING })
+          Thread.sleep(10)
+        }
       }
     }
+  }
+  fun synthesizers(): Set<String> {
+    return voices.map { it.synthesizer }.toSet()
+  }
+  fun languages(): Set<String> {
+    return voices.map { it.language }.toSet()
+  }
+  fun filterVoices(synthesizers: Set<String>, languages: Set<String>): List<Voice> {
+    return voices.filter { it.synthesizer in synthesizers && it.language in languages }
   }
   fun configure() {
     SoundPlayer.setSourceMaxDistance("speech", ClientConfig.instance!!.sound.maxDistance.get().toFloat())

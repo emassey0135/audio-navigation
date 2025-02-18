@@ -5,6 +5,8 @@ import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import me.fzzyhmstrs.fzzy_config.config.Config
 import me.fzzyhmstrs.fzzy_config.config.ConfigSection
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedChoiceList
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedSet
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum
@@ -19,6 +21,7 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Beacon
 import dev.emassey0135.audionavigation.SoundPlayer
 import dev.emassey0135.audionavigation.Speech
+import dev.emassey0135.audionavigation.speech.Voice
 
 class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config")) {
   var announcements = AnnouncementsSection()
@@ -39,7 +42,19 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
   }
   var speech = SpeechSection()
   class SpeechSection: ConfigSection() {
-    var voice = ValidatedChoice(Speech.listVoices(MinecraftClient.getInstance().getLanguageManager().getLanguage()), ValidatedString())
+    var synthesizers = ValidatedSet(Speech.synthesizers(), ValidatedString()).toChoiceList(Speech.synthesizers().toList())
+    var languages = ValidatedSet(Speech.languages(), ValidatedString()).toChoiceList(listOf(MinecraftClient.getInstance().getLanguageManager().getLanguage().replace('_', '-')))
+    private var voiceList: List<Voice> = Speech.filterVoices(synthesizers.get().toSet(), languages.get().toSet())
+    var voice = ValidatedChoice<Voice>(voiceList,
+      ValidatedString().map(
+        { name: String ->
+          val filtered = voiceList.filter { it.name==name }
+          if (filtered.isEmpty())
+            voiceList.first()
+          else
+            filtered.first()
+        },
+        { voice: Voice -> voice.name }))
     var rate = ValidatedInt(175, 450, 80, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
     var volume = ValidatedByte(100, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
     var pitch = ValidatedByte(50, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)

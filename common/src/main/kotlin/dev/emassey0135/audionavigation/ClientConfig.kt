@@ -11,10 +11,11 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString
-import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedByte
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber
+import me.fzzyhmstrs.fzzy_config.validation.ValidatedField
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
 import dev.emassey0135.audionavigation.AudioNavigation
@@ -42,9 +43,17 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
   }
   var speech = SpeechSection()
   class SpeechSection: ConfigSection() {
-    var synthesizers = ValidatedSet(Speech.synthesizers(), ValidatedString()).toChoiceList(Speech.synthesizers().toList())
-    var languages = ValidatedSet(Speech.languages(), ValidatedString()).toChoiceList(listOf(MinecraftClient.getInstance().getLanguageManager().getLanguage().replace('_', '-')))
-    private var voiceList: List<Voice> = Speech.filterVoices(synthesizers.get().toSet(), languages.get().toSet())
+    private fun updateVoiceList(synthesizers: Set<String>, languages: Set<String>) {
+      val newVoiceList = Speech.filterVoices(synthesizers, languages)
+      val oldVoiceList = voiceList.toList()
+      voiceList.removeAll(oldVoiceList)
+      voiceList.addAll(newVoiceList)
+    }
+    var synthesizers: ValidatedChoiceList<String> = ValidatedSet(Speech.synthesizers(), ValidatedString()).toChoiceList(Speech.synthesizers().toList())
+      .also { it.listenToEntry { updateVoiceList(it.get().toSet(), languages.get().toSet()) }}
+    var languages: ValidatedChoiceList<String> = ValidatedSet(Speech.languages(), ValidatedString()).toChoiceList(listOf(MinecraftClient.getInstance().getLanguageManager().getLanguage().replace('_', '-')))
+      .also { it.listenToEntry { updateVoiceList(synthesizers.get().toSet(), it.get().toSet()) }}
+    private val voiceList = Speech.filterVoices(synthesizers.get().toSet(), languages.get().toSet()).toMutableList()
     var voice = ValidatedChoice<Voice>(voiceList,
       ValidatedString().map(
         { name: String ->

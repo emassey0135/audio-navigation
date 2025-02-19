@@ -38,11 +38,11 @@ object Speech {
         SoundPlayer.setSourcePosition("speech", speechRequest.sourcePos)
         if (speechRequest.speakRequest!=null) {
           val config = ClientConfig.instance!!.speech
-          val array = Native.INSTANCE.speak(config.voice.get().name, config.rate.get(), config.volume.get(), config.pitch.get(), config.pitchRange.get(), speechRequest.speakRequest.text)
-          val buffer = BufferUtils.createByteBuffer(array.size)
-          buffer.put(array)
+          val result = Native.INSTANCE.speak(config.voice.get().name, config.rate.get(), config.volume.get(), config.pitch.get(), speechRequest.speakRequest.text)
+          val buffer = BufferUtils.createByteBuffer(result.pcm.size)
+          buffer.put(result.pcm)
           buffer.flip()
-          SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, 22050, buffer)
+          SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, result.sampleRate, buffer)
         }
         else if (speechRequest.playSoundRequest!=null) {
           when {

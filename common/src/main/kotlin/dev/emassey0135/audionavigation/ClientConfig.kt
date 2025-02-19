@@ -66,7 +66,6 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
     var rate = ValidatedInt(175, 450, 80, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
     var volume = ValidatedByte(100, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
     var pitch = ValidatedByte(50, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
-    var pitchRange = ValidatedByte(50, 100, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
   }
   var beacons = BeaconsSection()
   class BeaconsSection: ConfigSection() {

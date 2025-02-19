@@ -35,8 +35,6 @@
   "audio_navigation.client_config.speech.volume.desc": "Speech volume",
   "audio_navigation.client_config.speech.pitch": "Pitch",
   "audio_navigation.client_config.speech.pitch.desc": "Speech pitch",
-  "audio_navigation.client_config.speech.pitchRange": "Pitch Range",
-  "audio_navigation.client_config.speech.pitchRange.desc": "How much the pitch changes for things like commas and capitals",
   "audio_navigation.client_config.beacons": "Beacon Settings",
   "audio_navigation.client_config.beacons.sound": "Beacon Sound",
   "audio_navigation.client_config.beacons.sound.desc": "Choose which set of sounds beacons will use",

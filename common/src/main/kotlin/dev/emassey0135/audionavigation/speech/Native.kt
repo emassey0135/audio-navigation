@@ -8,7 +8,7 @@ import dev.emassey0135.audionavigation.speech.Voice
 
 class Native {
   external fun initialize()
-  external fun speak(voice: String, rate: Int, volume: Byte, pitch: Byte, text: String): SpeechResult
+  external fun speak(synthesizer: String, voice: String, language: String, rate: Int, volume: Byte, pitch: Byte, text: String): SpeechResult
   external fun listVoices(): Array<Voice>
   companion object {
     init {

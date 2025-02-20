@@ -18,7 +18,7 @@ import dev.emassey0135.audionavigation.Orientation
 
 object SoundPlayer {
   private val sources: HashMap<String, Int> = HashMap()
-  private val tasks = ArrayBlockingQueue<() -> Unit>(64)
+  private val tasks = ArrayBlockingQueue<() -> Unit>(256)
   var isInitialized = false
   fun initialize() {
     thread {

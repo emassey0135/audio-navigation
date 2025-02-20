@@ -30,7 +30,7 @@
   "audio_navigation.client_config.speech.voice": "Voice",
   "audio_navigation.client_config.speech.voice.desc": "Choose which voice all speech will use",
   "audio_navigation.client_config.speech.rate": "Rate",
-  "audio_navigation.client_config.speech.rate.desc": "Speech rate in words per minute",
+  "audio_navigation.client_config.speech.rate.desc": "Speech rate",
   "audio_navigation.client_config.speech.volume": "Volume",
   "audio_navigation.client_config.speech.volume.desc": "Speech volume",
   "audio_navigation.client_config.speech.pitch": "Pitch",

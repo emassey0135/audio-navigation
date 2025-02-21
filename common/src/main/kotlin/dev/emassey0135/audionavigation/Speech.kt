@@ -8,11 +8,13 @@ import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
+import org.lwjgl.openal.EXTFloat32
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.ClientConfig
 import dev.emassey0135.audionavigation.SoundPlayer
 import dev.emassey0135.audionavigation.speech.Native
+import dev.emassey0135.audionavigation.speech.SpeechResult
 import dev.emassey0135.audionavigation.speech.Voice
 
 private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundRequest: PlaySoundRequest?, val sourcePos: BlockPos) {
@@ -43,7 +45,11 @@ object Speech {
           val buffer = BufferUtils.createByteBuffer(result.pcm.size)
           buffer.put(result.pcm)
           buffer.flip()
-          SoundPlayer.play("speech", AL11.AL_FORMAT_MONO16, result.sampleRate, buffer)
+          val sampleFormat = when (result.sampleFormat) {
+            SpeechResult.SampleFormat.F32 -> EXTFloat32.AL_FORMAT_MONO_FLOAT32
+            SpeechResult.SampleFormat.S16 -> AL11.AL_FORMAT_MONO16
+          }
+          SoundPlayer.play("speech", sampleFormat, result.sampleRate, buffer)
         }
         else if (speechRequest.playSoundRequest!=null) {
           when {

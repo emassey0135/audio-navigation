@@ -1,6 +1,5 @@
 package dev.emassey0135.audionavigation.mixin;
 
-import dev.emassey0135.audionavigation.AudioNavigation;
 import dev.emassey0135.audionavigation.Poi;
 import dev.emassey0135.audionavigation.PoiType;
 import net.minecraft.util.math.BlockPos;

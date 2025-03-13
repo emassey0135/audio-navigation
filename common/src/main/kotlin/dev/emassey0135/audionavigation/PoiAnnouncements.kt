@@ -16,6 +16,7 @@ import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.PoiList
+import dev.emassey0135.audionavigation.PoiRequest
 import dev.emassey0135.audionavigation.PoiType
 import dev.emassey0135.audionavigation.Speech
 
@@ -40,7 +41,7 @@ object PoiAnnouncements {
   }
   private var oldPoiList = PoiList()
   private var mutex = ReentrantLock()
-  fun announceNearbyPois(interruptSpeech: Boolean, excludePrevious: Boolean, detailed: Boolean, radius: Double, maxAnnouncements: Int, enableVerticalLimit: Boolean, verticalLimit: Double) {
+  fun announceNearbyPois(interruptSpeech: Boolean, excludePrevious: Boolean, detailed: Boolean, radius: Double, maxAnnouncements: Int, verticalLimit: Optional<Double>, includedFeatures: List<String>) {
     val minecraftClient = MinecraftClient.getInstance()
     val player = minecraftClient.player
     if (player==null)
@@ -60,14 +61,16 @@ object PoiAnnouncements {
       poiList.toList().forEach { poi -> announcePoi(poi.poi, poi.distance, detailed) }
       mutex.unlock()
     })
-    AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, origin, radius, maxAnnouncements, enableVerticalLimit, Optional.of(verticalLimit), false, Optional.empty()))
+    AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, PoiRequest(origin, radius, maxAnnouncements, verticalLimit, Optional.empty(), Optional.of(includedFeatures))))
   }
   fun triggerAutomaticAnnouncements() {
     val config = ClientConfig.instance!!.announcements
-    announceNearbyPois(false, true, config.detailedAnnouncements.get(), config.announcementRadius.get().toDouble(), config.maxAnnouncements.get(), config.enableVerticalLimit.get(), config.verticalLimit.get().toDouble())
+    val verticalLimit = if(config.enableVerticalLimit.get()) Optional.of(config.verticalLimit.get().toDouble()) else Optional.empty()
+    announceNearbyPois(false, true, config.detailedAnnouncements.get(), config.announcementRadius.get().toDouble(), config.maxAnnouncements.get(), verticalLimit, config.includedFeatures.get())
   }
   fun triggerManualAnnouncements() {
     val config = ClientConfig.instance!!.manualAnnouncements
-    announceNearbyPois(true, false, config.detailedAnnouncements.get(), config.announcementRadius.get().toDouble(), config.maxAnnouncements.get(), config.enableVerticalLimit.get(), config.verticalLimit.get().toDouble())
+    val verticalLimit = if(config.enableVerticalLimit.get()) Optional.of(config.verticalLimit.get().toDouble()) else Optional.empty()
+    announceNearbyPois(true, false, config.detailedAnnouncements.get(), config.announcementRadius.get().toDouble(), config.maxAnnouncements.get(), verticalLimit, config.includedFeatures.get())
   }
 }

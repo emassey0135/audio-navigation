@@ -26,6 +26,7 @@ import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.Poi
 import dev.emassey0135.audionavigation.PoiListItem
 import dev.emassey0135.audionavigation.PoiList
+import dev.emassey0135.audionavigation.PoiRequest
 import dev.emassey0135.audionavigation.PoiType
 
 class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClient, val poiList: PoiList, val startingRadius: Double): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
@@ -117,7 +118,7 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
         val poiListQueue = SynchronousQueue<PoiList>()
         val requestID = UUID.randomUUID()
         AudioNavigationClient.registerPoiListHandler(requestID, { payload -> poiListQueue.put(payload.poiList) })
-        AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, origin, startingRadius, 1000, false, Optional.empty(), true, Optional.of(PoiType.LANDMARK)))
+        AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, PoiRequest(origin, startingRadius, 1000, Optional.empty(), Optional.of(PoiType.LANDMARK), Optional.empty())))
         val poiList = poiListQueue.take()
         minecraftClient.execute { minecraftClient.setScreen(LandmarkListScreen(parent, minecraftClient, poiList, startingRadius)) }
       })

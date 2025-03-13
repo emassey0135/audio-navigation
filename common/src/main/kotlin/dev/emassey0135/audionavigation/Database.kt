@@ -4,11 +4,13 @@ import java.lang.Thread
 import java.sql.DriverManager
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
-import kotlin.math.pow
-import kotlin.math.sqrt
 import org.sqlite.Function
 import org.sqlite.SQLiteConfig
+import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
+import dev.emassey0135.audionavigation.Poi
+import dev.emassey0135.audionavigation.PoiList
+import dev.emassey0135.audionavigation.PoiType
 
 object Database {
   @JvmField val connection = DriverManager.getConnection("jdbc:sqlite:poi.db")
@@ -21,18 +23,23 @@ object Database {
         connection.commit()
       }
   }
-  class DistanceFunction(): Function() {
+  class FilterPoiFunction(): Function() {
     override protected fun xFunc() {
-      if (args()!=6)
+      if (args()!=5)
         error("Invalid number of arguments passed to distance function")
-      result(sqrt((value_double(0)-value_double(3)).pow(2.0) + (value_double(1)-value_double(4)).pow(2.0) + (value_double(2)-value_double(5)).pow(2.0)))
+      val type = PoiType.entries.get(value_int(0))
+      val name = value_text(1)
+      val x = value_double(2).toInt()
+      val y = value_double(3).toInt()
+      val z = value_double(4).toInt()
+      result(PoiList.filterPoi(Poi(type, name, BlockPos(x, y, z))))
     }
   }
   fun initialize() {
     connection.createStatement().use {
       it.execute("CREATE VIRTUAL TABLE IF NOT EXISTS pois USING RTREE(id, minX, maxX, minY, maxY, minZ, maxZ, +world BLOB, +type INTEGER, +name TEXT, +x REAL, +y REAL, +z REAL)")
     }
-    Function.create(connection, "distance", DistanceFunction(), 6, Function.FLAG_DETERMINISTIC)
+    Function.create(connection, "filterPoi", FilterPoiFunction(), 5, Function.FLAG_DETERMINISTIC)
     connection.setAutoCommit(false)
     AudioNavigation.logger.info("Database initialized.")
   }

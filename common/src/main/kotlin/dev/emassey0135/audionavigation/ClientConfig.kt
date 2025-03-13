@@ -16,9 +16,11 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber
 import me.fzzyhmstrs.fzzy_config.validation.ValidatedField
 import net.minecraft.client.MinecraftClient
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.Beacon
+import dev.emassey0135.audionavigation.Features
 import dev.emassey0135.audionavigation.SoundPlayer
 import dev.emassey0135.audionavigation.Speech
 import dev.emassey0135.audionavigation.speech.Voice
@@ -31,6 +33,7 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
     var verticalLimit = ValidatedInt(5, 25, 1, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
     var maxAnnouncements = ValidatedInt(10, 25, 1, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
     var detailedAnnouncements = ValidatedBoolean(true)
+    var includedFeatures: ValidatedChoiceList<String> = ValidatedChoiceList(Features.defaultIncludedFeatures.toList(), Features.features.toList(), ValidatedString(), { identifier, _ -> Text.translatable("${AudioNavigation.MOD_ID}.features.$identifier") })
   }
   var manualAnnouncements = ManualAnnouncementsSection()
   class ManualAnnouncementsSection: ConfigSection() {
@@ -39,6 +42,7 @@ class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config"
     var verticalLimit = ValidatedInt(10, 25, 1, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
     var maxAnnouncements = ValidatedInt(25, 25, 1, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
     var detailedAnnouncements = ValidatedBoolean(true)
+    var includedFeatures: ValidatedChoiceList<String> = ValidatedChoiceList(Features.defaultIncludedFeatures.toList(), Features.features.toList(), ValidatedString(), { identifier, _ -> Text.translatable("${AudioNavigation.MOD_ID}.features.$identifier") })
   }
   var speech = SpeechSection()
   class SpeechSection: ConfigSection() {

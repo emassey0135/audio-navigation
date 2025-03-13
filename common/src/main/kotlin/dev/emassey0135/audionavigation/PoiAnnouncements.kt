@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
 import dev.emassey0135.audionavigation.ClientConfig
+import dev.emassey0135.audionavigation.Features
 import dev.emassey0135.audionavigation.Opus
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
@@ -26,10 +27,15 @@ object PoiAnnouncements {
       PoiType.STRUCTURE -> "sense_location.ogg"
     }
     Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/audio/$sound", poi.pos)
+    val name = when (poi.type) {
+      PoiType.LANDMARK -> poi.name
+      PoiType.FEATURE -> Features.translateName(poi.name)
+      PoiType.STRUCTURE -> poi.name
+    }
     val text = if (detailed)
-      "${poi.name}, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", distance.toInt())}"
+      "$name, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", distance.toInt())}"
       else
-      poi.name
+      name
     Speech.speak(text, poi.pos)
   }
   private var oldPoiList = PoiList()

@@ -68,11 +68,11 @@ object Beacon {
             continue
           }
           Opus.playOpusFromResource("beacon", when {
-            angleDifference <= config.maxOnAxisAngle.get().toFloat() ->
+            angleDifference <= config.maxOnAxisAngle.get() ->
             "assets/${AudioNavigation.MOD_ID}/audio/Beacons/${config.sound.get().onAxisSound}"
-            angleDifference <= config.maxCloseToAxisAngle.get().toFloat() ->
+            angleDifference <= config.maxCloseToAxisAngle.get() ->
             "assets/${AudioNavigation.MOD_ID}/audio/Beacons/${config.sound.get().closeToAxisSound ?: config.sound.get().offAxisSound}"
-            angleDifference >= config.minBehindAngle.get().toFloat() ->
+            angleDifference >= config.minBehindAngle.get() ->
             "assets/${AudioNavigation.MOD_ID}/audio/Beacons/${config.sound.get().behindSound ?: config.sound.get().offAxisSound}"
             else ->
             "assets/${AudioNavigation.MOD_ID}/audio/Beacons/${config.sound.get().offAxisSound}"

@@ -65,12 +65,12 @@ object PoiAnnouncements {
   }
   fun triggerAutomaticAnnouncements() {
     val config = ClientConfig.instance!!.announcements
-    val verticalLimit = if(config.enableVerticalLimit.get()) Optional.of(config.verticalLimit.get()) else Optional.empty()
-    announceNearbyPois(false, true, config.detailedAnnouncements.get(), config.announcementRadius.get(), config.maxAnnouncements.get(), verticalLimit, config.includedFeatures.get())
+    val verticalLimit = if(config.enableVerticalLimit.get()) Optional.of(config.verticalLimit.get().toInt()) else Optional.empty()
+    announceNearbyPois(false, true, config.detailedAnnouncements.get(), config.announcementRadius.get().toInt(), config.maxAnnouncements.get().toInt(), verticalLimit, config.includedFeatures.get())
   }
   fun triggerManualAnnouncements() {
     val config = ClientConfig.instance!!.manualAnnouncements
-    val verticalLimit = if(config.enableVerticalLimit.get()) Optional.of(config.verticalLimit.get()) else Optional.empty()
-    announceNearbyPois(true, false, config.detailedAnnouncements.get(), config.announcementRadius.get(), config.maxAnnouncements.get(), verticalLimit, config.includedFeatures.get())
+    val verticalLimit = if(config.enableVerticalLimit.get()) Optional.of(config.verticalLimit.get().toInt()) else Optional.empty()
+    announceNearbyPois(true, false, config.detailedAnnouncements.get(), config.announcementRadius.get().toInt(), config.maxAnnouncements.get().toInt(), verticalLimit, config.includedFeatures.get())
   }
 }

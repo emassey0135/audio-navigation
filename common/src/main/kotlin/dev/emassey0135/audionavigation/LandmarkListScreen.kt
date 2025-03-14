@@ -29,7 +29,7 @@ import dev.emassey0135.audionavigation.PoiList
 import dev.emassey0135.audionavigation.PoiRequest
 import dev.emassey0135.audionavigation.PoiType
 
-class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClient, val poiList: PoiList, val startingRadius: Double): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
+class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClient, val poiList: PoiList, val startingRadius: Int): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
   private class LandmarkEntry(val textRenderer: TextRenderer, val poi: PoiListItem): AlwaysSelectedEntryListWidget.Entry<LandmarkEntry>() {
     override fun getNarration(): Text {
       return Text.literal("${poi.poi.name}, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt())}, ${poi.poi.positionAsNarratableString()}")
@@ -90,8 +90,8 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
   override fun init() {
     landmarkList = LandmarkList(minecraftClient, 10, 10, width/2-20, height-20, textRenderer, poiList)
     addDrawableChild(landmarkList)
-    addDrawableChild(CyclingButtonWidget.builder<Double>({ value -> Text.literal(value.toInt().toString()) })
-      .values((6..26).map { exponent -> (2.0).pow(exponent) })
+    addDrawableChild(CyclingButtonWidget.builder<Int>({ value -> Text.literal(value.toString()) })
+      .values((6..26).map { exponent -> (2.0).pow(exponent).toInt() })
       .initially(startingRadius)
       .build(width/2+10, 40, 50, 20, Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.radius_button"), { widget, radius ->
         close()
@@ -108,7 +108,7 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
       .build())
   }
   companion object {
-    fun openLandmarkListScreen(parent: Screen, startingRadius: Double) {
+    fun openLandmarkListScreen(parent: Screen, startingRadius: Int) {
       thread(block = fun(): Unit {
         val minecraftClient = MinecraftClient.getInstance()
         val player = minecraftClient.player
@@ -124,7 +124,7 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
       })
     }
     fun openLandmarkListScreen(parent: Screen) {
-      openLandmarkListScreen(parent, 64.0)
+      openLandmarkListScreen(parent, 64)
     }
   }
 }

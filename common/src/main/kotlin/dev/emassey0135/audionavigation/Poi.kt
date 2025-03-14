@@ -31,9 +31,9 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
     addToDatabaseMutex.lock()
     if (addToDatabaseStatement == null)
       addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO pois (id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?6, ?4, ?5, ?1, ?2, ?3)")
-    addToDatabaseStatement?.setDouble(1, pos.getX().toDouble())
-    addToDatabaseStatement?.setDouble(2, pos.getY().toDouble())
-    addToDatabaseStatement?.setDouble(3, pos.getZ().toDouble())
+    addToDatabaseStatement?.setInt(1, pos.getX())
+    addToDatabaseStatement?.setInt(2, pos.getY())
+    addToDatabaseStatement?.setInt(3, pos.getZ())
     addToDatabaseStatement?.setInt(4, type.ordinal)
     addToDatabaseStatement?.setString(5, name)
     addToDatabaseStatement?.setBytes(6, Uuids.toByteArray(AudioNavigation.getWorldUUID(world)))
@@ -90,13 +90,13 @@ data class PoiListItem(val poi: Poi, val distance: Double, val id: Int) {
       ::PoiListItem)
   }
 }
-data class PoiRequest(val pos: BlockPos, val radius: Double, val maxItems: Int, val verticalLimit: Optional<Double>, val type: Optional<PoiType>, val includedFeatures: Optional<List<String>>) {
+data class PoiRequest(val pos: BlockPos, val radius: Int, val maxItems: Int, val verticalLimit: Optional<Int>, val type: Optional<PoiType>, val includedFeatures: Optional<List<String>>) {
   companion object {
     @JvmField val PACKET_CODEC = PacketCodec.tuple(
     BlockPos.PACKET_CODEC, PoiRequest::pos,
-    PacketCodecs.DOUBLE, PoiRequest::radius,
+    PacketCodecs.INTEGER, PoiRequest::radius,
     PacketCodecs.INTEGER, PoiRequest::maxItems,
-    PacketCodecs.optional(PacketCodecs.DOUBLE), PoiRequest::verticalLimit,
+    PacketCodecs.optional(PacketCodecs.INTEGER), PoiRequest::verticalLimit,
     PacketCodecs.optional(PoiType.PACKET_CODEC), PoiRequest::type,
     PacketCodecs.optional(PacketCodecs.STRING.collect(PacketCodecs.toList())), PoiRequest::includedFeatures,
     ::PoiRequest)
@@ -153,10 +153,10 @@ class PoiList(list: List<PoiListItem>) {
       currentPoiRequest = poiRequest
       if (getNearestStatement==null)
         getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, filterPoi(type, name, x, y, z) AS distance FROM pois WHERE distance >= 0 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
-      getNearestStatement?.setDouble(1, poiRequest.pos.getX().toDouble())
-      getNearestStatement?.setDouble(2, poiRequest.pos.getY().toDouble())
-      getNearestStatement?.setDouble(3, poiRequest.pos.getZ().toDouble())
-      getNearestStatement?.setDouble(4, poiRequest.radius)
+      getNearestStatement?.setInt(1, poiRequest.pos.getX())
+      getNearestStatement?.setInt(2, poiRequest.pos.getY())
+      getNearestStatement?.setInt(3, poiRequest.pos.getZ())
+      getNearestStatement?.setInt(4, poiRequest.radius)
       getNearestStatement?.setInt(5, poiRequest.maxItems)
       getNearestStatement?.setBytes(6, Uuids.toByteArray(AudioNavigation.getWorldUUID(world)))
       val result = getFromDatabase(getNearestStatement!!)

@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.config
 
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import me.fzzyhmstrs.fzzy_config.api.RegisterType
@@ -19,10 +19,10 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.Beacon
-import dev.emassey0135.audionavigation.Features
-import dev.emassey0135.audionavigation.SoundPlayer
-import dev.emassey0135.audionavigation.Speech
+import dev.emassey0135.audionavigation.features.Beacon
+import dev.emassey0135.audionavigation.poi.Features
+import dev.emassey0135.audionavigation.sound.SoundPlayer
+import dev.emassey0135.audionavigation.speech.Speech
 import dev.emassey0135.audionavigation.speech.Voice
 
 class ClientConfig: Config(Identifier.of(AudioNavigation.MOD_ID, "client_config")) {

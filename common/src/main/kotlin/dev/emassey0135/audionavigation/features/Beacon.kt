@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.features
 
 import java.lang.Thread
 import java.util.concurrent.ArrayBlockingQueue
@@ -8,11 +8,11 @@ import org.lwjgl.openal.AL11
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.ClientConfig
-import dev.emassey0135.audionavigation.Opus
-import dev.emassey0135.audionavigation.Orientation
-import dev.emassey0135.audionavigation.Poi
-import dev.emassey0135.audionavigation.SoundPlayer
+import dev.emassey0135.audionavigation.config.ClientConfig
+import dev.emassey0135.audionavigation.poi.Poi
+import dev.emassey0135.audionavigation.sound.Opus
+import dev.emassey0135.audionavigation.sound.SoundPlayer
+import dev.emassey0135.audionavigation.util.Orientation
 
 object Beacon {
   private fun waitUntilStopped() {

@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.sound
 
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
@@ -10,8 +10,7 @@ import org.lwjgl.util.opus.OpusFile
 import dev.architectury.platform.Platform
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.SoundPlayer
-import dev.emassey0135.audionavigation.Speech
+import dev.emassey0135.audionavigation.speech.Speech
 
 object Opus {
   data class PcmAndChannels(val channels: Int, val pcm: FloatBuffer)

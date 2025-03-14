@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.features
 
 import java.util.concurrent.locks.ReentrantLock
 import java.util.Optional
@@ -9,16 +9,16 @@ import net.minecraft.client.resource.language.I18n
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
-import dev.emassey0135.audionavigation.ClientConfig
-import dev.emassey0135.audionavigation.Features
-import dev.emassey0135.audionavigation.Opus
+import dev.emassey0135.audionavigation.config.ClientConfig
+import dev.emassey0135.audionavigation.poi.Features
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
-import dev.emassey0135.audionavigation.Poi
-import dev.emassey0135.audionavigation.PoiList
-import dev.emassey0135.audionavigation.PoiRequest
-import dev.emassey0135.audionavigation.PoiType
-import dev.emassey0135.audionavigation.Speech
+import dev.emassey0135.audionavigation.poi.Poi
+import dev.emassey0135.audionavigation.poi.PoiList
+import dev.emassey0135.audionavigation.poi.PoiRequest
+import dev.emassey0135.audionavigation.poi.PoiType
+import dev.emassey0135.audionavigation.sound.Opus
+import dev.emassey0135.audionavigation.speech.Speech
 
 object PoiAnnouncements {
   fun announcePoi(poi: Poi, distance: Double, detailed: Boolean) {

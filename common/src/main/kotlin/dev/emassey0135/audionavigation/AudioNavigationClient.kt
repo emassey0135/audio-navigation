@@ -8,19 +8,18 @@ import dev.architectury.registry.client.keymappings.KeyMappingRegistry
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import net.minecraft.client.MinecraftClient
-import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.Beacon
-import dev.emassey0135.audionavigation.ClientConfig
-import dev.emassey0135.audionavigation.Interval
-import dev.emassey0135.audionavigation.Library
-import dev.emassey0135.audionavigation.MainMenuScreen
+import dev.emassey0135.audionavigation.config.ClientConfig
+import dev.emassey0135.audionavigation.features.Beacon
+import dev.emassey0135.audionavigation.features.PoiAnnouncements
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
-import dev.emassey0135.audionavigation.PoiAnnouncements
-import dev.emassey0135.audionavigation.SoundPlayer
-import dev.emassey0135.audionavigation.Speech
+import dev.emassey0135.audionavigation.screens.MainMenuScreen
+import dev.emassey0135.audionavigation.sound.SoundPlayer
+import dev.emassey0135.audionavigation.speech.Speech
+import dev.emassey0135.audionavigation.util.Interval
+import dev.emassey0135.audionavigation.util.Library
 
 object AudioNavigationClient {
   @JvmStatic @ExpectPlatform fun sendPoiRequest(poiRequestPayload: PoiRequestPayload) {

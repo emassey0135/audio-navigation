@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.util
 
 import java.io.File
 import java.net.URI
@@ -6,7 +6,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.SystemUtils
-import dev.emassey0135.audionavigation.UnzipUtility
 
 object Library {
   private val IS_X86_64 = SystemUtils.OS_ARCH=="amd64" || SystemUtils.OS_ARCH=="x86_64"

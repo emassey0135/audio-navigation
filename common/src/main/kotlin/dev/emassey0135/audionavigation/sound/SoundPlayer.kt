@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.sound
 
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
@@ -14,7 +14,7 @@ import org.lwjgl.openal.ALC11
 import org.lwjgl.openal.EXTThreadLocalContext
 import org.lwjgl.openal.SOFTHRTF
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.Orientation
+import dev.emassey0135.audionavigation.util.Orientation
 
 object SoundPlayer {
   private val sources: HashMap<String, Int> = HashMap()

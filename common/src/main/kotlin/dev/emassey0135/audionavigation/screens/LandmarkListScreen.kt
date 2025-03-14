@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.screens
 
 import java.util.concurrent.SynchronousQueue
 import java.util.Optional
@@ -21,13 +21,14 @@ import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
+import dev.emassey0135.audionavigation.features.Beacon
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
-import dev.emassey0135.audionavigation.Poi
-import dev.emassey0135.audionavigation.PoiListItem
-import dev.emassey0135.audionavigation.PoiList
-import dev.emassey0135.audionavigation.PoiRequest
-import dev.emassey0135.audionavigation.PoiType
+import dev.emassey0135.audionavigation.poi.Poi
+import dev.emassey0135.audionavigation.poi.PoiListItem
+import dev.emassey0135.audionavigation.poi.PoiList
+import dev.emassey0135.audionavigation.poi.PoiRequest
+import dev.emassey0135.audionavigation.poi.PoiType
 
 class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClient, val poiList: PoiList, val startingRadius: Int): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
   private class LandmarkEntry(val textRenderer: TextRenderer, val poi: PoiListItem): AlwaysSelectedEntryListWidget.Entry<LandmarkEntry>() {

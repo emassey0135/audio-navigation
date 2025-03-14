@@ -7,8 +7,11 @@ import net.minecraft.util.math.BlockPos
 import org.slf4j.LoggerFactory
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
-import dev.emassey0135.audionavigation.Poi
-import dev.emassey0135.audionavigation.PoiType
+import dev.emassey0135.audionavigation.poi.Poi
+import dev.emassey0135.audionavigation.poi.PoiList
+import dev.emassey0135.audionavigation.poi.PoiRequest
+import dev.emassey0135.audionavigation.poi.PoiType
+import dev.emassey0135.audionavigation.util.Database
 
 object AudioNavigation {
   const val MOD_ID = "audio_navigation"

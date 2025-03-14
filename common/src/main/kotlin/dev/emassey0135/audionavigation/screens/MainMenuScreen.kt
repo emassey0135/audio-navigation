@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.screens
 
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import net.minecraft.client.gui.screen.Screen
@@ -6,12 +6,10 @@ import net.minecraft.client.gui.tooltip.Tooltip
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.MinecraftClient
 import net.minecraft.text.Text
-import dev.emassey0135.audionavigation.AddLandmarkScreen
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
-import dev.emassey0135.audionavigation.Beacon
-import dev.emassey0135.audionavigation.LandmarkListScreen
-import dev.emassey0135.audionavigation.PoiAnnouncements
+import dev.emassey0135.audionavigation.features.Beacon
+import dev.emassey0135.audionavigation.features.PoiAnnouncements
 
 class MainMenuScreen(): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu")) {
   private var centerX = 0

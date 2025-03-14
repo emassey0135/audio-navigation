@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.util
 
 import java.lang.Thread
 import java.sql.DriverManager
@@ -8,9 +8,9 @@ import org.sqlite.Function
 import org.sqlite.SQLiteConfig
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.Poi
-import dev.emassey0135.audionavigation.PoiList
-import dev.emassey0135.audionavigation.PoiType
+import dev.emassey0135.audionavigation.poi.Poi
+import dev.emassey0135.audionavigation.poi.PoiList
+import dev.emassey0135.audionavigation.poi.PoiType
 
 object Database {
   @JvmField val connection = DriverManager.getConnection("jdbc:sqlite:poi.db")

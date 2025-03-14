@@ -1,11 +1,9 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.poi
 
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.Poi
-import dev.emassey0135.audionavigation.PoiType
 
 object Features {
   val features = setOf(

@@ -5,8 +5,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.util.Uuids;
-import dev.emassey0135.audionavigation.packets.PacketIdentifiers;
-import dev.emassey0135.audionavigation.PoiRequest;
+import dev.emassey0135.audionavigation.poi.PoiRequest;
 
 public record PoiRequestPayload(UUID requestID, PoiRequest poiRequest) implements CustomPayload {
   public static final CustomPayload.Id<PoiRequestPayload> ID = new CustomPayload.Id<>(PacketIdentifiers.POI_REQUEST_ID);

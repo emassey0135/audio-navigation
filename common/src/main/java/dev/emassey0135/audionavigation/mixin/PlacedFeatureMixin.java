@@ -1,6 +1,6 @@
 package dev.emassey0135.audionavigation.mixin;
 
-import dev.emassey0135.audionavigation.Features;
+import dev.emassey0135.audionavigation.poi.Features;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.RegistryKey;

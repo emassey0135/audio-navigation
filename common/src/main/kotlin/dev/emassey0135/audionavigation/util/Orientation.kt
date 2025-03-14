@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.util
 
 import kotlin.math.abs
 import kotlin.math.atan2

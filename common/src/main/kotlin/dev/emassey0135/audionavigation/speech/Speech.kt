@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation
+package dev.emassey0135.audionavigation.speech
 
 import java.lang.Thread
 import java.nio.ByteBuffer
@@ -11,11 +11,8 @@ import org.lwjgl.openal.AL11
 import org.lwjgl.openal.EXTFloat32
 import net.minecraft.util.math.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.ClientConfig
-import dev.emassey0135.audionavigation.SoundPlayer
-import dev.emassey0135.audionavigation.speech.Native
-import dev.emassey0135.audionavigation.speech.SpeechResult
-import dev.emassey0135.audionavigation.speech.Voice
+import dev.emassey0135.audionavigation.config.ClientConfig
+import dev.emassey0135.audionavigation.sound.SoundPlayer
 
 private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundRequest: PlaySoundRequest?, val sourcePos: BlockPos) {
   data class SpeakRequest(val text: String)

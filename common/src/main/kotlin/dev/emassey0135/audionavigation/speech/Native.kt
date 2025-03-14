@@ -2,9 +2,7 @@ package dev.emassey0135.audionavigation.speech
 
 import java.nio.file.Paths
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.Library
-import dev.emassey0135.audionavigation.speech.SpeechResult
-import dev.emassey0135.audionavigation.speech.Voice
+import dev.emassey0135.audionavigation.util.Library
 
 class Native {
   external fun initialize()

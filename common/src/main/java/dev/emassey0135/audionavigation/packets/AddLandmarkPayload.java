@@ -5,7 +5,6 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.util.math.BlockPos;
-import dev.emassey0135.audionavigation.packets.PacketIdentifiers;
 
 public record AddLandmarkPayload(String name, BlockPos pos) implements CustomPayload {
   public static final CustomPayload.Id<AddLandmarkPayload> ID = new CustomPayload.Id<>(PacketIdentifiers.ADD_LANDMARK_ID);

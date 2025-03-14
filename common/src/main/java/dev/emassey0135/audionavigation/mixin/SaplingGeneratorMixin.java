@@ -18,8 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import dev.emassey0135.audionavigation.AudioNavigation;
-import dev.emassey0135.audionavigation.Features;
+import dev.emassey0135.audionavigation.poi.Features;
 
 @SuppressWarnings("UnstableApiUsage")
 @Mixin(SaplingGenerator.class)

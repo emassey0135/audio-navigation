@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation;
+package dev.emassey0135.audionavigation.util;
 
 /* This code has been derived from Minecraft Access (https://github.com/minecraft-access/minecraft-access).
    The project is released under the GPL-3.0; see LICENSE.minecraft-access

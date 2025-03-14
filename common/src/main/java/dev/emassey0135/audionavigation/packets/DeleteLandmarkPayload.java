@@ -4,7 +4,6 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.RegistryByteBuf;
-import dev.emassey0135.audionavigation.packets.PacketIdentifiers;
 
 public record DeleteLandmarkPayload(Integer landmarkID) implements CustomPayload {
   public static final CustomPayload.Id<DeleteLandmarkPayload> ID = new CustomPayload.Id<>(PacketIdentifiers.DELETE_LANDMARK_ID);

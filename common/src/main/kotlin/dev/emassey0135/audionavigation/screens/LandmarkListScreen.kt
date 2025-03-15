@@ -44,7 +44,7 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
       landmarkPositionText.renderWidget(context, mouseX, mouseY, tickDelta)
     }
   }
-  private class LandmarkList(minecraftClient: MinecraftClient, x: Int, y: Int, width: Int, height: Int, val textRenderer: TextRenderer, val poiList: PoiList): AlwaysSelectedEntryListWidget<LandmarkEntry>(minecraftClient, width, height, y, 80) {
+  private class LandmarkList(minecraftClient: MinecraftClient, x: Int, y: Int, width: Int, height: Int, val textRenderer: TextRenderer, val poiList: PoiList): AlwaysSelectedEntryListWidget<LandmarkEntry>(minecraftClient, width, height, y, 90) {
     init {
       setX(x)
       poiList.toList().forEach { poi -> addEntry(LandmarkEntry(textRenderer, poi)) }
@@ -94,18 +94,18 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: MinecraftClien
     addDrawableChild(CyclingButtonWidget.builder<Int>({ value -> Text.literal(value.toString()) })
       .values((6..26).map { exponent -> (2.0).pow(exponent).toInt() })
       .initially(startingRadius)
-      .build(width/2+10, 40, 50, 20, Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.radius_button"), { widget, radius ->
+      .build(width/2+10, 50, 300, 20, Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.radius_button"), { widget, radius ->
         close()
         openLandmarkListScreen(parent, radius)
       }))
     addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.start_beacon_button"), { button -> startBeacon() })
-      .dimensions(width/2+10, 40, 50, 20)
+      .dimensions(width/2+10, 110, 100, 20)
       .build())
     addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.delete_button"), { button -> delete() })
-      .dimensions(width/2+10, 70, 50, 20)
+      .dimensions(width/2+10, 170, 100, 20)
       .build())
     addDrawableChild(ButtonWidget.builder(Text.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.back_button"), { button -> goUp() })
-      .dimensions(width/2+10, 100, 50, 20)
+      .dimensions(width/2+10, 230, 100, 20)
       .build())
   }
   companion object {

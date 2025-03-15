@@ -23,7 +23,7 @@ This mod must be installed on both the client and server side, so if you are pla
 * Points of interest will be announced as you pass, according to the configured radius, vertical distance limit, and maximum number of announcements. You will hear the announcement from the direction of the point of interest, and a sound will be played before speaking the announcement based on the type of the POI.
 * When a world is generated, or when you travel into ungenerated chunks or trigger chunk generation in some other way, points of interest are created for features such as trees, bee hives, ice spikes, ore vanes, etc. Structures like villages are coming soon.
 * You can create landmarks by pressing F6 to open the menu and pressing the "Add landmark" button. They are saved as points of interest and announced as you pass.
-* To delete a landmark, oepn the menu with F6, press "Landmarks", find the landmark you want to delete, and press the "Delete" button.
+* To delete a landmark, open the menu with F6, press "Landmarks", find the landmark you want to delete, and press the "Delete" button.
 * You can start an audio beacon on a landmark by opening the list of landmarks, finding the landmark you want, and pressing "Start beacon". This will start a continuous sound coming from the direction of the landmark that you can follow to find it. The sound will change depending on if you're facing it, facing away from it, or facing in the opposite direction.
 * To stop an audio beacon, open the menu with F6 and press "Stop beacon".
 * The landmark list is filtered by radius. To increase the radius in which landmarks are shown, press enter on the current radius.

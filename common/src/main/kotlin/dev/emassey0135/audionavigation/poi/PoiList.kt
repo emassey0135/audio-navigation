@@ -55,9 +55,9 @@ class PoiList(list: List<PoiListItem>) {
       val includedFeatures = currentPoiRequest!!.includedFeatures
       val distance = poi.distance(pos)
       return when {
+        type.isPresent() && (poi.type != type.get()) -> -1.0
         distance > radius -> -1.0
         verticalLimit.isPresent() && (abs(poi.pos.getY()-pos.getY()) > verticalLimit.get()) -> -1.0
-        type.isPresent() && (poi.type != type.get()) -> -1.0
         includedFeatures.isPresent() && (poi.type == PoiType.FEATURE) && (poi.name !in includedFeatures.get()) -> -1.0
         else -> distance
       }
@@ -66,7 +66,7 @@ class PoiList(list: List<PoiListItem>) {
       val poiList = PoiList()
       query.executeQuery().use {
         while (it.next()) {
-          poiList.addPoi(Poi(PoiType.entries.get(it.getInt("type")), it.getString("name"), BlockPos(it.getDouble("x").toInt(), it.getDouble("y").toInt(), it.getDouble("z").toInt())), it.getDouble("distance"), it.getInt("id"))
+          poiList.addPoi(Poi(PoiType.entries.get(it.getInt("type")), it.getString("name"), BlockPos(it.getInt("x"), it.getInt("y"), it.getInt("z"))), it.getDouble("distance"), it.getInt("id"))
         }
       }
       return poiList

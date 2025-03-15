@@ -2,6 +2,8 @@ package dev.emassey0135.audionavigation.poi
 
 import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
+import kotlin.math.pow
+import kotlin.math.sqrt
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.network.codec.PacketCodec
 import net.minecraft.network.codec.PacketCodecs
@@ -20,7 +22,13 @@ enum class PoiType {
 
 data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
   fun distance(pos2: BlockPos): Double {
-    return pos.getSquaredDistance(pos2)
+    val x = pos.getX().toDouble()
+    val x2 = pos2.getX().toDouble()
+    val y = pos.getY().toDouble()
+    val y2 = pos2.getY().toDouble()
+    val z = pos.getZ().toDouble()
+    val z2 = pos2.getZ().toDouble()
+    return sqrt((x-x2).pow(2)+(y-y2).pow(2)+(z-z2).pow(2))
   }
   fun distance(poi: Poi): Double {
     return distance(poi.pos)

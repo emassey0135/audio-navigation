@@ -37,7 +37,7 @@ object Database {
   }
   fun initialize() {
     connection.createStatement().use {
-      it.execute("CREATE VIRTUAL TABLE IF NOT EXISTS pois USING RTREE(id, minX, maxX, minY, maxY, minZ, maxZ, +world BLOB, +type INTEGER, +name TEXT, +x INTEGER, +y INTEGER, +z INTEGER)")
+      it.execute("CREATE VIRTUAL TABLE IF NOT EXISTS pois USING RTREE_I32(id, minX, maxX, minY, maxY, minZ, maxZ, +world BLOB, +type INTEGER, +name TEXT, +x INTEGER, +y INTEGER, +z INTEGER)")
     }
     Function.create(connection, "filterPoi", FilterPoiFunction(), 5, Function.FLAG_DETERMINISTIC)
     connection.setAutoCommit(false)

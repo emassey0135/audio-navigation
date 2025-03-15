@@ -9,8 +9,10 @@ version = "${version}"
 displayName = "Audio Navigation"
 authors = "Elijah Massey"
 description = '''
-A mod that announces points of interest around the player, inspired by Soundscape
+A mod that adds audio navigation features for the blind, inspired by Soundscape
 '''
+displayUrl = "https://github.com/emassey0135/audio-navigation"
+logo = "assets/audio_navigation/icon.png"
 
 [[dependencies.audio_navigation]]
 modId = "neoforge"
@@ -36,19 +38,21 @@ side = "BOTH"
 [[dependencies.audio_navigation]]
 modId = "kotlinforforge"
 type = "required"
-versionRange = "[1.16.0,]"
+versionRange = "[1.16.0,)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
 modId = "fzzy_config"
 type = "required"
+versionRange = "[0.6.5,)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
 modId = "minecraft_access"
 type = "optional"
+versionRange = "[1.9.0,)"
 side = "CLIENT"
 
 [[mixins]]

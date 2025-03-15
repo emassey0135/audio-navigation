@@ -3,12 +3,14 @@
   "id": "audio_navigation",
   "version": "${version}",
   "name": "Audio Navigation",
-  "description": "A mod that announces points of interest around the player, inspired by Soundscape",
+  "description": "A mod that adds audio navigation features for the blind, inspired by Soundscape",
+  "icon": "assets/audio_navigation/icon.png",
   "authors": [
     "Elijah Massey"
   ],
   "contact": {
     "homepage": "https://github.com/emassey0135/audio-navigation",
+    "issues": "https://github.com/emassey0135/audio-navigation/issues",
     "sources": "https://github.com/emassey0135/audio-navigation"
   },
   "license": "GPL-3.0",
@@ -35,11 +37,11 @@
     "minecraft": "~1.21.4",
     "java": ">=21",
     "architectury": ">=15.0.3",
-    "fabric-api": "*",
-    "fabric-language-kotlin": "*",
-    "fzzy_config": "*"
+    "fabric-api": ">=0.118.5",
+    "fabric-language-kotlin": ">=1.13.1",
+    "fzzy_config": ">=0.6.5"
   },
   "suggests": {
-    "minecraft_access": "*"
+    "minecraft_access": ">=1.9.0"
   }
 }

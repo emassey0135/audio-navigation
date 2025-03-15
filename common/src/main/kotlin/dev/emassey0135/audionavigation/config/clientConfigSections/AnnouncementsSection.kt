@@ -11,6 +11,7 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.poi.Features
 
   class AnnouncementsSection: ConfigSection() {
+    var enableAutomaticAnnouncements = ValidatedBoolean(true)
     var announcementRadius = ValidatedByte(25, 100, 1, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)
     var enableVerticalLimit = ValidatedBoolean(true)
     var verticalLimit = ValidatedByte(5, 25, 1, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)

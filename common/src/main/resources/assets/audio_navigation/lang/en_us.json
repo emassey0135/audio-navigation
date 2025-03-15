@@ -1,6 +1,8 @@
 {
   "audio_navigation.client_config": "Client Settings",
   "audio_navigation.client_config.announcements": "Automatic Announcements Settings",
+  "audio_navigation.client_config.announcements.enableAutomaticAnnouncements": "Enable Automatic Announcements",
+  "audio_navigation.client_config.announcements.enableAutomaticAnnouncements.desc": "Automatically announce nearby points of interest as you move around",
   "audio_navigation.client_config.announcements.announcementRadius": "Announcement Radius",
   "audio_navigation.client_config.announcements.announcementRadius.desc": "Only announce points of interest within this radius",
   "audio_navigation.client_config.announcements.enableVerticalLimit": "Enable Vertical Limit",

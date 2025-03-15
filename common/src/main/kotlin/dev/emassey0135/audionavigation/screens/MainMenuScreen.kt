@@ -14,7 +14,7 @@ import dev.emassey0135.audionavigation.features.PoiAnnouncements
 class MainMenuScreen(): Screen(Text.translatable("${AudioNavigation.MOD_ID}.screens.main_menu")) {
   private var centerX = 0
   private val buttonHeight = 20
-  private val marginY = buttonHeight/4
+  private val marginY = buttonHeight*3
   private var calculatedButtonY = 0
   fun buildButton(label: Text, tooltip: Text, pressAction: ButtonWidget.PressAction): ButtonWidget {
   calculatedButtonY += marginY

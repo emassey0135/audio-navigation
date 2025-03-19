@@ -3,8 +3,5 @@ architectury {
 }
 dependencies {
   modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-  modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
-  modCompileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
   compileOnly "org.xerial:sqlite-jdbc:${project.sqlite_jdbc_version}"
-  compileOnly "org.lwjgl:lwjgl-opus:${project.lwjgl_version}"
 }

@@ -1,0 +1,10 @@
+architectury {
+  common rootProject.enabled_platforms.split(',')
+}
+dependencies {
+  modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+  modImplementation "dev.architectury:architectury:$rootProject.architectury_api_version"
+  modCompileOnly "me.fzzyhmstrs:fzzy_config:${project.fzzy_config_version}"
+  compileOnly "org.lwjgl:lwjgl-opus:${project.lwjgl_version}"
+  compileOnly(project(path: ':common', configuration: 'namedElements')) { transitive false }
+}

@@ -36,6 +36,8 @@ dependencies {
   shadow "org.lwjgl:lwjgl-opus:${project.lwjgl_version}:natives-windows-arm64"
   common(project(path: ':common', configuration: 'namedElements')) { transitive false }
   shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+  common(project(path: ':common-client', configuration: 'namedElements')) { transitive false }
+  shadowBundle project(path: ':common-client', configuration: 'transformProductionFabric')
 }
 processResources {
   inputs.property 'version', project.version

@@ -1,19 +1,19 @@
 package dev.emassey0135.audionavigation.packets;
 
 import java.util.UUID;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.util.Uuids;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import dev.emassey0135.audionavigation.poi.PoiList;
 
-public record PoiListPayload(UUID requestID, PoiList poiList) implements CustomPayload {
-  public static final CustomPayload.Id<PoiListPayload> ID = new CustomPayload.Id<>(PacketIdentifiers.POI_LIST_ID);
-  public static final PacketCodec<RegistryByteBuf, PoiListPayload> CODEC = PacketCodec.tuple(
-    Uuids.PACKET_CODEC, PoiListPayload::requestID,
-    PoiList.PACKET_CODEC, PoiListPayload::poiList,
+public record PoiListPayload(UUID requestID, PoiList poiList) implements CustomPacketPayload {
+  public static final CustomPacketPayload.Type<PoiListPayload> ID = new CustomPacketPayload.Type<>(PacketIdentifiers.POI_LIST_ID);
+  public static final StreamCodec<RegistryFriendlyByteBuf, PoiListPayload> CODEC = StreamCodec.composite(
+    UUIDUtil.STREAM_CODEC, PoiListPayload::requestID,
+    PoiList.STREAM_CODEC, PoiListPayload::poiList,
     PoiListPayload::new);
-  @Override public CustomPayload.Id<? extends CustomPayload> getId() {
+  @Override public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
     return ID;
   }
 }

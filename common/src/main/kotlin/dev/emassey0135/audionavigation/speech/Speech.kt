@@ -9,7 +9,7 @@ import kotlin.concurrent.thread
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
 import org.lwjgl.openal.EXTFloat32
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.config.ClientConfig
 import dev.emassey0135.audionavigation.sound.SoundPlayer

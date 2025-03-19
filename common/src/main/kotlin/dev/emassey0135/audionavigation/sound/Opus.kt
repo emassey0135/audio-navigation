@@ -8,7 +8,7 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.openal.EXTFloat32
 import org.lwjgl.util.opus.OpusFile
 import dev.architectury.platform.Platform
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.speech.Speech
 

@@ -5,8 +5,8 @@ import java.util.concurrent.ArrayBlockingQueue
 import java.util.Optional
 import kotlin.concurrent.thread
 import org.lwjgl.openal.AL11
-import net.minecraft.client.MinecraftClient
-import net.minecraft.util.math.BlockPos
+import net.minecraft.client.Minecraft
+import net.minecraft.core.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.config.ClientConfig
 import dev.emassey0135.audionavigation.poi.Poi
@@ -42,12 +42,12 @@ object Beacon {
           currentBeacon = beaconQueue.poll()
         }
         if (currentBeacon.isPresent()) {
-          val minecraftClient = MinecraftClient.getInstance()
+          val minecraftClient = Minecraft.getInstance()
           val player = minecraftClient.player
           if (player==null)
             continue
-          val origin = BlockPos.ofFloored(player.getPos())
-          val orientation = Orientation(player.getRotationClient())
+          val origin = BlockPos.containing(player.position())
+          val orientation = Orientation(player.getRotationVector())
           SoundPlayer.updateListenerPosition()
           SoundPlayer.setSourcePosition("beacon", currentBeacon.get().pos)
           val config = ClientConfig.instance!!.beacons

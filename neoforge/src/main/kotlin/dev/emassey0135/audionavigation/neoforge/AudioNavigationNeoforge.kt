@@ -9,8 +9,8 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 import net.neoforged.neoforge.network.handling.IPayloadContext
 import net.neoforged.neoforge.registries.DeferredRegister
 import net.neoforged.neoforge.registries.NeoForgeRegistries
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.Uuids
+import net.minecraft.core.UUIDUtil
+import net.minecraft.server.level.ServerLevel
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
@@ -24,18 +24,18 @@ import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 object AudioNavigationNeoforge {
   private val ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, AudioNavigation.MOD_ID)
   val WORLD_UUID_ATTACHMENT = ATTACHMENT_TYPES.register("world_uuid", fun(): AttachmentType<UUID> {
-     return AttachmentType.builder(fun(): UUID { return UUID.randomUUID() }).serialize(Uuids.CODEC).build()
+     return AttachmentType.builder(fun(): UUID { return UUID.randomUUID() }).serialize(UUIDUtil.CODEC).build()
   })
   @SubscribeEvent fun registerNetworkHandlers(event: RegisterPayloadHandlersEvent) {
     val registrar = event.registrar("1")
     registrar.playToServer(PoiRequestPayload.ID, PoiRequestPayload.CODEC, { payload: PoiRequestPayload, context: IPayloadContext ->
-        context.reply(AudioNavigation.respondToPoiRequest(context.player().getWorld() as ServerWorld, payload))
+        context.reply(AudioNavigation.respondToPoiRequest(context.player().level() as ServerLevel, payload))
       })
     registrar.playToClient(PoiListPayload.ID, PoiListPayload.CODEC, { payload: PoiListPayload, context: IPayloadContext ->
         AudioNavigationClient.handlePoiList(payload)
       })
     registrar.playToServer(AddLandmarkPayload.ID, AddLandmarkPayload.CODEC, { payload: AddLandmarkPayload, context: IPayloadContext ->
-        AudioNavigation.addLandmark(context.player().getWorld() as ServerWorld, payload.name, payload.pos)
+        AudioNavigation.addLandmark(context.player().level() as ServerLevel, payload.name, payload.pos)
       })
     registrar.playToServer(DeleteLandmarkPayload.ID, DeleteLandmarkPayload.CODEC, { payload: DeleteLandmarkPayload, context: IPayloadContext ->
         AudioNavigation.deleteLandmark(payload.landmarkID)

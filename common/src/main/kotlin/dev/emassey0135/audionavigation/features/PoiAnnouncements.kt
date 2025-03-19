@@ -4,9 +4,9 @@ import java.util.concurrent.locks.ReentrantLock
 import java.util.Optional
 import java.util.UUID
 import kotlin.concurrent.thread
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.resource.language.I18n
-import net.minecraft.util.math.BlockPos
+import net.minecraft.client.Minecraft
+import net.minecraft.core.BlockPos
+import net.minecraft.client.resources.language.I18n
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationClient
 import dev.emassey0135.audionavigation.config.ClientConfig
@@ -34,7 +34,7 @@ object PoiAnnouncements {
       PoiType.STRUCTURE -> poi.name
     }
     val text = if (detailed)
-      "$name, ${I18n.translate("${AudioNavigation.MOD_ID}.poi_distance", distance.toInt())}"
+      "$name, ${I18n.get("${AudioNavigation.MOD_ID}.poi_distance", distance.toInt())}"
       else
       name
     Speech.speak(text, poi.pos)
@@ -42,11 +42,11 @@ object PoiAnnouncements {
   private var oldPoiList = PoiList()
   private var mutex = ReentrantLock()
   fun announceNearbyPois(interruptSpeech: Boolean, excludePrevious: Boolean, detailed: Boolean, radius: Int, maxAnnouncements: Int, verticalLimit: Optional<Int>, includedFeatures: List<String>) {
-    val minecraftClient = MinecraftClient.getInstance()
+    val minecraftClient = Minecraft.getInstance()
     val player = minecraftClient.player
     if (player==null)
       return
-    val origin = BlockPos.ofFloored(player.getPos())
+    val origin = BlockPos.containing(player.position())
     val requestID = UUID.randomUUID()
     AudioNavigationClient.registerPoiListHandler(requestID, { payload ->
       mutex.lock()

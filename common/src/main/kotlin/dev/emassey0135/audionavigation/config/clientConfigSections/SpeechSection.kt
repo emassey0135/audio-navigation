@@ -5,7 +5,7 @@ import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedChoiceList
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedChoice
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedByte
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 import dev.emassey0135.audionavigation.speech.Speech
 import dev.emassey0135.audionavigation.speech.Voice
 
@@ -18,7 +18,7 @@ import dev.emassey0135.audionavigation.speech.Voice
     }
     var synthesizers: ValidatedChoiceList<String> = ValidatedChoiceList(Speech.synthesizers(), Speech.synthesizers(), ValidatedString())
       .also { it.listenToEntry { updateVoiceList(it.get(), languages.get()) }}
-    var languages: ValidatedChoiceList<String> = ValidatedChoiceList(listOf(MinecraftClient.getInstance().getLanguageManager().getLanguage().replace('_', '-')), Speech.languages(), ValidatedString())
+    var languages: ValidatedChoiceList<String> = ValidatedChoiceList(listOf(Minecraft.getInstance().getLanguageManager().getSelected().replace('_', '-')), Speech.languages(), ValidatedString())
       .also { it.listenToEntry { updateVoiceList(synthesizers.get(), it.get()) }}
     private val voiceList = Speech.filterVoices(synthesizers.get(), languages.get()).toMutableList()
     var voice = ValidatedChoice<Voice>(voiceList,

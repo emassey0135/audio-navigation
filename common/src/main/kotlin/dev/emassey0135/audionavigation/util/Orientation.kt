@@ -5,19 +5,19 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.PI
 import kotlin.math.sin
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec2f
-import net.minecraft.util.math.Vec3d
+import net.minecraft.core.BlockPos
+import net.minecraft.world.phys.Vec2
+import net.minecraft.world.phys.Vec3
 
 class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
-  constructor (angles: Vec2f): this(normalizeAngle(-angles.x.toDouble()), normalizeAngle(angles.y.toDouble()))
-  fun toVector(): Vec3d {
+  constructor (angles: Vec2): this(normalizeAngle(-angles.x.toDouble()), normalizeAngle(angles.y.toDouble()))
+  fun toVector(): Vec3 {
     val verticalAngle = verticalAngle/180.0*PI
     val horizontalAngle = horizontalAngle/180.0*PI
     val x = sin(horizontalAngle)
     val y = sin(verticalAngle)
     val z = cos(horizontalAngle)
-    return Vec3d(x, y, z)
+    return Vec3(x, y, z)
   }
   fun horizontalDifference(orientation: Orientation): Double {
     var angle1 = horizontalAngle

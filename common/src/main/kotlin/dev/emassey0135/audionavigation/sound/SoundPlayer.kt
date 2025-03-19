@@ -5,8 +5,8 @@ import java.nio.FloatBuffer
 import java.nio.ShortBuffer
 import java.util.concurrent.ArrayBlockingQueue
 import kotlin.concurrent.thread
-import net.minecraft.client.MinecraftClient
-import net.minecraft.util.math.BlockPos
+import net.minecraft.client.Minecraft
+import net.minecraft.core.BlockPos
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.ALC
 import org.lwjgl.openal.AL11
@@ -80,12 +80,12 @@ object SoundPlayer {
   fun updateListenerPosition() {
     thread {
       tasks.put(fun(): Unit {
-        val minecraftClient = MinecraftClient.getInstance()
+        val minecraftClient = Minecraft.getInstance()
         val player = minecraftClient.player
         if (player==null)
           return
-        val pos = BlockPos.ofFloored(player.getPos())
-        val orientation = Orientation(player.getRotationClient())
+        val pos = BlockPos.containing(player.position())
+        val orientation = Orientation(player.getRotationVector())
         AL11.alListener3f(AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), -pos.getZ().toFloat())
         val vector = orientation.toVector()
         AL11.alListenerfv(AL11.AL_ORIENTATION, floatArrayOf(vector.x.toFloat(), vector.y.toFloat(), vector.z.toFloat(), 0f, 1f, 0f))

@@ -3,11 +3,11 @@ package dev.emassey0135.audionavigation.poi
 import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.math.abs
-import net.minecraft.network.codec.PacketCodec
-import net.minecraft.network.codec.PacketCodecs
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.Uuids
+import net.minecraft.core.BlockPos
+import net.minecraft.core.UUIDUtil
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
+import net.minecraft.server.level.ServerLevel
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.util.Database
 
@@ -19,10 +19,10 @@ data class PoiListItem(val poi: Poi, val distance: Double, val id: Int) {
     return id.hashCode()
   }
   companion object {
-    @JvmField val PACKET_CODEC = PacketCodec.tuple(
-      Poi.PACKET_CODEC, PoiListItem::poi,
-      PacketCodecs.DOUBLE, PoiListItem::distance,
-      PacketCodecs.INTEGER, PoiListItem::id,
+    @JvmField val STREAM_CODEC = StreamCodec.composite(
+      Poi.STREAM_CODEC, PoiListItem::poi,
+      ByteBufCodecs.DOUBLE, PoiListItem::distance,
+      ByteBufCodecs.INT, PoiListItem::id,
       ::PoiListItem)
   }
 }
@@ -73,7 +73,7 @@ class PoiList(list: List<PoiListItem>) {
     }
     var getNearestStatement: PreparedStatement? = null
     val getNearestMutex = ReentrantLock()
-    fun getNearest(world: ServerWorld, poiRequest: PoiRequest): PoiList {
+    fun getNearest(world: ServerLevel, poiRequest: PoiRequest): PoiList {
       getNearestMutex.lock()
       currentPoiRequest = poiRequest
       if (getNearestStatement==null)
@@ -83,13 +83,13 @@ class PoiList(list: List<PoiListItem>) {
       getNearestStatement?.setInt(3, poiRequest.pos.getZ())
       getNearestStatement?.setInt(4, poiRequest.radius)
       getNearestStatement?.setInt(5, poiRequest.maxItems)
-      getNearestStatement?.setBytes(6, Uuids.toByteArray(AudioNavigation.getWorldUUID(world)))
+      getNearestStatement?.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.getWorldUUID(world)))
       val result = getFromDatabase(getNearestStatement!!)
       getNearestMutex.unlock()
       return result
     }
-    @JvmField val PACKET_CODEC = PacketCodec.tuple(
-      PoiListItem.PACKET_CODEC.collect(PacketCodecs.toList()), PoiList::toList,
+    @JvmField val STREAM_CODEC = StreamCodec.composite(
+      PoiListItem.STREAM_CODEC.apply(ByteBufCodecs.list()), PoiList::toList,
       ::PoiList)
   }
 }

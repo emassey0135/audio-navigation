@@ -1,19 +1,19 @@
 package dev.emassey0135.audionavigation.mixin;
 
-import dev.emassey0135.audionavigation.poi.Features;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.feature.FeaturePlacementContext;
-import net.minecraft.world.gen.placementmodifier.PlacementModifier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementContext;
+import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import dev.emassey0135.audionavigation.poi.Features;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,32 +27,32 @@ import java.util.stream.Stream;
 @Mixin(PlacedFeature.class)
 public class PlacedFeatureMixin {
 
-    @Shadow @Final private RegistryEntry<ConfiguredFeature<?, ?>> feature;
+    @Shadow @Final private Holder<ConfiguredFeature<?, ?>> feature;
 
-    @Shadow @Final private List<PlacementModifier> placementModifiers;
+    @Shadow @Final private List<PlacementModifier> placement;
 
     /**
      * @author jacobsjo
      * @reason couldn't find a better way, the lambda is static
      */
     @Overwrite
-    private boolean generate(FeaturePlacementContext context, Random random, BlockPos pos){
+    private boolean placeWithContext(PlacementContext context, RandomSource random, BlockPos pos){
         Stream<BlockPos> stream = Stream.of(pos);
 
-        for(PlacementModifier placementModifier : this.placementModifiers) {
+        for(PlacementModifier placementModifier : this.placement) {
             stream = stream.flatMap(blockPos -> placementModifier.getPositions(context, random, blockPos));
         }
 
-        Optional<RegistryKey<ConfiguredFeature<?, ?>>> key = this.feature.getKey();
+        Optional<ResourceKey<ConfiguredFeature<?, ?>>> key = this.feature.unwrapKey();
         ConfiguredFeature<?, ?> configuredFeature = this.feature.value();
 
         MutableBoolean mutableBoolean = new MutableBoolean();
         stream.forEach(blockPos -> {
-                if (configuredFeature.generate(context.getWorld(), context.getChunkGenerator(), random, blockPos)) {
+                if (configuredFeature.place(context.getLevel(), context.generator(), random, blockPos)) {
                     mutableBoolean.setTrue();
 
                     if (key.isPresent()) {
-                        Features.addFeatureToDatabase(key.get().getValue().getPath(), blockPos, context.getWorld().toServerWorld());
+                        Features.addFeatureToDatabase(key.get().location().getPath(), blockPos, context.getLevel().getLevel());
                     }
             }
         });

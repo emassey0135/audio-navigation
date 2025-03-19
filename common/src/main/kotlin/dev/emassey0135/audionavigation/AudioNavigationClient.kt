@@ -1,13 +1,13 @@
 package dev.emassey0135.audionavigation
 
 import java.util.UUID
+import com.mojang.blaze3d.platform.InputConstants
 import dev.architectury.injectables.annotations.ExpectPlatform
 import dev.architectury.event.events.client.ClientLifecycleEvent
 import dev.architectury.event.events.client.ClientTickEvent
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.client.util.InputUtil
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.KeyMapping
+import net.minecraft.client.Minecraft
 import dev.emassey0135.audionavigation.config.ClientConfig
 import dev.emassey0135.audionavigation.features.Beacon
 import dev.emassey0135.audionavigation.features.PoiAnnouncements
@@ -43,14 +43,14 @@ object AudioNavigationClient {
     }
   }
   private val interval = Interval.sec(5)
-  private val OPEN_MAIN_MENU_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.open_main_menu", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F6, "category.${AudioNavigation.MOD_ID}")
-  private val ANNOUNCE_NEARBY_POIS_KEYBINDING = KeyBinding("key.${AudioNavigation.MOD_ID}.announce_nearby_pois", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_F7, "category.${AudioNavigation.MOD_ID}")
+  private val OPEN_MAIN_MENU_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.open_main_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_F6, "category.${AudioNavigation.MOD_ID}")
+  private val ANNOUNCE_NEARBY_POIS_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.announce_nearby_pois", InputConstants.Type.KEYSYM, InputConstants.KEY_F7, "category.${AudioNavigation.MOD_ID}")
   fun initialize() {
     Library.initialize()
-    KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYBINDING)
-    KeyMappingRegistry.register(ANNOUNCE_NEARBY_POIS_KEYBINDING)
+    KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYMAPPING)
+    KeyMappingRegistry.register(ANNOUNCE_NEARBY_POIS_KEYMAPPING)
     interval.beReady()
-    val minecraftClient = MinecraftClient.getInstance()
+    val minecraftClient = Minecraft.getInstance()
     ClientLifecycleEvent.CLIENT_STARTED.register { client ->
       SoundPlayer.initialize()
       Speech.initialize()
@@ -60,9 +60,9 @@ object AudioNavigationClient {
       AudioNavigation.logger.info("Audio Navigation client has been initialized.")
     }
     ClientTickEvent.CLIENT_LEVEL_PRE.register { world ->
-      while (OPEN_MAIN_MENU_KEYBINDING.wasPressed())
+      while (OPEN_MAIN_MENU_KEYMAPPING.consumeClick())
         minecraftClient.setScreen(MainMenuScreen())
-      while (ANNOUNCE_NEARBY_POIS_KEYBINDING.wasPressed())
+      while (ANNOUNCE_NEARBY_POIS_KEYMAPPING.consumeClick())
         PoiAnnouncements.triggerManualAnnouncements()
       if (interval.isReady()) {
         PoiAnnouncements.triggerAutomaticAnnouncements()

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 import org.sqlite.Function
 import org.sqlite.SQLiteConfig
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.poi.Poi
 import dev.emassey0135.audionavigation.poi.PoiList

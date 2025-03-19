@@ -13,7 +13,7 @@ import net.minecraft.core.UUIDUtil
 import net.minecraft.server.level.ServerLevel
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.AudioNavigationClient
+import dev.emassey0135.audionavigation.client.AudioNavigationClient
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload

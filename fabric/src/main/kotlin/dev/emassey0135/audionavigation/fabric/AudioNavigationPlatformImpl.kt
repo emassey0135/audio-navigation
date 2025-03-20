@@ -2,7 +2,6 @@ package dev.emassey0135.audionavigation.fabric
 
 import java.util.UUID
 import net.minecraft.server.level.ServerLevel
-import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.AudioNavigationPlatform
 
 class AudioNavigationPlatformImpl(): AudioNavigationPlatform {

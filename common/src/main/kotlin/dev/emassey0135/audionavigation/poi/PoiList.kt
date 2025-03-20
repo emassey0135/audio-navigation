@@ -83,7 +83,7 @@ class PoiList(list: List<PoiListItem>) {
       getNearestStatement?.setInt(3, poiRequest.pos.getZ())
       getNearestStatement?.setInt(4, poiRequest.radius)
       getNearestStatement?.setInt(5, poiRequest.maxItems)
-      getNearestStatement?.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.getWorldUUID(world)))
+      getNearestStatement?.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.platform!!.getWorldUUID(world)))
       val result = getFromDatabase(getNearestStatement!!)
       getNearestMutex.unlock()
       return result

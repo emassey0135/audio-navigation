@@ -1,6 +1,5 @@
 package dev.emassey0135.audionavigation.poi
 
-import net.minecraft.client.resources.language.I18n
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
 import dev.emassey0135.audionavigation.AudioNavigation
@@ -344,12 +343,6 @@ object Features {
     "warped_fungus",
     "warped_fungus_planted",
   )
-  fun translateName(identifier: String): String {
-    if (identifier in features)
-      return I18n.get("${AudioNavigation.MOD_ID}.features.$identifier")
-    else
-      return identifier
-  }
   @JvmStatic fun addFeatureToDatabase(identifier: String, pos: BlockPos, world: ServerLevel) {
     if (identifier !in duplicateFeatures)
       Poi(PoiType.FEATURE, identifier, pos).addToDatabase(world)

@@ -1,5 +1,24 @@
 plugins {
+  id 'dev.architectury.loom'
+  id 'architectury-plugin'
   id 'com.gradleup.shadow'
+}
+repositories {
+  maven {
+    name = 'NeoForged'
+    url = 'https://maven.neoforged.net/releases'
+  }
+  maven {
+    name = 'Kotlin for Forge'
+    url = 'https://thedarkcolour.github.io/KotlinForForge/'
+    }
+  maven {
+    name = "FzzyMaven"
+    url = "https://maven.fzzyhmstrs.me/"
+  }
+}
+loom {
+  silentMojangMappingsLicense()
 }
 architectury {
   platformSetupLoomIde()
@@ -18,17 +37,9 @@ configurations {
     canBeConsumed = false
   }
 }
-repositories {
-  maven {
-    name = 'NeoForged'
-    url = 'https://maven.neoforged.net/releases'
-  }
-  maven {
-    name = 'Kotlin for Forge'
-    url = 'https://thedarkcolour.github.io/KotlinForForge/'
-    }
-}
 dependencies {
+  minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+  mappings loom.officialMojangMappings()
   neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
   modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
   implementation "thedarkcolour:kotlinforforge-neoforge:$rootProject.kotlin_for_forge_version"

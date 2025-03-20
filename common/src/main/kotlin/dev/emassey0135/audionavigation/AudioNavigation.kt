@@ -1,9 +1,8 @@
 package dev.emassey0135.audionavigation
 
 import java.util.UUID
-import dev.architectury.injectables.annotations.ExpectPlatform
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
 import org.slf4j.LoggerFactory
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
@@ -13,12 +12,13 @@ import dev.emassey0135.audionavigation.poi.PoiRequest
 import dev.emassey0135.audionavigation.poi.PoiType
 import dev.emassey0135.audionavigation.util.Database
 
+interface AudioNavigationPlatform {
+  fun getWorldUUID(world: ServerLevel): UUID
+}
 object AudioNavigation {
   const val MOD_ID = "audio_navigation"
   @JvmField val logger = LoggerFactory.getLogger(MOD_ID)
-  @JvmStatic @ExpectPlatform fun getWorldUUID(world: ServerLevel): UUID {
-    error("This function is not implemented.")
-  }
+  var platform: AudioNavigationPlatform? = null
   fun respondToPoiRequest(world: ServerLevel, payload: PoiRequestPayload): PoiListPayload {
     val poiList = PoiList.getNearest(world, payload.poiRequest)
     return PoiListPayload(payload.requestID, poiList)
@@ -29,7 +29,8 @@ object AudioNavigation {
   fun deleteLandmark(id: Int) {
     Poi.deleteLandmark(id)
   }
-  fun initialize() {
+  fun initialize(audioNavigationPlatform: AudioNavigationPlatform) {
+    platform = audioNavigationPlatform
     Database.initialize()
     logger.info("Audio Navigation common has been initialized.")
   }

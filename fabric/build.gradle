@@ -1,5 +1,16 @@
 plugins {
+  id 'dev.architectury.loom'
+  id 'architectury-plugin'
   id 'com.gradleup.shadow'
+}
+repositories {
+  maven {
+    name = "FzzyMaven"
+    url = "https://maven.fzzyhmstrs.me/"
+  }
+}
+loom {
+  silentMojangMappingsLicense()
 }
 architectury {
   platformSetupLoomIde()
@@ -19,6 +30,8 @@ configurations {
   }
 }
 dependencies {
+  minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+  mappings loom.officialMojangMappings()
   modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
   modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
   modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"

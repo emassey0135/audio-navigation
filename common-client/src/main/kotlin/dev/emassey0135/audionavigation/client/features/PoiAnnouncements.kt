@@ -12,9 +12,9 @@ import dev.emassey0135.audionavigation.client.AudioNavigationClient
 import dev.emassey0135.audionavigation.client.config.ClientConfig
 import dev.emassey0135.audionavigation.client.sound.Opus
 import dev.emassey0135.audionavigation.client.speech.Speech
+import dev.emassey0135.audionavigation.client.util.Translation
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
-import dev.emassey0135.audionavigation.poi.Features
 import dev.emassey0135.audionavigation.poi.Poi
 import dev.emassey0135.audionavigation.poi.PoiList
 import dev.emassey0135.audionavigation.poi.PoiRequest
@@ -30,7 +30,7 @@ object PoiAnnouncements {
     Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/audio/$sound", poi.pos)
     val name = when (poi.type) {
       PoiType.LANDMARK -> poi.name
-      PoiType.FEATURE -> Features.translateName(poi.name)
+      PoiType.FEATURE -> Translation.translateFeatureName(poi.name)
       PoiType.STRUCTURE -> poi.name
     }
     val text = if (detailed)

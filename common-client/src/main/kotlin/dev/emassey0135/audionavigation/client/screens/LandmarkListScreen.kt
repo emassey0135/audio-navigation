@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.AudioNavigationClient
 import dev.emassey0135.audionavigation.client.features.Beacon
+import dev.emassey0135.audionavigation.client.util.Translation
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.poi.Poi
@@ -33,12 +34,12 @@ import dev.emassey0135.audionavigation.poi.PoiType
 class LandmarkListScreen(val parent: Screen, val minecraftClient: Minecraft, val poiList: PoiList, val startingRadius: Int): Screen(Component.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list")) {
   private class LandmarkEntry(val font: Font, val poi: PoiListItem): ObjectSelectionList.Entry<LandmarkEntry>() {
     override fun getNarration(): Component {
-      return Component.literal("${poi.poi.name}, ${I18n.get("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt())}, ${poi.poi.positionAsNarratableString()}")
+      return Component.literal("${poi.poi.name}, ${I18n.get("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt())}, ${Translation.positionAsNarratableString(poi.poi.pos)}")
     }
     override fun render(context: GuiGraphics, index: Int, y: Int, x: Int, entryWidth: Int, entryHeight: Int, mouseX: Int, mouseY: Int, hovered: Boolean, tickDelta: Float) {
       val landmarkNameText = StringWidget(x, y, entryWidth, 20, Component.literal(poi.poi.name), font)
       val landmarkDistanceText = StringWidget(x, y+30, entryWidth, 20, Component.translatable("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt()), font)
-      val landmarkPositionText = StringWidget(x, y+60, entryWidth, 20, Component.literal(poi.poi.positionAsString()), font)
+      val landmarkPositionText = StringWidget(x, y+60, entryWidth, 20, Component.literal(Translation.positionAsString(poi.poi.pos)), font)
       landmarkNameText.renderWidget(context, mouseX, mouseY, tickDelta)
       landmarkDistanceText.renderWidget(context, mouseX, mouseY, tickDelta)
       landmarkPositionText.renderWidget(context, mouseX, mouseY, tickDelta)

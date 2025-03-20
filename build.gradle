@@ -3,6 +3,8 @@ plugins {
   id 'architectury-plugin' version '3.4-SNAPSHOT'
   id "org.jetbrains.kotlin.jvm" version '2.1.10'
   id "com.gradleup.shadow" version "8.3.6" apply false
+  id "io.papermc.paperweight.userdev" version "2.0.0-beta.16" apply false
+  id "io.github.dueris.eclipse.gradle" version "1.2.3" apply false
 }
 architectury {
   minecraft = project.minecraft_version
@@ -12,25 +14,10 @@ allprojects {
   version = rootProject.mod_version
 }
 subprojects {
-  apply plugin: 'dev.architectury.loom'
-  apply plugin: 'architectury-plugin'
   apply plugin: 'maven-publish'
   apply plugin: 'org.jetbrains.kotlin.jvm'
   base {
     archivesName = "$rootProject.archives_name-$project.name"
-  }
-  repositories {
-    maven {
-      name = "FzzyMaven"
-      url = "https://maven.fzzyhmstrs.me/"
-    }
-  }
-  loom {
-    silentMojangMappingsLicense()
-  }
-  dependencies {
-    minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
-    mappings loom.officialMojangMappings()
   }
   java {
     withSourcesJar()

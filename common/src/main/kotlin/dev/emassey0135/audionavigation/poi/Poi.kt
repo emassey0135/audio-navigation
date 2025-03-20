@@ -4,7 +4,6 @@ import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.math.pow
 import kotlin.math.sqrt
-import net.minecraft.client.resources.language.I18n
 import net.minecraft.core.BlockPos
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.codec.ByteBufCodecs
@@ -42,22 +41,10 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
     addToDatabaseStatement?.setInt(3, pos.getZ())
     addToDatabaseStatement?.setInt(4, type.ordinal)
     addToDatabaseStatement?.setString(5, name)
-    addToDatabaseStatement?.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.getWorldUUID(world)))
+    addToDatabaseStatement?.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.platform!!.getWorldUUID(world)))
     addToDatabaseStatement?.executeUpdate()
     addToDatabaseMutex.unlock()
     Database.scheduleCommitIfNeeded()
-  }
-  fun positionAsString(): String {
-    return "(${pos.getX().toString()}, ${pos.getY().toString()}, ${pos.getZ().toString()})"
-  }
-  fun positionAsNarratableString(): String {
-    val x = pos.getX()
-    val xString = if (x<0) I18n.get("${AudioNavigation.MOD_ID}.number.negative", -x) else x.toString()
-    val y = pos.getY()
-    val yString = if (y<0) I18n.get("${AudioNavigation.MOD_ID}.number.negative", -y) else y.toString()
-    val z = pos.getZ()
-    val zString = if (z<0) I18n.get("${AudioNavigation.MOD_ID}.number.negative", -z) else z.toString()
-    return "($xString, $yString, $zString)"
   }
   companion object {
     private var addToDatabaseStatement: PreparedStatement? = null

@@ -43,6 +43,6 @@ object AudioNavigationNeoforge {
   }
   init {
     ATTACHMENT_TYPES.register(MOD_BUS)
-    AudioNavigation.initialize()
+    AudioNavigation.initialize(AudioNavigationPlatformImpl())
   }
 }

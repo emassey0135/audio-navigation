@@ -32,6 +32,6 @@ object AudioNavigationFabric: ModInitializer {
     ServerPlayNetworking.registerGlobalReceiver(DeleteLandmarkPayload.ID, { payload: DeleteLandmarkPayload, context: ServerPlayNetworking.Context ->
         AudioNavigation.deleteLandmark(payload.landmarkID)
       })
-    AudioNavigation.initialize()
+    AudioNavigation.initialize(AudioNavigationPlatformImpl())
   }
 }

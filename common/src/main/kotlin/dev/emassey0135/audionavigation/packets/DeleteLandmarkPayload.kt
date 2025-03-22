@@ -3,7 +3,6 @@ package dev.emassey0135.audionavigation.packets
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.network.RegistryFriendlyByteBuf
 
 class DeleteLandmarkPayload(val landmarkID: Int): CustomPacketPayload {
   override fun type(): CustomPacketPayload.Type<DeleteLandmarkPayload> {

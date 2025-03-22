@@ -4,7 +4,6 @@ import java.util.UUID
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.network.RegistryFriendlyByteBuf
 import dev.emassey0135.audionavigation.poi.PoiList
 
 class PoiListPayload(val requestID: UUID, val poiList: PoiList): CustomPacketPayload {

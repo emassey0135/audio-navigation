@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.network.RegistryFriendlyByteBuf
 
 class AddLandmarkPayload(val name: String, val pos: BlockPos): CustomPacketPayload {
   override fun type(): CustomPacketPayload.Type<AddLandmarkPayload> {

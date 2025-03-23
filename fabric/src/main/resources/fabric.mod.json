@@ -24,7 +24,7 @@
     ],
     "client": [
       {
-        "value": "dev.emassey0135.audionavigation.fabric.client.AudioNavigationClientFabric",
+        "value": "dev.emassey0135.audionavigation.client.fabric.AudioNavigationClientFabric",
         "adapter": "kotlin"
       }
     ]

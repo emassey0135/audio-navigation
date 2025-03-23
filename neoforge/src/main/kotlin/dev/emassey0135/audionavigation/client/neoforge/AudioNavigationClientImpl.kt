@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation.neoforge.client
+package dev.emassey0135.audionavigation.client.neoforge
 
 import net.neoforged.neoforge.network.PacketDistributor
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload

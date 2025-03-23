@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation.neoforge.client
+package dev.emassey0135.audionavigation.client.neoforge
 
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.common.Mod

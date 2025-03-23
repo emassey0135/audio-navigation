@@ -1,4 +1,4 @@
-package dev.emassey0135.audionavigation.fabric.client
+package dev.emassey0135.audionavigation.client.fabric
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking

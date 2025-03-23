@@ -10,7 +10,7 @@ import org.apache.commons.lang3.SystemUtils
 object Library {
   private val IS_X86_64 = SystemUtils.OS_ARCH=="amd64" || SystemUtils.OS_ARCH=="x86_64"
   private val IS_AARCH64 = SystemUtils.OS_ARCH=="aarch64"
-  private val libraryVersion = "0.3.0"
+  private val libraryVersion = "0.3.1"
   private val baseLibraryName = "audio_navigation_tts_$libraryVersion"
   val libraryName = when {
     SystemUtils.IS_OS_LINUX && IS_X86_64 -> "lib${baseLibraryName}_x86_64.so"

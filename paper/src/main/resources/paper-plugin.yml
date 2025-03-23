@@ -8,3 +8,9 @@ api-version: 1.21.4
 load: STARTUP
 prefix: audio_navigation
 mixins: [audio_navigation-common.mixins.json]
+dependencies:
+  bootstrap:
+    Eclipse:
+      load: BEFORE
+      required: true
+      join-classpath: false

@@ -34,7 +34,7 @@ class AudioNavigationPaper(): JavaPlugin(), PluginMessageListener {
         val poiListPayload = AudioNavigation.respondToPoiRequest(world, poiRequestPayload)
         val responseBuffer = Unpooled.buffer()
         PoiListPayload.CODEC.encode(responseBuffer, poiListPayload)
-        val response = ByteArray(responseBuffer.capacity())
+        val response = ByteArray(responseBuffer.writerIndex())
         responseBuffer.getBytes(0, response)
         player.sendPluginMessage(this, PacketIdentifiers.POI_LIST_ID.toString(), response)
       }

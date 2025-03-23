@@ -222,6 +222,7 @@ object Features {
     "azalea_tree",
     "bamboo_no_podzol",
     "bamboo_some_podzol",
+    "basalt_pillar",
     "birch",
     "bonus_chest",
     "cherry",

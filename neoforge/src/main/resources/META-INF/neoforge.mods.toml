@@ -45,7 +45,7 @@ side = "BOTH"
 [[dependencies.audio_navigation]]
 modId = "fzzy_config"
 type = "required"
-versionRange = "[0.6.5,)"
+versionRange = "[0.6.7,)"
 ordering = "AFTER"
 side = "BOTH"
 

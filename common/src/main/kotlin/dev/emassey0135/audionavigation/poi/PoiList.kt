@@ -54,11 +54,14 @@ class PoiList(list: List<PoiListItem>) {
       val type = currentPoiRequest!!.type
       val includedFeatures = currentPoiRequest!!.includedFeatures
       val distance = poi.distance(pos)
+      val config = AudioNavigation.config!!
       return when {
         type.isPresent() && (poi.type != type.get()) -> -1.0
         distance > radius -> -1.0
+        distance > config.radiusLimit -> -1.0
         verticalLimit.isPresent() && (abs(poi.pos.getY()-pos.getY()) > verticalLimit.get()) -> -1.0
         includedFeatures.isPresent() && (poi.type == PoiType.FEATURE) && (poi.name !in includedFeatures.get()) -> -1.0
+        (poi.type == PoiType.FEATURE) && (poi.name !in config.allowedFeatures) -> -1.0
         else -> distance
       }
     }

@@ -14,6 +14,8 @@ import net.minecraft.server.level.ServerLevel
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.AudioNavigationClient
+import dev.emassey0135.audionavigation.config.ServerConfiguration
+import dev.emassey0135.audionavigation.fabricNeoforge.config.ServerConfig
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload
@@ -43,6 +45,8 @@ object AudioNavigationNeoforge {
   }
   init {
     ATTACHMENT_TYPES.register(MOD_BUS)
-    AudioNavigation.initialize(AudioNavigationPlatformImpl())
+    ServerConfig.initialize()
+    val config = ServerConfiguration(ServerConfig.instance!!.allowedFeatures.get(), ServerConfig.instance!!.radiusLimit.get())
+    AudioNavigation.initialize(AudioNavigationPlatformImpl(), config)
   }
 }

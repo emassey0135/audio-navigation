@@ -7,23 +7,31 @@ import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.messaging.PluginMessageListener
 import dev.emassey0135.audionavigation.AudioNavigation
+import dev.emassey0135.audionavigation.config.ServerConfiguration
 import dev.emassey0135.audionavigation.packets.PacketIdentifiers
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
+import dev.emassey0135.audionavigation.poi.Features
 
 class AudioNavigationPaper(): JavaPlugin(), PluginMessageListener {
   override fun onEnable() {
+    val config = this.getConfig()
+    config.options().copyDefaults(true)
+    config.addDefault("allowed-features", Features.features.toList())
+    config.addDefault("radius-limit", 67108864)
+    val serverConfig = ServerConfiguration(config.getStringList("allowed-features"), config.getInt("radius-limit"))
     this.getServer().getMessenger().registerIncomingPluginChannel(this, PacketIdentifiers.POI_REQUEST_ID.toString(), this)
     this.getServer().getMessenger().registerOutgoingPluginChannel(this, PacketIdentifiers.POI_LIST_ID.toString())
     this.getServer().getMessenger().registerIncomingPluginChannel(this, PacketIdentifiers.ADD_LANDMARK_ID.toString(), this)
     this.getServer().getMessenger().registerIncomingPluginChannel(this, PacketIdentifiers.DELETE_LANDMARK_ID.toString(), this)
-    AudioNavigation.initialize(AudioNavigationPlatformImpl())
+    AudioNavigation.initialize(AudioNavigationPlatformImpl(), serverConfig)
   }
   override fun onDisable() {
     this.getServer().getMessenger().unregisterIncomingPluginChannel(this)
     this.getServer().getMessenger().unregisterOutgoingPluginChannel(this)
+    this.saveConfig()
   }
   override fun onPluginMessageReceived(channel: String, player: Player, message: ByteArray) {
     when (channel) {

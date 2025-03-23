@@ -4,6 +4,7 @@ import java.util.UUID
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
 import org.slf4j.LoggerFactory
+import dev.emassey0135.audionavigation.config.ServerConfiguration
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.poi.Poi
@@ -19,6 +20,7 @@ object AudioNavigation {
   const val MOD_ID = "audio_navigation"
   @JvmField val logger = LoggerFactory.getLogger(MOD_ID)
   var platform: AudioNavigationPlatform? = null
+  var config: ServerConfiguration? = null
   fun respondToPoiRequest(world: ServerLevel, payload: PoiRequestPayload): PoiListPayload {
     val poiList = PoiList.getNearest(world, payload.poiRequest)
     return PoiListPayload(payload.requestID, poiList)
@@ -29,8 +31,9 @@ object AudioNavigation {
   fun deleteLandmark(id: Int) {
     Poi.deleteLandmark(id)
   }
-  fun initialize(audioNavigationPlatform: AudioNavigationPlatform) {
+  fun initialize(audioNavigationPlatform: AudioNavigationPlatform, serverConfig: ServerConfiguration) {
     platform = audioNavigationPlatform
+    config = serverConfig
     Database.initialize()
     logger.info("Audio Navigation common has been initialized.")
   }

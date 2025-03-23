@@ -10,6 +10,7 @@ pluginManagement {
 rootProject.name = "audio_navigation"
 include("common")
 include("common-client")
+include("common-fabric-neoforge")
 include("common-paper")
 include("fabric")
 include("neoforge")

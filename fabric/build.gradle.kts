@@ -57,6 +57,8 @@ dependencies {
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-windows-arm64")
   common(project(":common", "namedElements")) { isTransitive = false }
   shadowBundle(project(":common", "transformProductionFabric"))
+  common(project(":common-fabric-neoforge", "namedElements")) { isTransitive = false }
+  shadowBundle(project(":common-fabric-neoforge", "transformProductionFabric"))
   common(project(":common-client", "namedElements")) { isTransitive = false }
   shadowBundle(project(":common-client", "transformProductionFabric"))
 }

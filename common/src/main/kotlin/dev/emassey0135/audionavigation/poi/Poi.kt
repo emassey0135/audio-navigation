@@ -6,8 +6,9 @@ import java.util.concurrent.locks.ReentrantLock
 import java.util.Optional
 import kotlin.math.pow
 import kotlin.math.sqrt
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.protobuf.ProtoBuf
 import net.minecraft.core.BlockPos
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.codec.ByteBufCodecs
@@ -36,6 +37,7 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos, val data:
   fun distance(poi: Poi): Double {
     return distance(poi.pos)
   }
+  @OptIn(ExperimentalSerializationApi::class)
   fun addToDatabase(world: ServerLevel) {
     addToDatabaseMutex.lock()
     if (addToDatabaseStatement == null)
@@ -47,7 +49,7 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos, val data:
     addToDatabaseStatement?.setString(5, name)
     addToDatabaseStatement?.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.platform!!.getWorldUUID(world)))
     if (data.isPresent())
-      addToDatabaseStatement?.setString(7, Json.encodeToString(data.get()))
+      addToDatabaseStatement?.setBytes(7, ProtoBuf.encodeToByteArray(data.get()))
     else
       addToDatabaseStatement?.setNull(7, Types.NULL)
     addToDatabaseStatement?.executeUpdate()

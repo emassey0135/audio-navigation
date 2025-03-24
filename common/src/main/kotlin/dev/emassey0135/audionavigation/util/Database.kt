@@ -38,7 +38,7 @@ object Database {
   }
   fun initialize() {
     connection.createStatement().use {
-      it.execute("CREATE VIRTUAL TABLE IF NOT EXISTS pois2 USING RTREE_I32(id, minX, maxX, minY, maxY, minZ, maxZ, +world BLOB, +type INTEGER, +name TEXT, +data TEXT, +x INTEGER, +y INTEGER, +z INTEGER)")
+      it.execute("CREATE VIRTUAL TABLE IF NOT EXISTS pois2 USING RTREE_I32(id, minX, maxX, minY, maxY, minZ, maxZ, +world BLOB, +type INTEGER, +name TEXT, +data BLOB, +x INTEGER, +y INTEGER, +z INTEGER)")
       if (it.executeQuery("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'pois'").use { it.next() }) {
         AudioNavigation.logger.info("Migrating database to schema version 2. This may take a few minutes.")
         it.executeUpdate("INSERT INTO pois2 (id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, data, x, y, z) SELECT id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, NULL, x, y, z FROM pois")

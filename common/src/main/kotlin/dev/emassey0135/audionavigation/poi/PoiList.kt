@@ -4,8 +4,9 @@ import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
 import java.util.Optional
 import kotlin.math.abs
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.protobuf.ProtoBuf
 import net.minecraft.core.BlockPos
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.codec.ByteBufCodecs
@@ -75,10 +76,10 @@ class PoiList(list: List<PoiListItem>) {
           val type = PoiType.entries.get(it.getInt("type"))
           val name = it.getString("name")
           val pos = BlockPos(it.getInt("x"), it.getInt("y"), it.getInt("z"))
-          val dataJson = it.getString("data")
+          val dataBinary = it.getBytes("data")
           var data: Optional<PoiData> = Optional.empty()
-          if (dataJson!=null)
-            data = Optional.of(Json.decodeFromString(dataJson))
+          if (dataBinary!=null)
+            data = Optional.of(ProtoBuf.decodeFromByteArray(dataBinary))
           val distance = it.getDouble("distance")
           val id = it.getInt("id")
           poiList.addPoi(Poi(type, name, pos, data), distance, id)

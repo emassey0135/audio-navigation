@@ -9,6 +9,8 @@ dependencies {
   shadow(project(":common-paper"))
   implementation("org.xerial:sqlite-jdbc:$sqlite_jdbc_version")
   shadow("org.xerial:sqlite-jdbc:$sqlite_jdbc_version")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.8.0")
+  shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.8.0")
 }
 val version: String by project
 tasks.processResources {

@@ -1,5 +1,6 @@
 package dev.emassey0135.audionavigation
 
+import java.util.Optional
 import java.util.UUID
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
@@ -26,7 +27,7 @@ object AudioNavigation {
     return PoiListPayload(payload.requestID, poiList)
   }
   fun addLandmark(world: ServerLevel, name: String, pos: BlockPos) {
-    Poi(PoiType.LANDMARK, name, pos).addToDatabase(world)
+    Poi(PoiType.LANDMARK, name, pos, Optional.empty()).addToDatabase(world)
   }
   fun deleteLandmark(id: Int) {
     Poi.deleteLandmark(id)

@@ -1,5 +1,6 @@
 package dev.emassey0135.audionavigation.poi
 
+import java.util.Optional
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
 import dev.emassey0135.audionavigation.AudioNavigation
@@ -306,7 +307,7 @@ object Features {
   @JvmStatic fun addFeatureToDatabase(identifier: String, pos: BlockPos, world: ServerLevel) {
     if (identifier !in redundantFeatures) {
       val identifier = if (duplicateFeatures.containsKey(identifier)) duplicateFeatures.get(identifier)!! else identifier
-      Poi(PoiType.FEATURE, identifier, pos).addToDatabase(world)
+      Poi(PoiType.FEATURE, identifier, pos, Optional.empty()).addToDatabase(world)
     }
   }
 }

@@ -1,9 +1,13 @@
 package dev.emassey0135.audionavigation.poi
 
 import java.sql.PreparedStatement
+import java.sql.Types
 import java.util.concurrent.locks.ReentrantLock
+import java.util.Optional
 import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.minecraft.core.BlockPos
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.codec.ByteBufCodecs
@@ -19,7 +23,7 @@ enum class PoiType {
   }
 }
 
-data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
+data class Poi(val type: PoiType, val name: String, val pos: BlockPos, val data: Optional<PoiData>) {
   fun distance(pos2: BlockPos): Double {
     val x = pos.getX().toDouble()
     val x2 = pos2.getX().toDouble()
@@ -35,13 +39,17 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
   fun addToDatabase(world: ServerLevel) {
     addToDatabaseMutex.lock()
     if (addToDatabaseStatement == null)
-      addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO pois2 (id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, data, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?6, ?4, ?5, NULL, ?1, ?2, ?3)")
+      addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO pois2 (id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, data, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?6, ?4, ?5, ?7, ?1, ?2, ?3)")
     addToDatabaseStatement?.setInt(1, pos.getX())
     addToDatabaseStatement?.setInt(2, pos.getY())
     addToDatabaseStatement?.setInt(3, pos.getZ())
     addToDatabaseStatement?.setInt(4, type.ordinal)
     addToDatabaseStatement?.setString(5, name)
     addToDatabaseStatement?.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.platform!!.getWorldUUID(world)))
+    if (data.isPresent())
+      addToDatabaseStatement?.setString(7, Json.encodeToString(data.get()))
+    else
+      addToDatabaseStatement?.setNull(7, Types.NULL)
     addToDatabaseStatement?.executeUpdate()
     addToDatabaseMutex.unlock()
     Database.scheduleCommitIfNeeded()
@@ -64,6 +72,7 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
       PoiType.STREAM_CODEC, Poi::type,
       ByteBufCodecs.STRING_UTF8, Poi::name,
       BlockPos.STREAM_CODEC, Poi::pos,
+      ByteBufCodecs.optional(PoiData.STREAM_CODEC), Poi::data,
       ::Poi)
   }
 }

@@ -2,7 +2,10 @@ package dev.emassey0135.audionavigation.poi
 
 import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
+import java.util.Optional
 import kotlin.math.abs
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import net.minecraft.core.BlockPos
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.codec.ByteBufCodecs
@@ -69,7 +72,16 @@ class PoiList(list: List<PoiListItem>) {
       val poiList = PoiList()
       query.executeQuery().use {
         while (it.next()) {
-          poiList.addPoi(Poi(PoiType.entries.get(it.getInt("type")), it.getString("name"), BlockPos(it.getInt("x"), it.getInt("y"), it.getInt("z"))), it.getDouble("distance"), it.getInt("id"))
+          val type = PoiType.entries.get(it.getInt("type"))
+          val name = it.getString("name")
+          val pos = BlockPos(it.getInt("x"), it.getInt("y"), it.getInt("z"))
+          val dataJson = it.getString("data")
+          var data: Optional<PoiData> = Optional.empty()
+          if (dataJson!=null)
+            data = Optional.of(Json.decodeFromString(dataJson))
+          val distance = it.getDouble("distance")
+          val id = it.getInt("id")
+          poiList.addPoi(Poi(type, name, pos, data), distance, id)
         }
       }
       return poiList
@@ -80,7 +92,7 @@ class PoiList(list: List<PoiListItem>) {
       getNearestMutex.lock()
       currentPoiRequest = poiRequest
       if (getNearestStatement==null)
-        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, filterPoi(type, name, x, y, z) AS distance FROM pois2 WHERE distance >= 0 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, data, x, y, z, filterPoi(type, name, x, y, z) AS distance FROM pois2 WHERE distance >= 0 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
       getNearestStatement?.setInt(1, poiRequest.pos.getX())
       getNearestStatement?.setInt(2, poiRequest.pos.getY())
       getNearestStatement?.setInt(3, poiRequest.pos.getZ())

@@ -15,6 +15,7 @@ import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
+import dev.emassey0135.audionavigation.poi.Landmarks
 
 object AudioNavigationFabric: ModInitializer {
   @JvmField val WORLD_UUID_ATTACHMENT = AttachmentRegistry.create(ResourceLocation.fromNamespaceAndPath(AudioNavigation.MOD_ID, "world_uuid"), { builder ->
@@ -29,10 +30,10 @@ object AudioNavigationFabric: ModInitializer {
         context.responseSender().sendPacket(AudioNavigation.respondToPoiRequest(context.player().level() as ServerLevel, payload))
       })
     ServerPlayNetworking.registerGlobalReceiver(AddLandmarkPayload.ID, { payload: AddLandmarkPayload, context: ServerPlayNetworking.Context ->
-        AudioNavigation.addLandmark(context.player().level() as ServerLevel, payload.name, payload.pos)
+        Landmarks.addLandmark(context.player().level() as ServerLevel, context.player(), payload.name, payload.pos, payload.visibleToOtherPlayers)
       })
     ServerPlayNetworking.registerGlobalReceiver(DeleteLandmarkPayload.ID, { payload: DeleteLandmarkPayload, context: ServerPlayNetworking.Context ->
-        AudioNavigation.deleteLandmark(payload.landmarkID)
+        Landmarks.deleteLandmark(payload.landmarkID)
       })
     ServerConfig.initialize()
     val config = ServerConfiguration(ServerConfig.instance!!.allowedFeatures.get(), ServerConfig.instance!!.radiusLimit.get())

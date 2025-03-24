@@ -1,6 +1,7 @@
 package dev.emassey0135.audionavigation.paper
 
 import io.netty.buffer.Unpooled
+import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.craftbukkit.CraftWorld
 import org.bukkit.entity.Player
 import org.bukkit.NamespacedKey
@@ -14,6 +15,7 @@ import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.poi.Features
+import dev.emassey0135.audionavigation.poi.Landmarks
 
 class AudioNavigationPaper(): JavaPlugin(), PluginMessageListener {
   override fun onEnable() {
@@ -50,12 +52,13 @@ class AudioNavigationPaper(): JavaPlugin(), PluginMessageListener {
         val messageBuffer = Unpooled.wrappedBuffer(message)
         val addLandmarkPayload = AddLandmarkPayload.CODEC.decode(messageBuffer)
         val world = (player.getWorld() as CraftWorld).getHandle()
-        AudioNavigation.addLandmark(world, addLandmarkPayload.name, addLandmarkPayload.pos)
+        val serverPlayer = (player as CraftPlayer).getHandle()
+        Landmarks.addLandmark(world, serverPlayer, addLandmarkPayload.name, addLandmarkPayload.pos, addLandmarkPayload.visibleToOtherPlayers)
       }
       PacketIdentifiers.DELETE_LANDMARK_ID.toString() -> {
         val messageBuffer = Unpooled.wrappedBuffer(message)
         val deleteLandmarkPayload = DeleteLandmarkPayload.CODEC.decode(messageBuffer)
-        AudioNavigation.deleteLandmark(deleteLandmarkPayload.landmarkID)
+        Landmarks.deleteLandmark(deleteLandmarkPayload.landmarkID)
       }
     }
   }

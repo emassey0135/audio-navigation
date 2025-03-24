@@ -1,6 +1,5 @@
 package dev.emassey0135.audionavigation
 
-import java.util.Optional
 import java.util.UUID
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
@@ -11,7 +10,6 @@ import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.poi.Poi
 import dev.emassey0135.audionavigation.poi.PoiList
 import dev.emassey0135.audionavigation.poi.PoiRequest
-import dev.emassey0135.audionavigation.poi.PoiType
 import dev.emassey0135.audionavigation.util.Database
 
 interface AudioNavigationPlatform {
@@ -25,12 +23,6 @@ object AudioNavigation {
   fun respondToPoiRequest(world: ServerLevel, payload: PoiRequestPayload): PoiListPayload {
     val poiList = PoiList.getNearest(world, payload.poiRequest)
     return PoiListPayload(payload.requestID, poiList)
-  }
-  fun addLandmark(world: ServerLevel, name: String, pos: BlockPos) {
-    Poi(PoiType.LANDMARK, name, pos, Optional.empty()).addToDatabase(world)
-  }
-  fun deleteLandmark(id: Int) {
-    Poi.deleteLandmark(id)
   }
   fun initialize(audioNavigationPlatform: AudioNavigationPlatform, serverConfig: ServerConfiguration) {
     platform = audioNavigationPlatform

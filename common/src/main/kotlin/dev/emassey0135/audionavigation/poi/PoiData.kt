@@ -29,8 +29,8 @@ object UUIDAsByteArraySerializer: KSerializer<UUID> {
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable data class PoiData(
-  @ProtoNumber(1) @Serializable(with = UUIDAsByteArraySerializer::class) val player: UUID,
-  @ProtoNumber(2) val visibleToOtherPlayers: Boolean) {
+  @ProtoNumber(1) @Serializable(with = UUIDAsByteArraySerializer::class) val player: UUID? = null,
+  @ProtoNumber(2) val visibleToOtherPlayers: Boolean = true) {
   companion object {
     @JvmField val STREAM_CODEC = StreamCodec.composite(
       UUIDUtil.STREAM_CODEC, PoiData::player,

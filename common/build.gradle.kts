@@ -16,4 +16,5 @@ dependencies {
   mappings(loom.officialMojangMappings())
   modCompileOnly("net.fabricmc:fabric-loader:$fabric_loader_version")
   compileOnly("org.xerial:sqlite-jdbc:$sqlite_jdbc_version")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 }

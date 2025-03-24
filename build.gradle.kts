@@ -1,6 +1,7 @@
 plugins {
   java
-  kotlin("jvm") version "2.1.10"
+  kotlin("jvm") version "2.1.20"
+  kotlin("plugin.serialization") version "2.1.20"
   id("dev.architectury.loom") version "1.9-SNAPSHOT" apply false
   id("architectury-plugin") version "3.4-SNAPSHOT"
   id("com.gradleup.shadow") version "8.3.6" apply false

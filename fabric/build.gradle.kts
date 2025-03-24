@@ -55,6 +55,7 @@ dependencies {
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-macos-arm64")
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-windows")
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-windows-arm64")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
   common(project(":common", "namedElements")) { isTransitive = false }
   shadowBundle(project(":common", "transformProductionFabric"))
   common(project(":common-fabric-neoforge", "namedElements")) { isTransitive = false }

@@ -6,6 +6,7 @@ val sqlite_jdbc_version: String by project
 dependencies {
   paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
   compileOnly("org.xerial:sqlite-jdbc:$sqlite_jdbc_version")
+  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 }
 sourceSets {
   main {

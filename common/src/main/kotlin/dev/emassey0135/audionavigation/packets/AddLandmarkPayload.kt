@@ -5,7 +5,7 @@ import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
-class AddLandmarkPayload(val name: String, val pos: BlockPos): CustomPacketPayload {
+class AddLandmarkPayload(val name: String, val pos: BlockPos, val visibleToOtherPlayers: Boolean): CustomPacketPayload {
   override fun type(): CustomPacketPayload.Type<AddLandmarkPayload> {
     return ID
   }
@@ -14,6 +14,7 @@ class AddLandmarkPayload(val name: String, val pos: BlockPos): CustomPacketPaylo
     @JvmField val CODEC = StreamCodec.composite(
       ByteBufCodecs.STRING_UTF8, AddLandmarkPayload::name,
       BlockPos.STREAM_CODEC, AddLandmarkPayload::pos,
+      ByteBufCodecs.BOOL, AddLandmarkPayload::visibleToOtherPlayers,
       ::AddLandmarkPayload)
   }
 }

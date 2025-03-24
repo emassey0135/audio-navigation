@@ -35,7 +35,7 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
   fun addToDatabase(world: ServerLevel) {
     addToDatabaseMutex.lock()
     if (addToDatabaseStatement == null)
-      addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO pois (id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?6, ?4, ?5, ?1, ?2, ?3)")
+      addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO pois2 (id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, data, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?6, ?4, ?5, NULL, ?1, ?2, ?3)")
     addToDatabaseStatement?.setInt(1, pos.getX())
     addToDatabaseStatement?.setInt(2, pos.getY())
     addToDatabaseStatement?.setInt(3, pos.getZ())
@@ -54,7 +54,7 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos) {
     fun deleteLandmark(id: Int) {
       deleteLandmarkMutex.lock()
       if (deleteLandmarkStatement==null)
-        deleteLandmarkStatement = Database.connection.prepareStatement("DELETE FROM pois WHERE id = ?1")
+        deleteLandmarkStatement = Database.connection.prepareStatement("DELETE FROM pois2 WHERE id = ?1")
       deleteLandmarkStatement?.setInt(1, id)
       deleteLandmarkStatement?.executeUpdate()
       deleteLandmarkMutex.unlock()

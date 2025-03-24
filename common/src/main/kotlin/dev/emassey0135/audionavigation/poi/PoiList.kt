@@ -80,7 +80,7 @@ class PoiList(list: List<PoiListItem>) {
       getNearestMutex.lock()
       currentPoiRequest = poiRequest
       if (getNearestStatement==null)
-        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, filterPoi(type, name, x, y, z) AS distance FROM pois WHERE distance >= 0 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, x, y, z, filterPoi(type, name, x, y, z) AS distance FROM pois2 WHERE distance >= 0 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
       getNearestStatement?.setInt(1, poiRequest.pos.getX())
       getNearestStatement?.setInt(2, poiRequest.pos.getY())
       getNearestStatement?.setInt(3, poiRequest.pos.getZ())

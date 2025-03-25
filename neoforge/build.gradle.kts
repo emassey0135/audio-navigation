@@ -61,8 +61,8 @@ dependencies {
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-macos-arm64")
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-windows")
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-windows-arm64")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.8.0")
-  shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.8.0")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.7.3")
+  shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.7.3")
   common(project(":common", "namedElements")) { isTransitive = false }
   shadowBundle(project(":common", "transformProductionNeoForge"))
   common(project(":common-fabric-neoforge", "namedElements")) { isTransitive = false }
@@ -79,6 +79,13 @@ tasks.processResources {
 tasks.shadowJar {
   configurations = listOf(shadowBundle, shadow)
   archiveClassifier.set("dev-shadow")
+  exclude("kotlin/")
+  exclude("kotlinx/serialization/*.class")
+  exclude("kotlinx/serialization/builtins/")
+  exclude("kotlinx/serialization/descriptors/")
+  exclude("kotlinx/serialization/encoding/")
+  exclude("kotlinx/serialization/internal/")
+  exclude("kotlinx/serialization/modules/")
   exclude("org/lwjgl/*.class")
   exclude("org/lwjgl/system/")
   exclude("org/sqlite/native/*/arm/")

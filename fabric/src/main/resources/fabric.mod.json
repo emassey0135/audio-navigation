@@ -38,7 +38,7 @@
     "java": ">=21",
     "architectury": ">=15.0.3",
     "fabric-api": ">=0.119.2",
-    "fabric-language-kotlin": ">=1.13.1",
+    "fabric-language-kotlin": ">=1.13.2",
     "fzzy_config": ">=0.6.7"
   },
   "suggests": {

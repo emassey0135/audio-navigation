@@ -1,7 +1,7 @@
 plugins {
   id("io.papermc.paperweight.userdev")
   id("io.github.dueris.eclipse.gradle")
-  kotlin("plugin.serialization") version "2.1.20"
+  kotlin("plugin.serialization")
 }
 val sqlite_jdbc_version: String by project
 dependencies {

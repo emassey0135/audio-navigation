@@ -73,6 +73,13 @@ tasks.processResources {
 tasks.shadowJar {
   configurations = listOf(shadowBundle, shadow)
   archiveClassifier.set("dev-shadow")
+  exclude("kotlin/")
+  exclude("kotlinx/serialization/*.class")
+  exclude("kotlinx/serialization/builtins/")
+  exclude("kotlinx/serialization/descriptors/")
+  exclude("kotlinx/serialization/encoding/")
+  exclude("kotlinx/serialization/internal/")
+  exclude("kotlinx/serialization/modules/")
   exclude("org/lwjgl/*.class")
   exclude("org/lwjgl/system/")
   exclude("org/sqlite/native/*/arm/")

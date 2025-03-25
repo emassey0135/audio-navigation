@@ -3,6 +3,7 @@ package dev.emassey0135.audionavigation
 import java.util.UUID
 import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
 import org.slf4j.LoggerFactory
 import dev.emassey0135.audionavigation.config.ServerConfiguration
 import dev.emassey0135.audionavigation.packets.PoiListPayload
@@ -20,8 +21,8 @@ object AudioNavigation {
   @JvmField val logger = LoggerFactory.getLogger(MOD_ID)
   var platform: AudioNavigationPlatform? = null
   var config: ServerConfiguration? = null
-  fun respondToPoiRequest(world: ServerLevel, payload: PoiRequestPayload): PoiListPayload {
-    val poiList = PoiList.getNearest(world, payload.poiRequest)
+  fun respondToPoiRequest(world: ServerLevel, player: ServerPlayer, payload: PoiRequestPayload): PoiListPayload {
+    val poiList = PoiList.getNearest(world, player, payload.poiRequest)
     return PoiListPayload(payload.requestID, poiList)
   }
   fun initialize(audioNavigationPlatform: AudioNavigationPlatform, serverConfig: ServerConfiguration) {

@@ -33,7 +33,7 @@ object AudioNavigationNeoforge {
   @SubscribeEvent fun registerNetworkHandlers(event: RegisterPayloadHandlersEvent) {
     val registrar = event.registrar("1")
     registrar.playToServer(PoiRequestPayload.ID, PoiRequestPayload.CODEC, { payload: PoiRequestPayload, context: IPayloadContext ->
-        context.reply(AudioNavigation.respondToPoiRequest(context.player().level() as ServerLevel, payload))
+        context.reply(AudioNavigation.respondToPoiRequest(context.player().level() as ServerLevel, context.player() as ServerPlayer, payload))
       })
     registrar.playToClient(PoiListPayload.ID, PoiListPayload.CODEC, { payload: PoiListPayload, context: IPayloadContext ->
         AudioNavigationClient.handlePoiList(payload)

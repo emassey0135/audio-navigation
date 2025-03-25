@@ -5,11 +5,15 @@ import java.sql.DriverManager
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.Optional
 import kotlin.concurrent.thread
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.protobuf.ProtoBuf
 import org.sqlite.Function
 import org.sqlite.SQLiteConfig
 import net.minecraft.core.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.poi.Poi
+import dev.emassey0135.audionavigation.poi.PoiData
 import dev.emassey0135.audionavigation.poi.PoiList
 import dev.emassey0135.audionavigation.poi.PoiType
 
@@ -25,15 +29,20 @@ object Database {
       }
   }
   class FilterPoiFunction(): Function() {
+    @OptIn(ExperimentalSerializationApi::class)
     override protected fun xFunc() {
-      if (args()!=5)
-        error("Invalid number of arguments passed to distance function")
+      if (args()!=6)
+        error("Invalid number of arguments passed to filterPoi function")
       val type = PoiType.entries.get(value_int(0))
       val name = value_text(1)
       val x = value_double(2).toInt()
       val y = value_double(3).toInt()
       val z = value_double(4).toInt()
-      result(PoiList.filterPoi(Poi(type, name, BlockPos(x, y, z), Optional.empty())))
+      val dataBinary = value_blob(5)
+      var data: Optional<PoiData> = Optional.empty()
+      if (dataBinary!=null)
+        data = Optional.of(ProtoBuf.decodeFromByteArray(dataBinary))
+      result(PoiList.filterPoi(Poi(type, name, BlockPos(x, y, z), data)))
     }
   }
   fun initialize() {
@@ -46,7 +55,7 @@ object Database {
         it.execute("VACUUM")
       }
     }
-    Function.create(connection, "filterPoi", FilterPoiFunction(), 5, Function.FLAG_DETERMINISTIC)
+    Function.create(connection, "filterPoi", FilterPoiFunction(), 6, Function.FLAG_DETERMINISTIC)
     connection.setAutoCommit(false)
     AudioNavigation.logger.info("Database initialized.")
   }

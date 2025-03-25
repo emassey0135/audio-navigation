@@ -2,6 +2,7 @@ package dev.emassey0135.audionavigation.poi
 
 import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
+import java.util.UUID
 import java.util.Optional
 import kotlin.math.abs
 import kotlinx.serialization.decodeFromByteArray
@@ -12,6 +13,7 @@ import net.minecraft.core.UUIDUtil
 import net.minecraft.network.codec.ByteBufCodecs
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.util.Database
 
@@ -51,6 +53,7 @@ class PoiList(list: List<PoiListItem>) {
   }
   companion object {
     var currentPoiRequest: PoiRequest? = null
+    var currentPlayerUUID: UUID? = null
     fun filterPoi(poi: Poi): Double {
       val pos = currentPoiRequest!!.pos
       val radius = currentPoiRequest!!.radius
@@ -64,11 +67,13 @@ class PoiList(list: List<PoiListItem>) {
         distance > radius -> -1.0
         distance > config.radiusLimit -> -1.0
         verticalLimit.isPresent() && (abs(poi.pos.getY()-pos.getY()) > verticalLimit.get()) -> -1.0
+        (poi.type==PoiType.LANDMARK) && poi.data.isPresent() && !(poi.data.get().visibleToOtherPlayers) && (poi.data.get().player!=currentPlayerUUID) -> -1.0
         includedFeatures.isPresent() && (poi.type == PoiType.FEATURE) && (poi.name !in includedFeatures.get()) -> -1.0
         (poi.type == PoiType.FEATURE) && (poi.name !in config.allowedFeatures) -> -1.0
         else -> distance
       }
     }
+    @OptIn(ExperimentalSerializationApi::class)
     private fun getFromDatabase(query: PreparedStatement): PoiList {
       val poiList = PoiList()
       query.executeQuery().use {
@@ -89,11 +94,12 @@ class PoiList(list: List<PoiListItem>) {
     }
     var getNearestStatement: PreparedStatement? = null
     val getNearestMutex = ReentrantLock()
-    fun getNearest(world: ServerLevel, poiRequest: PoiRequest): PoiList {
+    fun getNearest(world: ServerLevel, player: ServerPlayer, poiRequest: PoiRequest): PoiList {
       getNearestMutex.lock()
       currentPoiRequest = poiRequest
+      currentPlayerUUID = player.getUUID()
       if (getNearestStatement==null)
-        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, data, x, y, z, filterPoi(type, name, x, y, z) AS distance FROM pois2 WHERE distance >= 0 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, data, x, y, z, filterPoi(type, name, x, y, z, data) AS distance FROM pois2 WHERE distance >= 0 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
       getNearestStatement?.setInt(1, poiRequest.pos.getX())
       getNearestStatement?.setInt(2, poiRequest.pos.getY())
       getNearestStatement?.setInt(3, poiRequest.pos.getZ())

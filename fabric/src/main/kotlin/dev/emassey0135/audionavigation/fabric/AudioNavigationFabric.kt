@@ -27,7 +27,7 @@ object AudioNavigationFabric: ModInitializer {
     PayloadTypeRegistry.playC2S().register(AddLandmarkPayload.ID, AddLandmarkPayload.CODEC)
     PayloadTypeRegistry.playC2S().register(DeleteLandmarkPayload.ID, DeleteLandmarkPayload.CODEC)
     ServerPlayNetworking.registerGlobalReceiver(PoiRequestPayload.ID, { payload: PoiRequestPayload, context: ServerPlayNetworking.Context ->
-        context.responseSender().sendPacket(AudioNavigation.respondToPoiRequest(context.player().level() as ServerLevel, payload))
+        context.responseSender().sendPacket(AudioNavigation.respondToPoiRequest(context.player().level() as ServerLevel, context.player(), payload))
       })
     ServerPlayNetworking.registerGlobalReceiver(AddLandmarkPayload.ID, { payload: AddLandmarkPayload, context: ServerPlayNetworking.Context ->
         Landmarks.addLandmark(context.player().level() as ServerLevel, context.player(), payload.name, payload.pos, payload.visibleToOtherPlayers)

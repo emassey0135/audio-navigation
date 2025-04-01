@@ -29,3 +29,7 @@ jobs:
         run: "gh release upload ${{ github.event.release.tag_name }} neoforge/build/libs/audio_navigation-neoforge-${{ github.ref_name }}.jar"
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
+      - name: upload paper build
+        run: "gh release upload ${{ github.event.release.tag_name }} paper/build/libs/audio_navigation-paper-${{ github.ref_name }}-all.jar"
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}

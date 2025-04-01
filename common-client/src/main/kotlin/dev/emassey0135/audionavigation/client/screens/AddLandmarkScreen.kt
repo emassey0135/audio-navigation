@@ -27,10 +27,10 @@ class AddLandmarkScreen(val parent: Screen): Screen(Component.translatable("${Au
     Minecraft.getInstance()?.setScreen(parent)
   }
   override fun init() {
-    val landmarkNameTextField = EditBox(font, 10, 10, width-20, 50, Component.translatable("${AudioNavigation.MOD_ID}.screens.add_landmark.landmark_name_text_field"))
-    landmarkNameTextField.setHint(Component.translatable("${AudioNavigation.MOD_ID}.screens.add_landmark.landmark_name_text_field"))
-    landmarkNameTextField.setResponder { text -> landmarkName = text }
-    addRenderableWidget(landmarkNameTextField)
+    addRenderableWidget(EditBox(font, 10, 10, width-20, 50, Component.translatable("${AudioNavigation.MOD_ID}.screens.add_landmark.landmark_name_text_field")).also {
+      it.setHint(Component.translatable("${AudioNavigation.MOD_ID}.screens.add_landmark.landmark_name_text_field"))
+      it.setResponder { text -> landmarkName = text }
+    })
     addRenderableWidget(Checkbox.builder(Component.translatable("${AudioNavigation.MOD_ID}.screens.add_landmark.visible_to_other_players_checkbox"), font)
       .pos(10, 110)
       .tooltip(Tooltip.create(Component.translatable("${AudioNavigation.MOD_ID}.screens.add_landmark.visible_to_other_players_checkbox.tooltip")))

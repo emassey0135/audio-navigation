@@ -19,6 +19,7 @@ object Translation {
     return "($xString, $yString, $zString)"
   }
   fun translateFeatureName(identifier: String): String {
+    val identifier = if (Features.duplicateFeatures.containsKey(identifier)) Features.duplicateFeatures.get(identifier)!! else identifier
     if (identifier in Features.features)
       return I18n.get("${AudioNavigation.MOD_ID}.features.$identifier")
     else

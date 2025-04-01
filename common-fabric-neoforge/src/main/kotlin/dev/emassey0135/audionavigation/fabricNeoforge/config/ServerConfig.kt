@@ -1,7 +1,7 @@
 package dev.emassey0135.audionavigation.fabricNeoforge.config
 
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
-import me.fzzyhmstrs.fzzy_config.api.SaveType
+import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import me.fzzyhmstrs.fzzy_config.config.Config
 import me.fzzyhmstrs.fzzy_config.config.ConfigAction
 import me.fzzyhmstrs.fzzy_config.screen.widget.TextureIds
@@ -15,7 +15,6 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.poi.Features
 
 class ServerConfig: Config(ResourceLocation.fromNamespaceAndPath(AudioNavigation.MOD_ID, "server_config")) {
-  override fun saveType() = SaveType.SEPARATE
   var allowedFeatures: ValidatedChoiceList<String> = ValidatedChoiceList(Features.features.toList(), Features.features.toList(), ValidatedString(), { identifier, _ -> Component.translatable("${AudioNavigation.MOD_ID}.features.$identifier") })
     .also { it.listenToEntry { value -> AudioNavigation.config?.allowedFeatures = value.get() }}
   var resetAllowedFeatures = ConfigAction(
@@ -29,7 +28,7 @@ class ServerConfig: Config(ResourceLocation.fromNamespaceAndPath(AudioNavigation
   companion object {
     var instance: ServerConfig? = null
     fun initialize() {
-      instance = ConfigApi.registerAndLoadConfig(::ServerConfig)
+      instance = ConfigApi.registerAndLoadConfig(::ServerConfig, RegisterType.SERVER)
     }
   }
 }

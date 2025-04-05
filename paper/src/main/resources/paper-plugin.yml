@@ -1,13 +1,13 @@
-name: AudioNavigation
-version: $version
+name: ${mod_name}
+version: ${version}
 main: dev.emassey0135.audionavigation.paper.AudioNavigationPaper
-description: A mod that adds audio navigation features for the blind, inspired by Soundscape
-author: Elijah Massey
-website: https://github.com/emassey0135/audio-navigation
-api-version: 1.21.4
+description: ${mod_description}
+author: ${mod_author}
+website: ${mod_github_url}
+api-version: ${paper_api_version}
 load: STARTUP
-prefix: audio_navigation
-mixins: [audio_navigation-common.mixins.json]
+prefix: ${mod_id}
+mixins: [${common_mixins_file}]
 dependencies:
   bootstrap:
     Eclipse:

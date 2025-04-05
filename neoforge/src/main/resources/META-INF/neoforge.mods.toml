@@ -1,59 +1,57 @@
 modLoader = "kotlinforforge"
 loaderVersion = "[1,)"
-issueTrackerURL = "https://github.com/emassey0135/audio-navigation/issues"
-license = "GPL-3.0"
+issueTrackerURL = "${mod_github_url}/issues"
+license = "${mod_license}"
 
 [[mods]]
-modId = "audio_navigation"
+modId = "${mod_id}"
 version = "${version}"
-displayName = "Audio Navigation"
-authors = "Elijah Massey"
-description = '''
-A mod that adds audio navigation features for the blind, inspired by Soundscape
-'''
-displayUrl = "https://github.com/emassey0135/audio-navigation"
-logo = "assets/audio_navigation/icon.png"
+displayName = "${mod_name}"
+authors = "${mod_author}"
+description = "${mod_description}"
+displayUrl = "${mod_github_url}"
+logo = "${mod_icon}"
 
 [[dependencies.audio_navigation]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.4,)"
+versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.4,)"
+versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
 modId = "architectury"
 type = "required"
-versionRange = "[15.0.3,)"
+versionRange = "[${architectury_api_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
 modId = "kotlinforforge"
 type = "required"
-versionRange = "[1.16.0,)"
+versionRange = "[${kotlin_for_forge_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
 modId = "fzzy_config"
 type = "required"
-versionRange = "[0.6.7,)"
+versionRange = "[${fzzy_config_neoforge_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
 modId = "minecraft_access"
 type = "optional"
-versionRange = "[1.9.0,)"
+versionRange = "[${minecraft_access_version},)"
 side = "CLIENT"
 
 [[mixins]]
-config = "audio_navigation-common.mixins.json"
+config = "${common_mixins_file}"

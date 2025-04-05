@@ -66,9 +66,35 @@ dependencies {
   shadowBundle(project(":common-client", "transformProductionFabric"))
 }
 val version: String by project
+val mod_id: String by project
+val mod_name: String by project
+val mod_description: String by project
+val mod_icon: String by project
+val mod_author: String by project
+val mod_github_url: String by project
+val mod_license: String by project
+val common_mixins_file: String by project
+val minecraft_access_version: String by project
 tasks.processResources {
   filesMatching("fabric.mod.json") {
-    expand(mapOf("version" to version))
+    expand(mapOf(
+      "version" to version,
+      "mod_id" to mod_id,
+      "mod_name" to mod_name,
+      "mod_description" to mod_description,
+      "mod_icon" to mod_icon,
+      "mod_author" to mod_author,
+      "mod_github_url" to mod_github_url,
+      "mod_license" to mod_license,
+      "common_mixins_file" to common_mixins_file,
+      "fabric_loader_version" to fabric_loader_version,
+      "minecraft_version" to minecraft_version,
+      "architectury_api_version" to architectury_api_version,
+      "fabric_api_version" to fabric_api_version.replace("\\+.*".toRegex(), ""),
+      "fabric_kotlin_version" to fabric_kotlin_version.replace("\\+.*".toRegex(), ""),
+      "fzzy_config_version" to fzzy_config_version.replace("\\+.*".toRegex(), ""),
+      "minecraft_access_version" to minecraft_access_version,
+    ))
   }
 }
 tasks.shadowJar {

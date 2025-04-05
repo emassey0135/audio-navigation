@@ -72,9 +72,34 @@ dependencies {
   shadowBundle(project(":common-client", "transformProductionNeoForge"))
 }
 val version: String by project
+val mod_github_url: String by project
+val mod_license: String by project
+val mod_id: String by project
+val mod_name: String by project
+val mod_author: String by project
+val mod_description: String by project
+val mod_icon: String by project
+val minecraft_access_version: String by project
+val common_mixins_file: String by project
 tasks.processResources {
   filesMatching("META-INF/neoforge.mods.toml") {
-    expand(mapOf("version" to version))
+    expand(mapOf(
+      "version" to version,
+      "mod_github_url" to mod_github_url,
+      "mod_license" to mod_license,
+      "mod_id" to mod_id,
+      "mod_name" to mod_name,
+      "mod_author" to mod_author,
+      "mod_description" to mod_description,
+      "mod_icon" to mod_icon,
+      "neoforge_version" to neoforge_version.replace("\\.[^\\.]*$".toRegex(), ""),
+      "minecraft_version" to minecraft_version,
+      "architectury_api_version" to architectury_api_version,
+      "kotlin_for_forge_version" to kotlin_for_forge_version,
+      "fzzy_config_neoforge_version" to fzzy_config_neoforge_version.replace("\\+.*".toRegex(), ""),
+      "minecraft_access_version" to minecraft_access_version,
+      "common_mixins_file" to common_mixins_file,
+    ))
   }
 }
 tasks.shadowJar {

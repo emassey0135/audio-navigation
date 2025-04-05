@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "id": "audio_navigation",
+  "id": "${mod_id}",
   "version": "${version}",
-  "name": "Audio Navigation",
-  "description": "A mod that adds audio navigation features for the blind, inspired by Soundscape",
-  "icon": "assets/audio_navigation/icon.png",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "icon": "${mod_icon}",
   "authors": [
-    "Elijah Massey"
+    "${mod_author}"
   ],
   "contact": {
-    "homepage": "https://github.com/emassey0135/audio-navigation",
-    "issues": "https://github.com/emassey0135/audio-navigation/issues",
-    "sources": "https://github.com/emassey0135/audio-navigation"
+    "homepage": "${mod_github_url}",
+    "issues": "${mod_github_url}/issues",
+    "sources": "${mod_github_url}"
   },
-  "license": "GPL-3.0",
+  "license": "${mod_license}",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -30,18 +30,18 @@
     ]
   },
   "mixins": [
-    "audio_navigation-common.mixins.json"
+    "${common_mixins_file}"
   ],
   "depends": {
-    "fabricloader": ">=0.16.10",
-    "minecraft": "~1.21.4",
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "~${minecraft_version}",
     "java": ">=21",
-    "architectury": ">=15.0.3",
-    "fabric-api": ">=0.119.2",
-    "fabric-language-kotlin": ">=1.13.2",
-    "fzzy_config": ">=0.6.7"
+    "architectury": ">=${architectury_api_version}",
+    "fabric-api": ">=${fabric_api_version}",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}",
+    "fzzy_config": ">=${fzzy_config_version}"
   },
   "suggests": {
-    "minecraft_access": ">=1.9.0"
+    "minecraft_access": ">=${minecraft_access_version}"
   }
 }

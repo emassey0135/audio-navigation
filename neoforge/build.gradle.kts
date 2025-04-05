@@ -44,6 +44,7 @@ val architectury_api_version: String by project
 val fzzy_config_neoforge_version: String by project
 val sqlite_jdbc_version: String by project
 val lwjgl_version: String by project
+val kotlinx_serialization_neoforge_version: String by project
 dependencies {
   minecraft("net.minecraft:minecraft:$minecraft_version")
   mappings(loom.officialMojangMappings())
@@ -61,8 +62,8 @@ dependencies {
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-macos-arm64")
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-windows")
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-windows-arm64")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.7.3")
-  shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.7.3")
+  implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_neoforge_version")
+  shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_neoforge_version")
   common(project(":common", "namedElements")) { isTransitive = false }
   shadowBundle(project(":common", "transformProductionNeoForge"))
   common(project(":common-fabric-neoforge", "namedElements")) { isTransitive = false }

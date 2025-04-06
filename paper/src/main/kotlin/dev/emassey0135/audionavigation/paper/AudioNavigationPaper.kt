@@ -21,9 +21,10 @@ class AudioNavigationPaper(): JavaPlugin(), PluginMessageListener {
   override fun onEnable() {
     val config = this.getConfig()
     config.options().copyDefaults(true)
+    config.addDefault("restrict-features", false)
     config.addDefault("allowed-features", Features.features.toList())
     config.addDefault("radius-limit", 67108864)
-    val serverConfig = ServerConfiguration(config.getStringList("allowed-features"), config.getInt("radius-limit"))
+    val serverConfig = ServerConfiguration(config.getBoolean("restrict-features"), config.getStringList("allowed-features"), config.getInt("radius-limit"))
     this.getServer().getMessenger().registerIncomingPluginChannel(this, PacketIdentifiers.POI_REQUEST_ID.toString(), this)
     this.getServer().getMessenger().registerOutgoingPluginChannel(this, PacketIdentifiers.POI_LIST_ID.toString())
     this.getServer().getMessenger().registerIncomingPluginChannel(this, PacketIdentifiers.ADD_LANDMARK_ID.toString(), this)

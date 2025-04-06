@@ -69,7 +69,7 @@ class PoiList(list: List<PoiListItem>) {
         verticalLimit.isPresent() && (abs(poi.pos.getY()-pos.getY()) > verticalLimit.get()) -> -1.0
         (poi.type==PoiType.LANDMARK) && poi.data.isPresent() && !(poi.data.get().visibleToOtherPlayers) && (poi.data.get().player!=currentPlayerUUID) -> -1.0
         includedFeatures.isPresent() && (poi.type == PoiType.FEATURE) && (poi.name !in includedFeatures.get()) -> -1.0
-        (poi.type == PoiType.FEATURE) && (poi.name !in config.allowedFeatures) -> -1.0
+        config.restrictFeatures && (poi.type == PoiType.FEATURE) && (poi.name !in config.allowedFeatures) -> -1.0
         else -> distance
       }
     }

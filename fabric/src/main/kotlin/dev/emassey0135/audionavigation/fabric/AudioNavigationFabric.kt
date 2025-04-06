@@ -9,7 +9,6 @@ import net.minecraft.core.UUIDUtil
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel;
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.config.ServerConfiguration
 import dev.emassey0135.audionavigation.fabricNeoforge.config.ServerConfig
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
@@ -36,7 +35,7 @@ object AudioNavigationFabric: ModInitializer {
         Landmarks.deleteLandmark(payload.landmarkID)
       })
     ServerConfig.initialize()
-    val config = ServerConfiguration(ServerConfig.instance!!.allowedFeatures.get(), ServerConfig.instance!!.radiusLimit.get())
+    val config = ServerConfig.createServerConfiguration()
     AudioNavigation.initialize(AudioNavigationPlatformImpl(), config)
   }
 }

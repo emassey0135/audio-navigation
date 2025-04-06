@@ -20,18 +20,25 @@ class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
     return Vec3(x, y, z)
   }
   fun horizontalDifference(orientation: Orientation): Double {
-    var angle1 = horizontalAngle
-    var angle2 = orientation.horizontalAngle
-    if (angle1<0.0)
-      angle1+=360.0
-    if (angle2<0.0)
-      angle2+=360.0
-    if (angle1>360.0)
-      angle1-=360.0
-    if (angle2>360.0)
-      angle2-=360.0
+    var angle1 = normalizeAngleToPositive(horizontalAngle)
+    var angle2 = normalizeAngleToPositive(orientation.horizontalAngle)
     val result =  abs(angle1-angle2)
     return if (result>180.0) 360.0-result else result
+  }
+  private fun horizontalSignedDifference(orientation: Orientation): Double {
+    var angle1 = normalizeAngleToPositive(horizontalAngle)
+    var angle2 = normalizeAngleToPositive(orientation.horizontalAngle)
+    val result =  angle2-angle1
+    return normalizeAngle(result)
+  }
+  private fun verticalSignedDifference(orientation: Orientation): Double {
+    var angle1 = normalizeAngleToPositive(verticalAngle)
+    var angle2 = normalizeAngleToPositive(orientation.verticalAngle)
+    val result =  angle2-angle1
+    return normalizeAngle(result)
+  }
+  fun signedDifference(orientation: Orientation): Orientation {
+    return Orientation(this.verticalSignedDifference(orientation), this.horizontalSignedDifference(orientation))
   }
   companion object {
     private fun normalizeAngle(angle: Double): Double {
@@ -39,6 +46,14 @@ class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
       if (newAngle<-180.0)
         newAngle+=360.0
       if (newAngle>180.0)
+        newAngle-=360.0
+      return newAngle
+    }
+    private fun normalizeAngleToPositive(angle: Double): Double {
+      var newAngle = angle%360.0
+      if (newAngle<0.0)
+        newAngle+=360.0
+      if (newAngle>360.0)
         newAngle-=360.0
       return newAngle
     }

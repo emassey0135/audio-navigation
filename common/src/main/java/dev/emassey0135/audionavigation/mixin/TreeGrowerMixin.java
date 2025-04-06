@@ -47,19 +47,19 @@ public class TreeGrowerMixin {
 						if (isTwoByTwoSapling(state, world, pos, i, j)) {
 							ConfiguredFeature<?, ?> configuredFeature = holder.value();
 							BlockState blockState = Blocks.AIR.defaultBlockState();
-							world.setBlock(pos.offset(i, 0, j), blockState, 4);
-							world.setBlock(pos.offset(i + 1, 0, j), blockState, 4);
-							world.setBlock(pos.offset(i, 0, j + 1), blockState, 4);
-							world.setBlock(pos.offset(i + 1, 0, j + 1), blockState, 4);
+							world.setBlock(pos.offset(i, 0, j), blockState, 260);
+							world.setBlock(pos.offset(i + 1, 0, j), blockState, 260);
+							world.setBlock(pos.offset(i, 0, j + 1), blockState, 260);
+							world.setBlock(pos.offset(i + 1, 0, j + 1), blockState, 260);
 							if (configuredFeature.place(world, chunkGenerator, random, pos.offset(i, 0, j))) {
 								Features.addFeatureToDatabase(resourceKey.location().getPath(), pos.offset(i, 0, j), world);
 								return true;
 							}
 
-							world.setBlock(pos.offset(i, 0, j), state, 4);
-							world.setBlock(pos.offset(i + 1, 0, j), state, 4);
-							world.setBlock(pos.offset(i, 0, j + 1), state, 4);
-							world.setBlock(pos.offset(i + 1, 0, j + 1), state, 4);
+							world.setBlock(pos.offset(i, 0, j), state, 260);
+							world.setBlock(pos.offset(i + 1, 0, j), state, 260);
+							world.setBlock(pos.offset(i, 0, j + 1), state, 260);
+							world.setBlock(pos.offset(i + 1, 0, j + 1), state, 260);
 							return false;
 						}
 					}
@@ -80,7 +80,7 @@ public class TreeGrowerMixin {
 			} else {
 				ConfiguredFeature<?, ?> configuredFeature2 = holder2.value();
 				BlockState blockState2 = world.getFluidState(pos).createLegacyBlock();
-				world.setBlock(pos, blockState2, 4);
+				world.setBlock(pos, blockState2, 260);
 				if (configuredFeature2.place(world, chunkGenerator, random, pos)) {
 					if (world.getBlockState(pos) == blockState2) {
 						world.sendBlockUpdated(pos, state, blockState2, 2);
@@ -89,7 +89,7 @@ public class TreeGrowerMixin {
 					Features.addFeatureToDatabase(resourceKey2.location().getPath(), pos, world);
 					return true;
 				} else {
-					world.setBlock(pos, state, 4);
+					world.setBlock(pos, state, 260);
 					return false;
 				}
 			}

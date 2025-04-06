@@ -4,6 +4,7 @@ import java.lang.Thread
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.Optional
 import kotlin.concurrent.thread
+import kotlin.math.abs
 import org.lwjgl.openal.AL11
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
@@ -56,8 +57,8 @@ object Beacon {
             Opus.playOpusFromResource("beacon", "assets/${AudioNavigation.MOD_ID}/audio/Beacons/Route/Route_Start.ogg")
             waitUntilStopped()
           }
-          val angleBetween = Orientation.horizontalAngleBetween(origin, currentBeacon.get().pos)
-          val angleDifference = orientation.horizontalDifference(angleBetween)
+          val angleBetween = Orientation.angleBetween(origin, currentBeacon.get().pos)
+          val angleDifference = abs(orientation.horizontalDifference(angleBetween))
           val distance = currentBeacon.get().distance(origin)
           if (distance <= config.arrivalDistance.get()) {
             if (config.playStartAndArrivalSounds.get()) {

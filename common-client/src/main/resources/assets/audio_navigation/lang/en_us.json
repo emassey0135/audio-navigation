@@ -1,6 +1,7 @@
 {
   "audio_navigation.angle.angle_with_direction": "%1$s %2$s",
   "audio_navigation.angle.degrees": "%1$s degrees",
+  "audio_navigation.angle.degrees_negative": "negative %1$s degrees",
   "audio_navigation.client_config": "Client Settings",
   "audio_navigation.client_config.announcements": "Automatic Announcements Settings",
   "audio_navigation.client_config.announcements.enableAutomaticAnnouncements": "Enable Automatic Announcements",
@@ -88,6 +89,17 @@
   "audio_navigation.client_config.sound.maxDistance.desc": "Maximum distance to decrease the volume of sounds and speech. Points of interest beyond this distance will sound like they are coming from this distance.",
   "audio_navigation.client_config.sound.rolloffFactor": "Rolloff Factor",
   "audio_navigation.client_config.sound.rolloffFactor.desc": "How much the volume is decreased as the sound gets farther away. Doubling this value will make POI announcements sound twice as far away.",
+  "audio_navigation.client_config.enums.horizontal_direction_type.CLOCK_HAND": "Clock Face (two o'clock)",
+  "audio_navigation.client_config.enums.horizontal_direction_type.DIRECTION_AND_ANGLE": "Direction with Angle in Degrees (60 degrees right)",
+  "audio_navigation.client_config.enums.horizontal_direction_type.DIRECTION": "Direction Only (right)",
+  "audio_navigation.client_config.enums.horizontal_direction_type.ANGLE": "Angle in Degrees Only (60 degrees)",
+  "audio_navigation.client_config.enums.horizontal_direction_type.COMPASS_DIRECTION": "Compass Direction (southeast)",
+  "audio_navigation.client_config.enums.vertical_direction_type.DIRECTION_AND_ANGLE": "Direction with Angle in Degrees Relative to You (45 degrees up)",
+  "audio_navigation.client_config.enums.vertical_direction_type.DIRECTION": "Direction Only Relative to You (up)",
+  "audio_navigation.client_config.enums.vertical_direction_type.ANGLE": "Angle in Degrees Only Relative to You (45 degrees)",
+  "audio_navigation.client_config.enums.vertical_direction_type.DIRECTION_AND_ANGLE": "Absolute Direction with Angle in Degrees (45 degrees up)",
+  "audio_navigation.client_config.enums.vertical_direction_type.DIRECTION": "Absolute Direction Only (up)",
+  "audio_navigation.client_config.enums.vertical_direction_type.ANGLE": "Absolute Angle in Degrees Only (45 degrees)",
   "audio_navigation.clock_hands.twelve": "twelve o'clock",
   "audio_navigation.clock_hands.one": "one o'clock",
   "audio_navigation.clock_hands.two": "two o'clock",
@@ -333,5 +345,6 @@
   "audio_navigation.vertical_directions.down": "down",
   "category.audio_navigation": "Audio Navigation",
   "key.audio_navigation.open_main_menu": "Open Main Menu",
-  "key.audio_navigation.announce_nearby_pois": "Announce Nearby POI's"
+  "key.audio_navigation.announce_nearby_pois": "Announce Nearby POI's",
+  "key.audio_navigation.stop_speech": "Stop Speech"
 }

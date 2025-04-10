@@ -1,5 +1,6 @@
 package dev.emassey0135.audionavigation.client.util
 
+import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.PI
@@ -7,6 +8,7 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
+import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
 import net.minecraft.client.resources.language.I18n
 import net.minecraft.core.BlockPos
 import net.minecraft.world.phys.Vec2
@@ -39,11 +41,13 @@ class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
       return I18n.get("${AudioNavigation.MOD_ID}.vertical_directions.${this.toString().lowercase()}")
     }
   }
-  enum class HorizontalDirectionType {
-    CLOCK_HAND, DIRECTION_AND_ANGLE, DIRECTION, ANGLE, COMPASS_DIRECTION
+  enum class HorizontalDirectionType: EnumTranslatable {
+    CLOCK_HAND, DIRECTION_AND_ANGLE, DIRECTION, ANGLE, COMPASS_DIRECTION;
+    override fun prefix(): String = "${AudioNavigation.MOD_ID}.client_config.enums.horizontal_direction_type"
   }
-  enum class VerticalDirectionType {
-    DIRECTION_AND_ANGLE, DIRECTION, ANGLE, ABSOLUTE_DIRECTION_AND_ANGLE, ABSOLUTE_DIRECTION, ABSOLUTE_ANGLE
+  enum class VerticalDirectionType: EnumTranslatable {
+    DIRECTION_AND_ANGLE, DIRECTION, ANGLE, ABSOLUTE_DIRECTION_AND_ANGLE, ABSOLUTE_DIRECTION, ABSOLUTE_ANGLE;
+    override fun prefix(): String = "${AudioNavigation.MOD_ID}.client_config.enums.vertical_direction_type"
   }
   fun toVector(): Vec3 {
     val verticalAngle = verticalAngle/180.0*PI
@@ -80,12 +84,12 @@ class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
     if (!includeVerticalDirection)
       return horizontalDirection
     val verticalDirection = when (verticalDirectionType) {
-      VerticalDirectionType.DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(difference.verticalAngle), angleToDirection(difference.verticalAngle).translate())
+      VerticalDirectionType.DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(abs(difference.verticalAngle)), angleToDirection(difference.verticalAngle).translate())
       VerticalDirectionType.DIRECTION -> angleToDirection(difference.verticalAngle).translate()
-      VerticalDirectionType.ANGLE -> angleToSpeakableString(difference.verticalAngle)
-      VerticalDirectionType.ABSOLUTE_DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(verticalAngle), angleToDirection(verticalAngle).translate())
+      VerticalDirectionType.ANGLE -> angleToSpeakableStringWithNegative(difference.verticalAngle)
+      VerticalDirectionType.ABSOLUTE_DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(abs(verticalAngle)), angleToDirection(verticalAngle).translate())
       VerticalDirectionType.ABSOLUTE_DIRECTION -> angleToDirection(verticalAngle).translate()
-      VerticalDirectionType.ABSOLUTE_ANGLE -> angleToSpeakableString(verticalAngle)
+      VerticalDirectionType.ABSOLUTE_ANGLE -> angleToSpeakableStringWithNegative(verticalAngle)
     }
     return "$horizontalDirection, $verticalDirection"
   }
@@ -143,7 +147,14 @@ class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
       }
     }
     private fun angleToSpeakableString(angle: Double): String {
-      return I18n.get("${AudioNavigation.MOD_ID}.angle.degrees", angle.roundToInt())
+      return I18n.get("${AudioNavigation.MOD_ID}.angle.degrees", normalizeAngleToPositive(angle).roundToInt())
+    }
+    private fun angleToSpeakableStringWithNegative(angle: Double): String {
+      val angle = normalizeAngle(angle)
+      if (angle<0.0)
+        return I18n.get("${AudioNavigation.MOD_ID}.angle.degrees_negative", abs(angle).roundToInt())
+      else
+        return I18n.get("${AudioNavigation.MOD_ID}.angle.degrees", angle.roundToInt())
     }
   }
 }

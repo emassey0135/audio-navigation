@@ -22,13 +22,14 @@ import dev.emassey0135.audionavigation.poi.PoiRequest
 import dev.emassey0135.audionavigation.poi.PoiType
 
 object PoiAnnouncements {
-  fun announcePoi(poi: Poi, distance: Double, playerPosition: BlockPos, playerOrientation: Orientation, announceDistance: Boolean, announceDirection: Boolean, includeVerticalDirection: Boolean, horizontalDirectionType: Orientation.HorizontalDirectionType, verticalDirectionType: Orientation.VerticalDirectionType) {
+  fun announcePoi(poi: Poi, distance: Double, playerPosition: BlockPos, playerOrientation: Orientation, announceDistance: Boolean, announceDirection: Boolean, includeVerticalDirection: Boolean, horizontalDirectionType: Orientation.HorizontalDirectionType, verticalDirectionType: Orientation.VerticalDirectionType, announceFromPoiPosition: Boolean) {
+    val pos = if (announceFromPoiPosition) poi.pos else playerPosition
     val sound = when (poi.type) {
       PoiType.LANDMARK -> "sense_mobility.ogg"
       PoiType.FEATURE -> "sense_poi.ogg"
       PoiType.STRUCTURE -> "sense_location.ogg"
     }
-    Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/audio/$sound", poi.pos)
+    Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/audio/$sound", pos)
     val name = when (poi.type) {
       PoiType.LANDMARK -> poi.name
       PoiType.FEATURE -> Translation.translateFeatureName(poi.name)
@@ -42,7 +43,7 @@ object PoiAnnouncements {
       !announceDistance && announceDirection -> "$name, $directionString"
       else -> "$name, $distanceString, $directionString"
     }
-    Speech.speak(text, poi.pos)
+    Speech.speak(text, pos)
   }
   private var oldPoiList = PoiList()
   private var mutex = ReentrantLock()
@@ -64,7 +65,7 @@ object PoiAnnouncements {
       }
       if (interruptSpeech)
         Speech.interrupt()
-      poiList.toList().forEach { poi -> announcePoi(poi.poi, poi.distance, origin, orientation, announceDistance, announceDirection, includeVerticalDirection, horizontalDirectionType, verticalDirectionType) }
+      poiList.toList().forEach { poi -> announcePoi(poi.poi, poi.distance, origin, orientation, announceDistance, announceDirection, includeVerticalDirection, horizontalDirectionType, verticalDirectionType, true) }
       mutex.unlock()
     })
     AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, PoiRequest(origin, radius, maxAnnouncements, verticalLimit, Optional.empty(), Optional.of(includedFeatures))))

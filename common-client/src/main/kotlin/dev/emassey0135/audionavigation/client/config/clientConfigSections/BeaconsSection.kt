@@ -10,6 +10,8 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedShort
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.features.Beacon
 import dev.emassey0135.audionavigation.client.sound.SoundPlayer
+import dev.emassey0135.audionavigation.client.util.Interval
+import dev.emassey0135.audionavigation.client.util.Orientation
 
 class BeaconsSection: ConfigSection() {
   var sound = ValidatedEnum(Sound.CURRENT, ValidatedEnum.WidgetType.CYCLING)
@@ -98,6 +100,13 @@ class BeaconsSection: ConfigSection() {
     abstract val behindSound: String?
     override fun prefix(): String = "${AudioNavigation.MOD_ID}.client_config.beacons.sound"
   }
+  var announcePeriodically = ValidatedBoolean(true).also { it.listenToEntry { value -> if (value.get()) Beacon.interval.beReady() }}
+  var announcementPeriod = ValidatedByte(30, 120, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS).also { it.listenToEntry { value -> Beacon.interval.setDelay(value.get().toLong(), Interval.Unit.Second) }}
+  var announceDistance = ValidatedBoolean(true)
+  var announceDirection = ValidatedBoolean(true)
+  var includeVerticalDirection = ValidatedBoolean(true)
+  var horizontalDirectionType = ValidatedEnum(Orientation.HorizontalDirectionType.CLOCK_HAND, ValidatedEnum.WidgetType.CYCLING)
+  var verticalDirectionType = ValidatedEnum(Orientation.VerticalDirectionType.DIRECTION_AND_ANGLE, ValidatedEnum.WidgetType.CYCLING)
   var arrivalDistance = ValidatedByte(1)
   var playStartAndArrivalSounds = ValidatedBoolean(true)
   var maxOnAxisAngle = ValidatedShort(15, 90, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS)

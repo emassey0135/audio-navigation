@@ -46,11 +46,13 @@ object AudioNavigationClient {
   private val interval = Interval.sec(5)
   private val OPEN_MAIN_MENU_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.open_main_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_F6, "category.${AudioNavigation.MOD_ID}")
   private val ANNOUNCE_NEARBY_POIS_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.announce_nearby_pois", InputConstants.Type.KEYSYM, InputConstants.KEY_F7, "category.${AudioNavigation.MOD_ID}")
+  private val ANNOUNCE_BEACON_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.announce_beacon", InputConstants.Type.KEYSYM, InputConstants.KEY_F8, "category.${AudioNavigation.MOD_ID}")
   private val STOP_SPEECH_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.stop_speech", InputConstants.Type.KEYSYM, InputConstants.KEY_F9, "category.${AudioNavigation.MOD_ID}")
   fun initialize() {
     Library.initialize()
     KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYMAPPING)
     KeyMappingRegistry.register(ANNOUNCE_NEARBY_POIS_KEYMAPPING)
+    KeyMappingRegistry.register(ANNOUNCE_BEACON_KEYMAPPING)
     KeyMappingRegistry.register(STOP_SPEECH_KEYMAPPING)
     interval.beReady()
     val minecraftClient = Minecraft.getInstance()
@@ -67,6 +69,8 @@ object AudioNavigationClient {
         minecraftClient.setScreen(MainMenuScreen())
       while (ANNOUNCE_NEARBY_POIS_KEYMAPPING.consumeClick())
         PoiAnnouncements.triggerManualAnnouncements()
+      while (ANNOUNCE_BEACON_KEYMAPPING.consumeClick())
+        Beacon.announceBeacon()
       while (STOP_SPEECH_KEYMAPPING.consumeClick())
         Speech.interrupt()
       if (interval.isReady()) {

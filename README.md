@@ -6,7 +6,7 @@ It runs on both Fabric and NeoForge (on both servers and clients), and the serve
 
 ## Dependencies
 
-This mod runs on either Fabric or NeoForge, and depends on the following mods:
+This mod runs on either Fabric, NeoForge, or Paper/Purpur, and depends on the following mods:
 
 * Fabric API (Fabric only)
 * Fabric Language Kotlin (Fabric only)
@@ -15,7 +15,7 @@ This mod runs on either Fabric or NeoForge, and depends on the following mods:
 * Fzzy Config (Fabric and NeoForge only)
 * Eclipse (Paper and Purpur only)
 
-Also, it uses a [native library](https://github.com/emassey0135/audio-navigation-tts) for speech synthesis, which is downloaded automatically on first launch. The library is compiled for Windows, MacOS, and Linux, for both x86_64 and aarch64. Create an issue if you use an unsupported operating system or architecture and I will try to add it. The mod verifies the hash of the downloaded file to make sure it downloads correctly.
+Also, it uses a [native library](https://github.com/emassey0135/audio-navigation-tts) for speech synthesis, which is downloaded automatically on first launch. The library is compiled for Windows, MacOS, and Linux, for both x86_64 and aarch64. Create an issue if you use an unsupported operating system or architecture and I will try to add it. The mod verifies the hash of the downloaded file to make sure it downloads correctly. The native library is not downloaded or used on dedicated servers.
 
 You can also download the library yourself from [the release page](https://github.com/emassey0135/audio-navigation-tts/releases/tag/0.3.1). Download the correct file for your operating system and architecture, place it in your .minecraft folder, and extract the espeak-ng-data folder from espeak-ng-data.zip and copy it into your .minecraft folder.
 
@@ -26,11 +26,16 @@ This mod must be installed on both the client and server side, so if you are pla
 ## Current Features
 
 * Points of interest will be announced as you pass, according to the configured radius, vertical distance limit, and maximum number of announcements. You will hear the announcement from the direction of the point of interest, and a sound will be played before speaking the announcement based on the type of the POI.
+* When a point of interest is announced, its name is always spoken, and optionally its distance from you and its direction. The direction can also include the vertical component, and the horizontal component can be spoken using clock hands, direction and angle, just direction, just angle, or compass direction. The vertical component can be spoken as direction and angle, just direction, or just angle, either relative to the direction you are facing or the absolute direction.
 * When a world is generated, or when you travel into ungenerated chunks or trigger chunk generation in some other way, points of interest are created for features such as trees, ice spikes, end islands, ore vanes, etc. Structures like villages are coming soon.
+* You can announce all nearby points of interest by pressing F7. This has a larger radius, vertical limit, and maximum number of POIs than automatic announcements by default.
+* You can stop speech at any time by pressing F9.
 * You can create landmarks by pressing F6 to open the menu and pressing the "Add landmark" button. They are saved as points of interest and announced as you pass. You can choose whether the new landmark is visible to other players or not.
 * To delete a landmark, open the menu with F6, press "Landmarks", find the landmark you want to delete, and press the "Delete" button.
 * You can start an audio beacon on a landmark by opening the list of landmarks, finding the landmark you want, and pressing "Start beacon". This will start a continuous sound coming from the direction of the landmark that you can follow to find it. The sound will change depending on if you're facing it, facing away from it, or facing in the opposite direction.
+* By default, the distance and direction to a beacon will be announced every 30 seconds. You can change the amount of time, disable either distance or direction, or disable this entirely in settings.
 * To stop an audio beacon, open the menu with F6 and press "Stop beacon".
+* To announce the distance and/or direction to the current beacon, press F8.
 * The landmark list is filtered by radius. To increase the radius in which landmarks are shown, press enter on the current radius.
 * This mod is extremely configurable. To open the settings, press F6 to open the menu, and choose "Settings". From there, the configuration screen should be pretty intuitive to use.
 * This mod can use multiple speech synthesizers. eSpeak NG is always included. On Windows, SAPI 5 is also supported, and on MacOS the mod can use AVSpeechSynthesizer to use all Apple TTS voices as well as third-party voices exposed to the system TTS.
@@ -39,4 +44,4 @@ This mod must be installed on both the client and server side, so if you are pla
 
 # Server Configuration
 
-On a dedicated server, you can set a maximum radius at which POIs will be sent to clients. You can also prevent certain features, such as ore veins, from being sent to clients, whether or not players enable them in client settings. On Fabric and NeoForge servers, these can be changed in config/audio_navigation/server_config.toml. On Paper and Purpur, change them in plugins/AudioNavigation/config.yml.
+On a dedicated server, you can set a maximum radius at which POIs will be sent to clients. You can also prevent certain features, such as ore veins, from being sent to clients, whether or not players enable them in client settings. On Fabric and NeoForge servers, these can be changed in config/audio_navigation/server_config.toml. On Paper and Purpur, change them in plugins/AudioNavigation/config.yml. You can also use the settings UI to change server settings on Fabric and NeoForge servers, by joining the world, pressing F6, pressing "Settings", then pressing "Server Settings".

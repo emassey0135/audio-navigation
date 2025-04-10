@@ -76,7 +76,7 @@ class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
     val difference = reference.difference(this)
     val horizontalDirection = when (horizontalDirectionType) {
       HorizontalDirectionType.CLOCK_HAND -> angleToClockHand(difference.horizontalAngle).translate()
-      HorizontalDirectionType.DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(difference.horizontalAngle), angleToDirection(difference.horizontalAngle).translate())
+      HorizontalDirectionType.DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(abs(difference.horizontalAngle)), angleToDirection(difference.horizontalAngle).translate())
       HorizontalDirectionType.DIRECTION -> angleToDirection(difference.horizontalAngle).translate()
       HorizontalDirectionType.ANGLE -> angleToSpeakableString(difference.horizontalAngle)
       HorizontalDirectionType.COMPASS_DIRECTION -> angleToCompassDirection(horizontalAngle).translate()
@@ -84,11 +84,11 @@ class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
     if (!includeVerticalDirection)
       return horizontalDirection
     val verticalDirection = when (verticalDirectionType) {
-      VerticalDirectionType.DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(abs(difference.verticalAngle)), angleToDirection(difference.verticalAngle).translate())
-      VerticalDirectionType.DIRECTION -> angleToDirection(difference.verticalAngle).translate()
+      VerticalDirectionType.DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(abs(difference.verticalAngle)), angleToVerticalDirection(difference.verticalAngle).translate())
+      VerticalDirectionType.DIRECTION -> angleToVerticalDirection(difference.verticalAngle).translate()
       VerticalDirectionType.ANGLE -> angleToSpeakableStringWithNegative(difference.verticalAngle)
-      VerticalDirectionType.ABSOLUTE_DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(abs(verticalAngle)), angleToDirection(verticalAngle).translate())
-      VerticalDirectionType.ABSOLUTE_DIRECTION -> angleToDirection(verticalAngle).translate()
+      VerticalDirectionType.ABSOLUTE_DIRECTION_AND_ANGLE -> I18n.get("${AudioNavigation.MOD_ID}.angle.angle_with_direction", angleToSpeakableString(abs(verticalAngle)), angleToVerticalDirection(verticalAngle).translate())
+      VerticalDirectionType.ABSOLUTE_DIRECTION -> angleToVerticalDirection(verticalAngle).translate()
       VerticalDirectionType.ABSOLUTE_ANGLE -> angleToSpeakableStringWithNegative(verticalAngle)
     }
     return "$horizontalDirection, $verticalDirection"
@@ -125,7 +125,7 @@ class Orientation(val verticalAngle: Double, val horizontalAngle: Double) {
     }
     private fun angleToClockHand(angle: Double): ClockHand {
       var result = (normalizeAngleToPositive(angle)/30).roundToInt()
-      result = if (result==0) 12 else result
+      result = if (result==12) 0 else result
       return ClockHand.entries.get(result)
     }
     private fun angleToDirection(angle: Double): Direction {

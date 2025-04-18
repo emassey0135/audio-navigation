@@ -4,6 +4,7 @@ plugins {
   kotlin("plugin.serialization")
 }
 val paper_api_version: String by project
+val paper_mixin_api_version: String by project
 val sqlite_jdbc_version: String by project
 val kotlinx_serialization_included_version: String by project
 dependencies {
@@ -19,7 +20,7 @@ sourceSets {
   }
 }
 eclipse {
-  minecraft = paper_api_version
+  minecraft = paper_mixin_api_version
 }
 paperweight {
   reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION

@@ -32,13 +32,13 @@ class ServerConfig: Config(ResourceLocation.fromNamespaceAndPath(AudioNavigation
     { Component.translatable("${AudioNavigation.MOD_ID}.server_config.disableAllAllowedFeatures") },
     { true },
     { allowedFeatures.validateAndSet(listOf()) },
-    TextureIds.RESTORE,
+    TextureIds.DELETE,
     Component.translatable("${AudioNavigation.MOD_ID}.server_config.disableAllAllowedFeatures.desc"))
   var enableAllAllowedFeatures = ConfigAction(
     { Component.translatable("${AudioNavigation.MOD_ID}.server_config.enableAllAllowedFeatures") },
     { true },
     { allowedFeatures.validateAndSet(Features.features.toList()) },
-    TextureIds.RESTORE,
+    TextureIds.ADD,
     Component.translatable("${AudioNavigation.MOD_ID}.server_config.enableAllAllowedFeatures.desc"))
   var radiusLimit = ValidatedInt(67108864, 67108864, 0, ValidatedNumber.WidgetType.TEXTBOX)
     .also { it.listenToEntry { value -> AudioNavigation.config?.radiusLimit = value.get() }}

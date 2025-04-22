@@ -36,12 +36,12 @@ class AnnouncementsSection: ConfigSection() {
     { Component.translatable("${AudioNavigation.MOD_ID}.client_config.announcements.disableAllIncludedFeatures") },
     { true },
     { includedFeatures.validateAndSet(listOf()) },
-    TextureIds.RESTORE,
+    TextureIds.DELETE,
     Component.translatable("${AudioNavigation.MOD_ID}.client_config.announcements.disableAllIncludedFeatures.desc"))
   var enableAllIncludedFeatures = ConfigAction(
     { Component.translatable("${AudioNavigation.MOD_ID}.client_config.announcements.enableAllIncludedFeatures") },
     { true },
     { includedFeatures.validateAndSet(Features.features.toList()) },
-    TextureIds.RESTORE,
+    TextureIds.ADD,
     Component.translatable("${AudioNavigation.MOD_ID}.client_config.announcements.enableAllIncludedFeatures.desc"))
 }

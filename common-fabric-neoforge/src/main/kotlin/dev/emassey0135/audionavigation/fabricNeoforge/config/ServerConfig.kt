@@ -20,7 +20,7 @@ class ServerConfig: Config(ResourceLocation.fromNamespaceAndPath(AudioNavigation
   override fun saveType() = SaveType.SEPARATE
   var restrictFeatures = ValidatedBoolean(false)
     .also { it.listenToEntry { value -> AudioNavigation.config?.restrictFeatures = value.get() }}
-  var allowedFeatures: ValidatedChoiceList<String> = ValidatedChoiceList(Features.features.toList(), Features.features.toList(), ValidatedString(), { identifier, _ -> Component.translatable("${AudioNavigation.MOD_ID}.features.$identifier") })
+  var allowedFeatures: ValidatedChoiceList<String> = ValidatedChoiceList(Features.features.toList(), Features.features.toList(), ValidatedString(), { identifier, _ -> Component.translatable("${AudioNavigation.MOD_ID}.features.$identifier") }, widgetType = ValidatedChoiceList.WidgetType.SCROLLABLE)
     .also { it.listenToEntry { value -> AudioNavigation.config?.allowedFeatures = value.get() }}
   var resetAllowedFeatures = ConfigAction(
     { Component.translatable("${AudioNavigation.MOD_ID}.server_config.resetAllowedFeatures") },

@@ -25,7 +25,7 @@ class AnnouncementsSection: ConfigSection() {
   var includeVerticalDirection = ValidatedBoolean(true)
   var horizontalDirectionType = ValidatedEnum(Orientation.HorizontalDirectionType.CLOCK_HAND, ValidatedEnum.WidgetType.CYCLING)
   var verticalDirectionType = ValidatedEnum(Orientation.VerticalDirectionType.DIRECTION_AND_ANGLE, ValidatedEnum.WidgetType.CYCLING)
-  var includedFeatures: ValidatedChoiceList<String> = ValidatedChoiceList(Features.defaultIncludedFeatures.toList(), Features.features.toList(), ValidatedString(), { identifier, _ -> Component.translatable("${AudioNavigation.MOD_ID}.features.$identifier") })
+  var includedFeatures: ValidatedChoiceList<String> = ValidatedChoiceList(Features.defaultIncludedFeatures.toList(), Features.features.toList(), ValidatedString(), { identifier, _ -> Component.translatable("${AudioNavigation.MOD_ID}.features.$identifier") }, widgetType = ValidatedChoiceList.WidgetType.SCROLLABLE)
   var resetIncludedFeatures = ConfigAction(
     { Component.translatable("${AudioNavigation.MOD_ID}.client_config.announcements.resetIncludedFeatures") },
     { true },

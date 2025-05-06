@@ -376,5 +376,6 @@
   "category.audio_navigation": "Audio Navigation",
   "key.audio_navigation.open_main_menu": "Open Main Menu",
   "key.audio_navigation.announce_nearby_pois": "Announce Nearby POI's",
+  "key.audio_navigation.announce_beacon": "Announce Beacon",
   "key.audio_navigation.stop_speech": "Stop Speech"
 }

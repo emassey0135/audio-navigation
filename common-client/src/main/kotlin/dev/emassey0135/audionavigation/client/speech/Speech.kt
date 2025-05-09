@@ -9,6 +9,7 @@ import kotlin.concurrent.thread
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
 import org.lwjgl.openal.EXTFloat32
+import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.config.ClientConfig
@@ -75,6 +76,24 @@ object Speech {
   }
   fun languages(): List<String> {
     return voices.map { it.language }.toSet().toList().sorted()
+  }
+  fun defaultLanguages(): List<String> {
+    val currentLanguage = Minecraft.getInstance().getLanguageManager().getSelected().replace('_', '-')
+    val languages = languages()
+    val defaultLanguages = if ("none" in languages) mutableListOf("none") else mutableListOf()
+    val dialectRemover = "-.*".toRegex()
+    val currentLanguageWithoutDialect = currentLanguage.replace(dialectRemover, "")
+    val languagesWithoutDialect = languages.map { language -> language.replace(dialectRemover, "") }
+    if (currentLanguage in languages) {
+      defaultLanguages.add(currentLanguage)
+    }
+    else if (currentLanguageWithoutDialect in languagesWithoutDialect) {
+      defaultLanguages.addAll(languages.filter { language -> language.replace(dialectRemover, "")==currentLanguageWithoutDialect })
+    }
+    else {
+      defaultLanguages.addAll(languages.filter { language -> language.replace(dialectRemover, "")=="en" })
+    }
+    return defaultLanguages
   }
   fun filterVoices(synthesizers: List<String>, languages: List<String>): List<Voice> {
     return voices.filter { it.synthesizer in synthesizers && it.language in languages }.sortedBy { it.displayName.lowercase() }

@@ -23,11 +23,11 @@ import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.poi.Landmarks
 
 @Mod(AudioNavigation.MOD_ID)
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 object AudioNavigationNeoforge {
   private val ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, AudioNavigation.MOD_ID)
   val WORLD_UUID_ATTACHMENT = ATTACHMENT_TYPES.register("world_uuid", fun(): AttachmentType<UUID> {
-     return AttachmentType.builder(fun(): UUID { return UUID.randomUUID() }).serialize(UUIDUtil.CODEC).build()
+     return AttachmentType.builder(fun(): UUID { return UUID.randomUUID() }).serialize(UUIDUtil.CODEC.fieldOf("uuid")).build()
   })
   @SubscribeEvent fun registerNetworkHandlers(event: RegisterPayloadHandlersEvent) {
     val registrar = event.registrar("1")

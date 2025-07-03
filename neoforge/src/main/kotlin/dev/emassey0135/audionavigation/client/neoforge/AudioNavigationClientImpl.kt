@@ -1,18 +1,18 @@
 package dev.emassey0135.audionavigation.client.neoforge
 
-import net.neoforged.neoforge.network.PacketDistributor
+import net.neoforged.neoforge.client.network.ClientPacketDistributor
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 
 object AudioNavigationClientImpl {
   @JvmStatic fun sendAddLandmark(addLandmarkPayload: AddLandmarkPayload) {
-    PacketDistributor.sendToServer(addLandmarkPayload)
+    ClientPacketDistributor.sendToServer(addLandmarkPayload)
   }
   @JvmStatic fun sendDeleteLandmark(deleteLandmarkPayload: DeleteLandmarkPayload) {
-    PacketDistributor.sendToServer(deleteLandmarkPayload)
+    ClientPacketDistributor.sendToServer(deleteLandmarkPayload)
   }
   @JvmStatic fun sendPoiRequest(poiRequestPayload: PoiRequestPayload) {
-    PacketDistributor.sendToServer(poiRequestPayload)
+    ClientPacketDistributor.sendToServer(poiRequestPayload)
   }
 }

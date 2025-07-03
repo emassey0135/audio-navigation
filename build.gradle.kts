@@ -1,7 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
   java
-  kotlin("jvm") version "2.1.21"
-  kotlin("plugin.serialization") version "2.1.21" apply false
+  kotlin("jvm") version "2.2.0"
+  kotlin("plugin.serialization") version "2.2.0" apply false
   id("dev.architectury.loom") version "1.10-SNAPSHOT" apply false
   id("architectury-plugin") version "3.4-SNAPSHOT"
   id("com.gradleup.shadow") version "8.3.6" apply false
@@ -35,9 +36,7 @@ subprojects {
   tasks.withType<JavaCompile> {
     options.release.set(21)
   }
-  kotlin.target.compilations.all {
-    kotlinOptions {
-      jvmTarget = "21"
-    }
+  kotlin {
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
   }
 }

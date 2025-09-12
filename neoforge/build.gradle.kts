@@ -2,6 +2,7 @@ plugins {
   id("dev.architectury.loom")
   id("architectury-plugin")
   id("com.gradleup.shadow")
+  id("com.modrinth.minotaur")
 }
 repositories {
   maven {
@@ -126,4 +127,21 @@ tasks.shadowJar {
 }
 tasks.remapJar {
   inputFile.set(tasks.shadowJar.get().archiveFile)
+}
+val modrinth_slug: String by project
+modrinth {
+  projectId.set(modrinth_slug)
+  versionNumber.set(version)
+  versionName.set("Audio Navigation $version (NeoForge)")
+  versionType.set("beta")
+  uploadFile.set(tasks.remapJar)
+  gameVersions.addAll(minecraft_version)
+  loaders.add("neoforge")
+  changelog.set(file("../CHANGELOG.md").readText())
+  dependencies {
+    required.project("architectury-api")
+    required.project("kotlin-for-forge")
+    required.project("fzzy-config")
+    optional.project("minecraft-access")
+  }
 }

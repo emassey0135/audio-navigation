@@ -1,6 +1,7 @@
 plugins {
   id("com.gradleup.shadow")
   id("io.papermc.paperweight.userdev")
+  id("com.modrinth.minotaur")
 }
 val paper_api_version: String by project
 val kotlinx_serialization_included_version: String by project
@@ -40,4 +41,19 @@ tasks.jar {
 }
 paperweight {
   reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
+}
+val modrinth_slug: String by project
+val minecraft_version: String by project
+modrinth {
+  projectId.set(modrinth_slug)
+  versionNumber.set(version)
+  versionName.set("Audio Navigation $version (Paper)")
+  versionType.set("beta")
+  uploadFile.set(tasks.shadowJar)
+  gameVersions.addAll(minecraft_version)
+  loaders.addAll("paper", "purpur")
+  changelog.set(file("../CHANGELOG.md").readText())
+  dependencies {
+    required.project("eclipse-mixin")
+  }
 }

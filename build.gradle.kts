@@ -8,6 +8,7 @@ plugins {
   id("com.gradleup.shadow") version "9.1.0" apply false
   id("io.papermc.paperweight.userdev") version "2.0.0-beta.18" apply false
   id("io.github.dueris.eclipse.gradle") version "1.2.3" apply false
+  id("com.modrinth.minotaur") version "2.+" apply false
 }
 val minecraft_version: String by project
 architectury {

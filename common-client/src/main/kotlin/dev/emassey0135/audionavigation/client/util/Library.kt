@@ -49,7 +49,7 @@ object Library {
   private val espeakNgDataName = "espeak-ng-data.zip"
   private val espeakNgDataHash = "ebe661f88682ec37fe18414f2e0b607e97d0b5c711fb4126283f91a70ee7203f6a099a69f8ed152d957f920a466014ba217e803f85f971bdf35ec33be0ed6489"
   fun downloadLibrary() {
-    FileUtils.copyURLToFile(URI("https://github.com/emassey0135/audio-navigation-tts/releases/download/$libraryVersion/$libraryName").toURL(), File(libraryName))
+    FileUtils.copyURLToFile(URI("https://github.com/minecraft-access/whisp-rs/releases/download/$libraryVersion/$libraryName").toURL(), File(libraryName))
     val hash = DigestUtils(MessageDigestAlgorithms.SHA3_512).digestAsHex(File(libraryName))
     val expectedHash = hashes.get(Pair(os, arch))
     if (hash!=expectedHash) {
@@ -59,7 +59,7 @@ object Library {
     downloadAndExtractEspeakNGData()
   }
   fun downloadAndExtractEspeakNGData() {
-    FileUtils.copyURLToFile(URI("https://github.com/emassey0135/audio-navigation-tts/releases/download/$libraryVersion/$espeakNgDataName").toURL(), File(espeakNgDataName))
+    FileUtils.copyURLToFile(URI("https://github.com/minecraft-access/whisp-rs/releases/download/$libraryVersion/$espeakNgDataName").toURL(), File(espeakNgDataName))
     val hash = DigestUtils(MessageDigestAlgorithms.SHA3_512).digestAsHex(File(espeakNgDataName))
     if (hash!=espeakNgDataHash) {
       FileUtils.delete(File(espeakNgDataName))

@@ -1,8 +1,12 @@
+import io.github.themrmilchmann.gradle.publish.curseforge.ChangelogFormat
+import io.github.themrmilchmann.gradle.publish.curseforge.GameVersion
+import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 plugins {
   id("dev.architectury.loom")
   id("architectury-plugin")
   id("com.gradleup.shadow")
   id("com.modrinth.minotaur")
+  id("io.github.themrmilchmann.curseforge-publish")
 }
 repositories {
   maven {
@@ -143,5 +147,35 @@ modrinth {
     required.project("kotlin-for-forge")
     required.project("fzzy-config")
     optional.project("minecraft-access")
+  }
+}
+val curseforge_id: String by project
+curseforge {
+  apiToken = System.getenv("CURSEFORGE_TOKEN")
+  publications {
+    register("neoforge") {
+      projectId = curseforge_id
+      gameVersions.add(GameVersion("minecraft-1-21", minecraft_version.replace(".", "-")))
+      gameVersions.add(GameVersion("modloader", "neoforge"))
+      gameVersions.add(GameVersion("environment", "client"))
+      gameVersions.add(GameVersion("environment", "server"))
+      javaVersions.add(JavaVersion.VERSION_21)
+      javaVersions.add(JavaVersion.VERSION_22)
+      artifacts.register("main") {
+        displayName = "Audio Navigation $version (NeoForge)"
+        releaseType = ReleaseType.BETA
+        changelog {
+          format = ChangelogFormat.MARKDOWN
+          from(file("../CHANGELOG.md"))
+        }
+        relations {
+          requiredDependency("architectury-api")
+          requiredDependency("kotlin-for-forge")
+          requiredDependency("fzzy-config")
+          optionalDependency("blind-accessibility")
+        }
+        from(tasks.remapJar)
+      }
+    }
   }
 }

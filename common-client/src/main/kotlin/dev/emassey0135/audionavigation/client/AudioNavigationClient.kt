@@ -8,6 +8,7 @@ import dev.architectury.event.events.client.ClientTickEvent
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
+import net.minecraft.resources.ResourceLocation
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.config.ClientConfig
 import dev.emassey0135.audionavigation.client.features.Beacon
@@ -44,10 +45,11 @@ object AudioNavigationClient {
     }
   }
   private val interval = Interval.sec(5)
-  private val OPEN_MAIN_MENU_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.open_main_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_F6, "category.${AudioNavigation.MOD_ID}")
-  private val ANNOUNCE_NEARBY_POIS_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.announce_nearby_pois", InputConstants.Type.KEYSYM, InputConstants.KEY_F7, "category.${AudioNavigation.MOD_ID}")
-  private val ANNOUNCE_BEACON_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.announce_beacon", InputConstants.Type.KEYSYM, InputConstants.KEY_F8, "category.${AudioNavigation.MOD_ID}")
-  private val STOP_SPEECH_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.stop_speech", InputConstants.Type.KEYSYM, InputConstants.KEY_F9, "category.${AudioNavigation.MOD_ID}")
+  private val KEYMAPPING_CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("category", AudioNavigation.MOD_ID))
+  private val OPEN_MAIN_MENU_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.open_main_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_F6, KEYMAPPING_CATEGORY)
+  private val ANNOUNCE_NEARBY_POIS_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.announce_nearby_pois", InputConstants.Type.KEYSYM, InputConstants.KEY_F7, KEYMAPPING_CATEGORY)
+  private val ANNOUNCE_BEACON_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.announce_beacon", InputConstants.Type.KEYSYM, InputConstants.KEY_F8, KEYMAPPING_CATEGORY)
+  private val STOP_SPEECH_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.stop_speech", InputConstants.Type.KEYSYM, InputConstants.KEY_F9, KEYMAPPING_CATEGORY)
   fun initialize() {
     Library.initialize()
     KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYMAPPING)

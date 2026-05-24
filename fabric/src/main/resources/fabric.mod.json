@@ -38,6 +38,7 @@
     "java": ">=25",
     "fabric-api": ">=${fabric_api_version}",
     "fabric-language-kotlin": ">=${fabric_kotlin_version}",
+    "balm": ">=${balm_version}",
     "fzzy_config": ">=${fzzy_config_version}"
   },
   "suggests": {

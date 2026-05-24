@@ -34,6 +34,13 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
+modId = "balm"
+type = "required"
+versionRange = "[${balm_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.audio_navigation]]
 modId = "fzzy_config"
 type = "required"
 versionRange = "[${fzzy_config_neoforge_version},)"

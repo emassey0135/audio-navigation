@@ -81,6 +81,7 @@ tasks.processResources {
       "minecraft_version" to minecraft_version,
       "fabric_api_version" to fabric_api_version.replace("\\+.*".toRegex(), ""),
       "fabric_kotlin_version" to fabric_kotlin_version.replace("\\+.*".toRegex(), ""),
+      "balm_version" to balm_version,
       "fzzy_config_version" to fzzy_config_version.replace("\\+.*".toRegex(), ""),
       "minecraft_access_version" to minecraft_access_version,
     ))
@@ -121,6 +122,7 @@ modrinth {
   dependencies {
     required.project("fabric-api")
     required.project("fabric-language-kotlin")
+    required.project("balm")
     required.project("fzzy-config")
     optional.project("minecraft-access")
   }
@@ -146,6 +148,7 @@ curseforge {
         relations {
           requiredDependency("fabric-api")
           requiredDependency("fabric-language-kotlin")
+          requiredDependency("balm")
           requiredDependency("fzzy-config")
           optionalDependency("blind-accessibility")
         }

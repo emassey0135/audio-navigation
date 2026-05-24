@@ -83,7 +83,8 @@ tasks.processResources {
       "mod_icon" to mod_icon,
       "neoforge_version" to neoforge_version.replace("\\.[^\\.]*$".toRegex(), ""),
       "minecraft_version" to minecraft_version,
-      "kotlin_lang_forge_version" to kotlin_lang_forge_version,
+      "kotlin_lang_forge_version" to kotlin_lang_forge_version.replace("-.*".toRegex(), ""),
+      "balm_version" to balm_version,
       "fzzy_config_neoforge_version" to fzzy_config_neoforge_version.replace("\\+.*".toRegex(), ""),
       "minecraft_access_version" to minecraft_access_version,
       "common_mixins_file" to common_mixins_file,
@@ -124,6 +125,7 @@ modrinth {
   changelog.set(file("../CHANGELOG.md").readText())
   dependencies {
     required.project("kotlin-lang-forge")
+    required.project("balm")
     required.project("fzzy-config")
     optional.project("minecraft-access")
   }
@@ -148,6 +150,7 @@ curseforge {
         }
         relations {
           requiredDependency("kotlin-lang-forge")
+          requiredDependency("balm")
           requiredDependency("fzzy-config")
           optionalDependency("blind-accessibility")
         }

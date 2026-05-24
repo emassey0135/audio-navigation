@@ -7,10 +7,3 @@ website: ${mod_github_url}
 api-version: ${paper_api_version}
 load: STARTUP
 prefix: ${mod_id}
-mixins: [${common_mixins_file}]
-dependencies:
-  bootstrap:
-    Eclipse:
-      load: BEFORE
-      required: true
-      join-classpath: false

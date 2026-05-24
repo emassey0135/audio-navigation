@@ -21,6 +21,18 @@ val mod_github_url: String by project
 val mod_id: String by project
 val common_mixins_file: String by project
 tasks.processResources {
+  filesMatching("horizon.plugin.json") {
+    expand(mapOf(
+      "version" to version,
+      "mod_id" to mod_id,
+      "mod_name" to mod_name.replace(" ", ""),
+      "mod_description" to mod_description,
+      "mod_author" to mod_author,
+      "minecraft_version" to minecraft_version,
+    ))
+  }
+}
+tasks.named<ProcessResources>("processPluginResources") {
   filesMatching("paper-plugin.yml") {
     expand(mapOf(
       "version" to version,
@@ -30,7 +42,6 @@ tasks.processResources {
       "mod_github_url" to mod_github_url,
       "paper_api_version" to paper_api_version.replace("-.*".toRegex(), ""),
       "mod_id" to mod_id,
-      "common_mixins_file" to common_mixins_file,
     ))
   }
 }

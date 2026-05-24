@@ -1,0 +1,11 @@
+{
+ "id": "${mod_id}",
+ "name": "${mod_name}Common",
+ "version": "${version}",
+ "description": "${mod_description}",
+ "authors": ["${mod_author}"],
+  "mixins": ["${common_mixins_file}"],
+  "dependencies": {
+    "minecraft": ">=${minecraft_version}"
+  }
+}

@@ -2,13 +2,13 @@ package dev.emassey0135.audionavigation.client
 
 import java.util.UUID
 import com.mojang.blaze3d.platform.InputConstants
-import dev.architectury.injectables.annotations.ExpectPlatform
-import dev.architectury.event.events.client.ClientLifecycleEvent
-import dev.architectury.event.events.client.ClientTickEvent
-import dev.architectury.registry.client.keymappings.KeyMappingRegistry
-import net.minecraft.client.KeyMapping
+import net.blay09.mods.balm.client.BalmClientRegistrars
+import net.blay09.mods.balm.client.platform.event.callback.ClientLifecycleCallback
+import net.blay09.mods.balm.client.platform.event.callback.ClientTickCallback
+import net.blay09.mods.kuma.api.InputBinding
+import net.blay09.mods.kuma.api.Kuma
 import net.minecraft.client.Minecraft
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.config.ClientConfig
 import dev.emassey0135.audionavigation.client.features.Beacon
@@ -24,13 +24,13 @@ import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 
 object AudioNavigationClient {
-  @JvmStatic @ExpectPlatform fun sendPoiRequest(poiRequestPayload: PoiRequestPayload) {
+  fun sendPoiRequest(poiRequestPayload: PoiRequestPayload) {
     error("This function is not implemented.")
   }
-  @JvmStatic @ExpectPlatform fun sendAddLandmark(addLandmarkPayload: AddLandmarkPayload) {
+  fun sendAddLandmark(addLandmarkPayload: AddLandmarkPayload) {
     error("This function is not implemented.")
   }
-  @JvmStatic @ExpectPlatform fun sendDeleteLandmark(deleteLandmarkPayload: DeleteLandmarkPayload) {
+  fun sendDeleteLandmark(deleteLandmarkPayload: DeleteLandmarkPayload) {
     error("This function is not implemented.")
   }
   private val poiListHandlers = HashMap<UUID, (PoiListPayload) -> Unit>()
@@ -45,20 +45,38 @@ object AudioNavigationClient {
     }
   }
   private val interval = Interval.sec(5)
-  private val KEYMAPPING_CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("category", AudioNavigation.MOD_ID))
-  private val OPEN_MAIN_MENU_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.open_main_menu", InputConstants.Type.KEYSYM, InputConstants.KEY_F6, KEYMAPPING_CATEGORY)
-  private val ANNOUNCE_NEARBY_POIS_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.announce_nearby_pois", InputConstants.Type.KEYSYM, InputConstants.KEY_F7, KEYMAPPING_CATEGORY)
-  private val ANNOUNCE_BEACON_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.announce_beacon", InputConstants.Type.KEYSYM, InputConstants.KEY_F8, KEYMAPPING_CATEGORY)
-  private val STOP_SPEECH_KEYMAPPING = KeyMapping("key.${AudioNavigation.MOD_ID}.stop_speech", InputConstants.Type.KEYSYM, InputConstants.KEY_F9, KEYMAPPING_CATEGORY)
-  fun initialize() {
+  fun initialize(registrars: BalmClientRegistrars) {
     Library.initialize()
-    KeyMappingRegistry.register(OPEN_MAIN_MENU_KEYMAPPING)
-    KeyMappingRegistry.register(ANNOUNCE_NEARBY_POIS_KEYMAPPING)
-    KeyMappingRegistry.register(ANNOUNCE_BEACON_KEYMAPPING)
-    KeyMappingRegistry.register(STOP_SPEECH_KEYMAPPING)
+    Kuma.createKeyMapping(Identifier.fromNamespaceAndPath(AudioNavigation.MOD_ID, "open_main_menu"))
+      .withDefault(InputBinding.key(InputConstants.KEY_F6))
+      .handleWorldInput { event ->
+        Minecraft.getInstance().setScreen(MainMenuScreen())
+        true
+      }
+      .build()
+    Kuma.createKeyMapping(Identifier.fromNamespaceAndPath(AudioNavigation.MOD_ID, "announce_nearby_pois"))
+      .withDefault(InputBinding.key(InputConstants.KEY_F7))
+      .handleWorldInput { event ->
+        PoiAnnouncements.triggerManualAnnouncements()
+        true
+      }
+      .build()
+    Kuma.createKeyMapping(Identifier.fromNamespaceAndPath(AudioNavigation.MOD_ID, "announce_beacon"))
+      .withDefault(InputBinding.key(InputConstants.KEY_F8))
+      .handleWorldInput { event ->
+        Beacon.announceBeacon()
+        true
+      }
+      .build()
+    Kuma.createKeyMapping(Identifier.fromNamespaceAndPath(AudioNavigation.MOD_ID, "stop_speech"))
+      .withDefault(InputBinding.key(InputConstants.KEY_F9))
+      .handleWorldInput { event ->
+        Speech.interrupt()
+        true
+      }
+      .build()
     interval.beReady()
-    val minecraftClient = Minecraft.getInstance()
-    ClientLifecycleEvent.CLIENT_STARTED.register { client ->
+    ClientLifecycleCallback.Started.EVENT.register { client ->
       SoundPlayer.initialize()
       Speech.initialize()
       ClientConfig.initialize()
@@ -66,15 +84,7 @@ object AudioNavigationClient {
       Beacon.initialize()
       AudioNavigation.logger.info("Audio Navigation client has been initialized.")
     }
-    ClientTickEvent.CLIENT_LEVEL_PRE.register { world ->
-      while (OPEN_MAIN_MENU_KEYMAPPING.consumeClick())
-        minecraftClient.setScreen(MainMenuScreen())
-      while (ANNOUNCE_NEARBY_POIS_KEYMAPPING.consumeClick())
-        PoiAnnouncements.triggerManualAnnouncements()
-      while (ANNOUNCE_BEACON_KEYMAPPING.consumeClick())
-        Beacon.announceBeacon()
-      while (STOP_SPEECH_KEYMAPPING.consumeClick())
-        Speech.interrupt()
+    ClientTickCallback.ClientLevelTick.BEFORE.register { world ->
       if (interval.isReady()) {
         PoiAnnouncements.triggerAutomaticAnnouncements()
       }

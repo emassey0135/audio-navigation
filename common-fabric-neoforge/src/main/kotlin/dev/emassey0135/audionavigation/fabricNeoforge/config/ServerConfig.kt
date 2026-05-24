@@ -11,12 +11,12 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.config.ServerConfiguration
 import dev.emassey0135.audionavigation.poi.Features
 
-class ServerConfig: Config(ResourceLocation.fromNamespaceAndPath(AudioNavigation.MOD_ID, "server_config")) {
+class ServerConfig: Config(Identifier.fromNamespaceAndPath(AudioNavigation.MOD_ID, "server_config")) {
   override fun saveType() = SaveType.SEPARATE
   var restrictFeatures = ValidatedBoolean(false)
     .also { it.listenToEntry { value -> AudioNavigation.config?.restrictFeatures = value.get() }}

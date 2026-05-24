@@ -52,7 +52,7 @@ public class PlacedFeatureMixin {
                     mutableBoolean.setTrue();
 
                     if (key.isPresent()) {
-                        Features.addFeatureToDatabase(key.get().location().getPath(), blockPos, context.getLevel().getLevel());
+                        Features.addFeatureToDatabase(key.get().identifier().getPath(), blockPos, context.getLevel().getLevel());
                     }
             }
         });

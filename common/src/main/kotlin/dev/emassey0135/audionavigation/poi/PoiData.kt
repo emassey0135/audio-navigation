@@ -1,6 +1,7 @@
 package dev.emassey0135.audionavigation.poi
 
 import java.nio.ByteBuffer
+import java.util.Optional
 import java.util.UUID
 import kotlinx.serialization.builtins.ByteArraySerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -31,9 +32,11 @@ object UUIDAsByteArraySerializer: KSerializer<UUID> {
 @Serializable data class PoiData(
   @ProtoNumber(1) @Serializable(with = UUIDAsByteArraySerializer::class) val player: UUID? = null,
   @ProtoNumber(2) val visibleToOtherPlayers: Boolean = true) {
+  constructor(player: Optional<UUID>, visibleToOtherPlayers: Boolean): this(player.orElse(null), visibleToOtherPlayers)
+  fun optionalPlayer(): Optional<UUID> = Optional.ofNullable(player)
   companion object {
     @JvmField val STREAM_CODEC = StreamCodec.composite(
-      UUIDUtil.STREAM_CODEC, PoiData::player,
+      ByteBufCodecs.optional(UUIDUtil.STREAM_CODEC), PoiData::optionalPlayer,
       ByteBufCodecs.BOOL, PoiData::visibleToOtherPlayers,
       ::PoiData)
   }

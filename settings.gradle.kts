@@ -1,9 +1,9 @@
 pluginManagement {
   repositories {
-    maven { url = uri("https://maven.fabricmc.net/") }
-    maven { url = uri("https://maven.architectury.dev/") }
-    maven { url = uri("https://files.minecraftforge.net/maven/") }
-    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+    maven("https://maven.fabricmc.net/")
+    maven("https://files.minecraftforge.net/maven/")
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://maven.canvasmc.io/public/")
     gradlePluginPortal()
   }
 }
@@ -11,7 +11,7 @@ rootProject.name = "audio_navigation"
 include("common")
 include("common-client")
 include("common-fabric-neoforge")
-include("common-paper")
+include("common-horizon")
 include("fabric")
+include("horizon")
 include("neoforge")
-include("paper")

@@ -1,16 +1,17 @@
 plugins {
-  id("com.gradleup.shadow")
-  id("io.papermc.paperweight.userdev")
+  id("io.canvasmc.weaver.userdev")
+  id("io.canvasmc.horizon")
   id("com.modrinth.minotaur")
 }
+val horizon_api_version: String by project
 val paper_api_version: String by project
-val kotlinx_serialization_included_version: String by project
 dependencies {
+  horizon.horizonApi(horizon_api_version)
   paperweight.paperDevBundle(paper_api_version)
-  implementation(project(":common-paper"))
-  shadow(project(":common-paper"))
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_included_version")
-  shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_included_version")
+  includeMixinPlugin(project(":common-horizon")) { isTransitive = false }
+}
+horizon {
+  splitPluginSourceSets()
 }
 val version: String by project
 val mod_name: String by project
@@ -33,15 +34,6 @@ tasks.processResources {
     ))
   }
 }
-tasks.build {
-  dependsOn(tasks.shadowJar)
-}
-tasks.jar {
-  enabled = false
-}
-paperweight {
-  reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
-}
 val modrinth_slug: String by project
 val minecraft_version: String by project
 modrinth {
@@ -49,11 +41,8 @@ modrinth {
   versionNumber.set(version)
   versionName.set("Audio Navigation $version (Paper)")
   versionType.set("beta")
-  uploadFile.set(tasks.shadowJar)
+  uploadFile.set(tasks.jar)
   gameVersions.addAll(minecraft_version)
   loaders.addAll("paper", "purpur")
   changelog.set(file("../CHANGELOG.md").readText())
-  dependencies {
-    required.project("eclipse-mixin")
-  }
 }

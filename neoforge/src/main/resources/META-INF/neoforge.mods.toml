@@ -1,4 +1,4 @@
-modLoader = "kotlinforforge"
+modLoader = "klf"
 loaderVersion = "[1,)"
 issueTrackerURL = "${mod_github_url}/issues"
 license = "${mod_license}"
@@ -27,16 +27,9 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
-modId = "architectury"
+modId = "kotlinlangforge"
 type = "required"
-versionRange = "[${architectury_api_version},)"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.audio_navigation]]
-modId = "kotlinforforge"
-type = "required"
-versionRange = "[${kotlin_for_forge_version},)"
+versionRange = "[${kotlin_lang_forge_version},)"
 ordering = "AFTER"
 side = "BOTH"
 

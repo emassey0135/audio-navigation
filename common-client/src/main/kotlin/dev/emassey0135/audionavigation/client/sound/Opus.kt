@@ -7,7 +7,6 @@ import java.util.LinkedList
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.EXTFloat32
 import org.lwjgl.util.opus.OpusFile
-import dev.architectury.platform.Platform
 import net.minecraft.core.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.speech.Speech
@@ -47,10 +46,9 @@ object Opus {
     return PcmAndChannels((if (channels==1) 1 else 2), result)
   }
   fun decodeOpusFromResource(resourcePath: String): PcmAndChannels {
-    val path = Platform.getMod(AudioNavigation.MOD_ID).findResource(resourcePath)
-    if (!path.isPresent())
-      error("Invalid resource path: ${resourcePath}")
-    val data = Files.readAllBytes(path.get())
+    val data = Opus::class.java.getResourceAsStream(resourcePath)?.use { stream ->
+      stream.readAllBytes()
+    } ?: error("Resource not found")
     val buffer = BufferUtils.createByteBuffer(data.size)
     buffer.put(data)
     buffer.flip()

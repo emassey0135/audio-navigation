@@ -52,7 +52,7 @@ public class TreeGrowerMixin {
 							world.setBlock(pos.offset(i, 0, j + 1), blockState, 260);
 							world.setBlock(pos.offset(i + 1, 0, j + 1), blockState, 260);
 							if (configuredFeature.place(world, chunkGenerator, random, pos.offset(i, 0, j))) {
-								Features.addFeatureToDatabase(resourceKey.location().getPath(), pos.offset(i, 0, j), world);
+								Features.addFeatureToDatabase(resourceKey.identifier().getPath(), pos.offset(i, 0, j), world);
 								return true;
 							}
 
@@ -86,7 +86,7 @@ public class TreeGrowerMixin {
 						world.sendBlockUpdated(pos, state, blockState2, 2);
 					}
 
-					Features.addFeatureToDatabase(resourceKey2.location().getPath(), pos, world);
+					Features.addFeatureToDatabase(resourceKey2.identifier().getPath(), pos, world);
 					return true;
 				} else {
 					world.setBlock(pos, state, 260);

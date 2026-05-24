@@ -1,22 +1,16 @@
 plugins {
-  id("dev.architectury.loom")
-  id("architectury-plugin")
+  id("net.neoforged.moddev")
   kotlin("plugin.serialization")
 }
-loom {
-  silentMojangMappingsLicense()
+val neoform_version: String by project
+neoForge {
+  neoFormVersion = neoform_version
 }
-architectury {
-  common(listOf("fabric", "neoforge"))
-}
-val minecraft_version: String by project
-val fabric_loader_version: String by project
+val mixin_version: String by project
 val sqlite_jdbc_version: String by project
 val kotlinx_serialization_included_version: String by project
 dependencies {
-  minecraft("net.minecraft:minecraft:$minecraft_version")
-  mappings(loom.officialMojangMappings())
-  modCompileOnly("net.fabricmc:fabric-loader:$fabric_loader_version")
+  compileOnly("org.spongepowered:mixin:$mixin_version")
   compileOnly("org.xerial:sqlite-jdbc:$sqlite_jdbc_version")
   compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_included_version")
 }

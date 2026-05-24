@@ -2,29 +2,19 @@ import io.github.themrmilchmann.gradle.publish.curseforge.ChangelogFormat
 import io.github.themrmilchmann.gradle.publish.curseforge.GameVersion
 import io.github.themrmilchmann.gradle.publish.curseforge.ReleaseType
 plugins {
-  id("dev.architectury.loom")
-  id("architectury-plugin")
+  id("net.fabricmc.fabric-loom")
   id("com.gradleup.shadow")
   id("com.modrinth.minotaur")
   id("io.github.themrmilchmann.curseforge-publish")
 }
 repositories {
-  maven {
-    name = "FzzyMaven"
-    url = uri("https://maven.fzzyhmstrs.me/")
-  }
-}
-loom {
-  silentMojangMappingsLicense()
-}
-architectury {
-  platformSetupLoomIde()
-  fabric()
+  maven("https://maven.twelveiterations.com/repository/maven-public/")
+  maven("https://maven.fzzyhmstrs.me/")
+  maven("https://maven.terraformersmc.com/")
 }
 val common: Configuration by configurations.creating
 val shadowBundle: Configuration by configurations.creating
 val shadow: Configuration by configurations.getting
-val developmentFabric: Configuration by configurations.getting
 configurations {
   compileOnly.configure {
     extendsFrom(common)
@@ -32,25 +22,23 @@ configurations {
   runtimeOnly.configure {
     extendsFrom(common)
   }
-  developmentFabric.extendsFrom(common)
 }
 val minecraft_version: String by project
 val fabric_loader_version: String by project
 val fabric_api_version: String by project
 val fabric_kotlin_version: String by project
-val architectury_api_version: String by project
+val balm_version: String by project
 val fzzy_config_version: String by project
 val sqlite_jdbc_version: String by project
 val lwjgl_version: String by project
 val kotlinx_serialization_fabric_version: String by project
 dependencies {
   minecraft("net.minecraft:minecraft:$minecraft_version")
-  mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc:fabric-loader:$fabric_loader_version")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
-  modImplementation("dev.architectury:architectury-fabric:$architectury_api_version")
-  modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
-  modImplementation("me.fzzyhmstrs:fzzy_config:$fzzy_config_version")
+  implementation("net.fabricmc:fabric-loader:$fabric_loader_version")
+  implementation("net.fabricmc.fabric-api:fabric-api:$fabric_api_version")
+  implementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
+  implementation("net.blay09.mods:balm-fabric:$balm_version")
+  implementation("me.fzzyhmstrs:fzzy_config:$fzzy_config_version")
   implementation("org.xerial:sqlite-jdbc:$sqlite_jdbc_version")
   shadow("org.xerial:sqlite-jdbc:$sqlite_jdbc_version")
   implementation("org.lwjgl:lwjgl-opus:$lwjgl_version")
@@ -63,12 +51,9 @@ dependencies {
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-windows-arm64")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_fabric_version")
   shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_fabric_version")
-  common(project(":common", "namedElements")) { isTransitive = false }
-  shadowBundle(project(":common", "transformProductionFabric"))
-  common(project(":common-fabric-neoforge", "namedElements")) { isTransitive = false }
-  shadowBundle(project(":common-fabric-neoforge", "transformProductionFabric"))
-  common(project(":common-client", "namedElements")) { isTransitive = false }
-  shadowBundle(project(":common-client", "transformProductionFabric"))
+  implementation(project(":common")) { isTransitive = false }
+  implementation(project(":common-fabric-neoforge")) { isTransitive = false }
+  implementation(project(":common-client")) { isTransitive = false }
 }
 val version: String by project
 val mod_id: String by project
@@ -94,7 +79,6 @@ tasks.processResources {
       "common_mixins_file" to common_mixins_file,
       "fabric_loader_version" to fabric_loader_version,
       "minecraft_version" to minecraft_version,
-      "architectury_api_version" to architectury_api_version,
       "fabric_api_version" to fabric_api_version.replace("\\+.*".toRegex(), ""),
       "fabric_kotlin_version" to fabric_kotlin_version.replace("\\+.*".toRegex(), ""),
       "fzzy_config_version" to fzzy_config_version.replace("\\+.*".toRegex(), ""),
@@ -124,22 +108,18 @@ tasks.shadowJar {
   exclude("org/sqlite/native/Linux-Android/")
   exclude("org/sqlite/native/Linux-Musl/")
 }
-tasks.remapJar {
-  inputFile.set(tasks.shadowJar.get().archiveFile)
-}
 val modrinth_slug: String by project
 modrinth {
   projectId.set(modrinth_slug)
   versionNumber.set(version)
   versionName.set("Audio Navigation $version (Fabric)")
   versionType.set("beta")
-  uploadFile.set(tasks.remapJar)
+  uploadFile.set(tasks.shadowJar)
   gameVersions.addAll(minecraft_version)
   loaders.add("fabric")
   changelog.set(file("../CHANGELOG.md").readText())
   dependencies {
     required.project("fabric-api")
-    required.project("architectury-api")
     required.project("fabric-language-kotlin")
     required.project("fzzy-config")
     optional.project("minecraft-access")
@@ -151,12 +131,11 @@ curseforge {
   publications {
     register("fabric") {
       projectId = curseforge_id
-      gameVersions.add(GameVersion("minecraft-1-21", minecraft_version.replace(".", "-")))
+      gameVersions.add(GameVersion("minecraft-26-1", minecraft_version.replace(".", "-")))
       gameVersions.add(GameVersion("modloader", "fabric"))
       gameVersions.add(GameVersion("environment", "client"))
       gameVersions.add(GameVersion("environment", "server"))
-      javaVersions.add(JavaVersion.VERSION_21)
-      javaVersions.add(JavaVersion.VERSION_22)
+      javaVersions.add(JavaVersion.VERSION_25)
       artifacts.register("main") {
         displayName = "Audio Navigation $version (Fabric)"
         releaseType = ReleaseType.BETA
@@ -166,12 +145,11 @@ curseforge {
         }
         relations {
           requiredDependency("fabric-api")
-          requiredDependency("architectury-api")
           requiredDependency("fabric-language-kotlin")
           requiredDependency("fzzy-config")
           optionalDependency("blind-accessibility")
         }
-        from(tasks.remapJar)
+        from(tasks.shadowJar)
       }
     }
   }

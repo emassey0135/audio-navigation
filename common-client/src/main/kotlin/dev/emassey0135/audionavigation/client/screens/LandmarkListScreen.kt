@@ -12,7 +12,7 @@ import net.minecraft.client.gui.components.ObjectSelectionList
 import net.minecraft.client.gui.components.StringWidget
 import net.minecraft.client.gui.components.Tooltip
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.AlertScreen
 import net.minecraft.client.gui.screens.ConfirmScreen
 import net.minecraft.client.gui.screens.Screen
@@ -36,16 +36,16 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: Minecraft, val
     override fun getNarration(): Component {
       return Component.literal("${poi.poi.name}, ${I18n.get("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt())}, ${Translation.positionAsNarratableString(poi.poi.pos)}")
     }
-    override fun renderContent(context: GuiGraphics, mouseX: Int, mouseY: Int, hovered: Boolean, tickDelta: Float) {
+    override fun extractContent(context: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, hovered: Boolean, tickDelta: Float) {
       val x = getContentX()
       val y = getContentY()
       val entryWidth = getContentWidth()
       val landmarkNameText = StringWidget(x, y, entryWidth, 20, Component.literal(poi.poi.name), font)
       val landmarkDistanceText = StringWidget(x, y+30, entryWidth, 20, Component.translatable("${AudioNavigation.MOD_ID}.poi_distance", poi.distance.toInt()), font)
       val landmarkPositionText = StringWidget(x, y+60, entryWidth, 20, Component.literal(Translation.positionAsString(poi.poi.pos)), font)
-      landmarkNameText.renderWidget(context, mouseX, mouseY, tickDelta)
-      landmarkDistanceText.renderWidget(context, mouseX, mouseY, tickDelta)
-      landmarkPositionText.renderWidget(context, mouseX, mouseY, tickDelta)
+      landmarkNameText.extractWidgetRenderState(context, mouseX, mouseY, tickDelta)
+      landmarkDistanceText.extractWidgetRenderState(context, mouseX, mouseY, tickDelta)
+      landmarkPositionText.extractWidgetRenderState(context, mouseX, mouseY, tickDelta)
     }
   }
   private class LandmarkList(minecraftClient: Minecraft, x: Int, y: Int, width: Int, height: Int, val font: Font, val poiList: PoiList): ObjectSelectionList<LandmarkEntry>(minecraftClient, width, height, y, 90) {
@@ -94,10 +94,9 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: Minecraft, val
   }
   override fun init() {
     landmarkList = LandmarkList(minecraftClient, 10, 10, width/2-20, height-20, font, poiList)
-    addRenderableWidget(landmarkList)
-    addRenderableWidget(CycleButton.builder<Int>({ value -> Component.literal(value.toString()) })
+    addRenderableWidget(landmarkList!!)
+    addRenderableWidget(CycleButton.builder<Int>({ value -> Component.literal(value.toString()) }, startingRadius)
       .withValues((6..26).map { exponent -> (2.0).pow(exponent).toInt() })
-      .withInitialValue(startingRadius)
       .create(width/2+10, 50, 300, 20, Component.translatable("${AudioNavigation.MOD_ID}.screens.landmark_list.radius_button"), { widget, radius ->
         onClose()
         openLandmarkListScreen(parent, radius)

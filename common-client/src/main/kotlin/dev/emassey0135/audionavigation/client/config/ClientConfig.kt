@@ -3,7 +3,7 @@ package dev.emassey0135.audionavigation.client.config
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import me.fzzyhmstrs.fzzy_config.config.Config
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.config.clientConfigSections.AnnouncementsSection
 import dev.emassey0135.audionavigation.client.config.clientConfigSections.BeaconsSection
@@ -11,7 +11,7 @@ import dev.emassey0135.audionavigation.client.config.clientConfigSections.Manual
 import dev.emassey0135.audionavigation.client.config.clientConfigSections.SoundSection
 import dev.emassey0135.audionavigation.client.config.clientConfigSections.SpeechSection
 
-class ClientConfig: Config(ResourceLocation.fromNamespaceAndPath(AudioNavigation.MOD_ID, "client_config")) {
+class ClientConfig: Config(Identifier.fromNamespaceAndPath(AudioNavigation.MOD_ID, "client_config")) {
   var announcements = AnnouncementsSection()
   var manualAnnouncements = ManualAnnouncementsSection()
   var speech = SpeechSection()

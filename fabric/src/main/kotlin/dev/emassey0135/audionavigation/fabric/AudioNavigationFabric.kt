@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.core.UUIDUtil
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 import net.minecraft.server.level.ServerLevel;
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.fabricNeoforge.config.ServerConfig
@@ -17,14 +17,14 @@ import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.poi.Landmarks
 
 object AudioNavigationFabric: ModInitializer {
-  @JvmField val WORLD_UUID_ATTACHMENT = AttachmentRegistry.create(ResourceLocation.fromNamespaceAndPath(AudioNavigation.MOD_ID, "world_uuid"), { builder ->
+  @JvmField val WORLD_UUID_ATTACHMENT = AttachmentRegistry.create(Identifier.fromNamespaceAndPath(AudioNavigation.MOD_ID, "world_uuid"), { builder ->
       builder.persistent(UUIDUtil.CODEC).initializer({ UUID.randomUUID() })
   })
   override fun onInitialize() {
-    PayloadTypeRegistry.playC2S().register(PoiRequestPayload.ID, PoiRequestPayload.CODEC)
-    PayloadTypeRegistry.playS2C().register(PoiListPayload.ID, PoiListPayload.CODEC)
-    PayloadTypeRegistry.playC2S().register(AddLandmarkPayload.ID, AddLandmarkPayload.CODEC)
-    PayloadTypeRegistry.playC2S().register(DeleteLandmarkPayload.ID, DeleteLandmarkPayload.CODEC)
+    PayloadTypeRegistry.serverboundPlay().register(PoiRequestPayload.ID, PoiRequestPayload.CODEC)
+    PayloadTypeRegistry.clientboundPlay().register(PoiListPayload.ID, PoiListPayload.CODEC)
+    PayloadTypeRegistry.serverboundPlay().register(AddLandmarkPayload.ID, AddLandmarkPayload.CODEC)
+    PayloadTypeRegistry.serverboundPlay().register(DeleteLandmarkPayload.ID, DeleteLandmarkPayload.CODEC)
     ServerPlayNetworking.registerGlobalReceiver(PoiRequestPayload.ID, { payload: PoiRequestPayload, context: ServerPlayNetworking.Context ->
         context.responseSender().sendPacket(AudioNavigation.respondToPoiRequest(context.player().level() as ServerLevel, context.player(), payload))
       })

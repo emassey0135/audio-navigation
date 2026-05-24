@@ -1,28 +1,20 @@
 plugins {
-  id("dev.architectury.loom")
-  id("architectury-plugin")
+  id("net.neoforged.moddev")
 }
 repositories {
-  maven {
-    name = "FzzyMaven"
-    url = uri("https://maven.fzzyhmstrs.me/")
-  }
+  maven("https://maven.twelveiterations.com/repository/maven-public/")
+  maven("https://maven.fzzyhmstrs.me/")
 }
-loom {
-  silentMojangMappingsLicense()
+val neoform_version: String by project
+neoForge {
+  neoFormVersion = neoform_version
 }
-architectury {
-  common(listOf("fabric", "neoforge"))
-}
-val minecraft_version: String by project
-val architectury_api_version: String by project
+val balm_version: String by project
 val fzzy_config_version: String by project
 val lwjgl_version: String by project
 dependencies {
-  minecraft("net.minecraft:minecraft:$minecraft_version")
-  mappings(loom.officialMojangMappings())
-  modCompileOnly("dev.architectury:architectury:$architectury_api_version")
-  modCompileOnly("me.fzzyhmstrs:fzzy_config:$fzzy_config_version")
+  implementation("net.blay09.mods:balm-common:$balm_version")
+  compileOnly("me.fzzyhmstrs:fzzy_config:$fzzy_config_version")
   compileOnly("org.lwjgl:lwjgl-opus:$lwjgl_version")
-  compileOnly(project(":common", "namedElements")) { isTransitive = false }
+  compileOnly(project(":common")) { isTransitive = false }
 }

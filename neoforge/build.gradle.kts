@@ -13,17 +13,6 @@ repositories {
   maven("https://maven.twelveiterations.com/repository/maven-public/")
   maven("https://maven.fzzyhmstrs.me/")
 }
-val common: Configuration by configurations.creating
-val shadowBundle: Configuration by configurations.creating
-val shadow: Configuration by configurations.getting
-configurations {
-  compileOnly.configure {
-    extendsFrom(common)
-  }
-  runtimeOnly.configure {
-    extendsFrom(common)
-  }
-}
 val neoforge_version: String by project
 neoForge {
   version = neoforge_version
@@ -56,8 +45,11 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_neoforge_version")
   shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_neoforge_version")
   implementation(project(":common")) { isTransitive = false }
+  shadow(project(":common")) { isTransitive = false }
   implementation(project(":common-fabric-neoforge")) { isTransitive = false }
+  shadow(project(":common-fabric-neoforge")) { isTransitive = false }
   implementation(project(":common-client")) { isTransitive = false }
+  shadow(project(":common-client")) { isTransitive = false }
 }
 val version: String by project
 val mod_github_url: String by project
@@ -91,9 +83,10 @@ tasks.processResources {
     ))
   }
 }
+val shadow: Configuration by configurations.getting
 tasks.shadowJar {
-  configurations = listOf(shadowBundle, shadow)
-  archiveClassifier.set("dev-shadow")
+  configurations = listOf(shadow)
+  archiveClassifier.set("")
   exclude("kotlin/")
   exclude("kotlinx/serialization/*.class")
   exclude("kotlinx/serialization/builtins/")
@@ -112,6 +105,12 @@ tasks.shadowJar {
   exclude("org/sqlite/native/FreeBSD/")
   exclude("org/sqlite/native/Linux-Android/")
   exclude("org/sqlite/native/Linux-Musl/")
+}
+tasks.jar {
+  enabled = false
+}
+tasks.build {
+  dependsOn(tasks.shadowJar)
 }
 val modrinth_slug: String by project
 modrinth {

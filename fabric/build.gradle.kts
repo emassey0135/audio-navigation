@@ -12,17 +12,6 @@ repositories {
   maven("https://maven.fzzyhmstrs.me/")
   maven("https://maven.terraformersmc.com/")
 }
-val common: Configuration by configurations.creating
-val shadowBundle: Configuration by configurations.creating
-val shadow: Configuration by configurations.getting
-configurations {
-  compileOnly.configure {
-    extendsFrom(common)
-  }
-  runtimeOnly.configure {
-    extendsFrom(common)
-  }
-}
 val minecraft_version: String by project
 val fabric_loader_version: String by project
 val fabric_api_version: String by project
@@ -52,8 +41,11 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_fabric_version")
   shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_fabric_version")
   implementation(project(":common")) { isTransitive = false }
+  shadow(project(":common")) { isTransitive = false }
   implementation(project(":common-fabric-neoforge")) { isTransitive = false }
+  shadow(project(":common-fabric-neoforge")) { isTransitive = false }
   implementation(project(":common-client")) { isTransitive = false }
+  shadow(project(":common-client")) { isTransitive = false }
 }
 val version: String by project
 val mod_id: String by project
@@ -87,9 +79,10 @@ tasks.processResources {
     ))
   }
 }
+val shadow: Configuration by configurations.getting
 tasks.shadowJar {
-  configurations = listOf(shadowBundle, shadow)
-  archiveClassifier.set("dev-shadow")
+  configurations = listOf(shadow)
+  archiveClassifier.set("")
   exclude("kotlin/")
   exclude("kotlinx/serialization/*.class")
   exclude("kotlinx/serialization/builtins/")
@@ -108,6 +101,12 @@ tasks.shadowJar {
   exclude("org/sqlite/native/FreeBSD/")
   exclude("org/sqlite/native/Linux-Android/")
   exclude("org/sqlite/native/Linux-Musl/")
+}
+tasks.jar {
+  enabled = false
+}
+tasks.build {
+  dependsOn(tasks.shadowJar)
 }
 val modrinth_slug: String by project
 modrinth {

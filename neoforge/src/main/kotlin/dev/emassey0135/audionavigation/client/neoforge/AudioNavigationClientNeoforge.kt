@@ -9,7 +9,8 @@ import net.neoforged.fml.common.Mod
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.AudioNavigationClient
 
-@Mod(value=AudioNavigation.MOD_ID, dist=arrayOf(Dist.CLIENT)) class AudioNavigationClientNeoforge(private val bus: IEventBus, private val container: ModContainer) {
+@Mod(value=AudioNavigation.MOD_ID, dist=arrayOf(Dist.CLIENT))
+class AudioNavigationClientNeoforge(bus: IEventBus, container: ModContainer) {
   init {
     BalmClient.initializeMod(AudioNavigation.MOD_ID, NeoForgeLoadContext(container, bus), AudioNavigationClient::initialize)
   }

@@ -2,13 +2,17 @@ package dev.emassey0135.audionavigation.client
 
 import java.util.UUID
 import com.mojang.blaze3d.platform.InputConstants
+import net.blay09.mods.balm.Balm
 import net.blay09.mods.balm.client.BalmClientRegistrars
 import net.blay09.mods.balm.client.platform.event.callback.ClientLifecycleCallback
 import net.blay09.mods.balm.client.platform.event.callback.ClientTickCallback
 import net.blay09.mods.kuma.api.InputBinding
 import net.blay09.mods.kuma.api.Kuma
 import net.minecraft.client.Minecraft
+import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.codec.StreamCodec
 import net.minecraft.resources.Identifier
+import net.minecraft.world.entity.player.Player
 import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.client.config.ClientConfig
 import dev.emassey0135.audionavigation.client.features.Beacon
@@ -75,6 +79,10 @@ object AudioNavigationClient {
         true
       }
       .build()
+    val networking = Balm.networking()
+    networking.registerClientboundPacket(PoiListPayload.ID, PoiListPayload::class.java, PoiListPayload.CODEC as StreamCodec<RegistryFriendlyByteBuf, PoiListPayload>, { player: Player, payload: PoiListPayload ->
+      handlePoiList(payload)
+    })
     interval.beReady()
     ClientLifecycleCallback.Started.EVENT.register { client ->
       SoundPlayer.initialize()

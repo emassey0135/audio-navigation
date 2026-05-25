@@ -30,7 +30,7 @@ object PoiAnnouncements {
       PoiType.FEATURE -> "sense_poi.ogg"
       PoiType.STRUCTURE -> "sense_location.ogg"
     }
-    Opus.playOpusWithSpeechFromResource("assets/${AudioNavigation.MOD_ID}/audio/$sound", pos)
+    Opus.playOpusWithSpeechFromResource("/assets/${AudioNavigation.MOD_ID}/audio/$sound", pos)
     val name = when (poi.type) {
       PoiType.LANDMARK -> poi.name
       PoiType.FEATURE -> Translation.translateFeatureName(poi.name)

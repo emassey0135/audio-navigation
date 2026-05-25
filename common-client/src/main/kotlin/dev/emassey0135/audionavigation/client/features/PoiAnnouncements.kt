@@ -4,6 +4,7 @@ import java.util.concurrent.locks.ReentrantLock
 import java.util.Optional
 import java.util.UUID
 import kotlin.concurrent.thread
+import net.blay09.mods.balm.Balm
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.client.resources.language.I18n
@@ -68,7 +69,7 @@ object PoiAnnouncements {
       poiList.toList().forEach { poi -> announcePoi(poi.poi, poi.distance, origin, orientation, announceDistance, announceDirection, includeVerticalDirection, horizontalDirectionType, verticalDirectionType, true) }
       mutex.unlock()
     })
-    AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, PoiRequest(origin, radius, maxAnnouncements, verticalLimit, Optional.empty(), Optional.of(includedFeatures))))
+    Balm.networking().sendToServer(PoiRequestPayload(requestID, PoiRequest(origin, radius, maxAnnouncements, verticalLimit, Optional.empty(), Optional.of(includedFeatures))))
   }
   fun triggerAutomaticAnnouncements() {
     val config = ClientConfig.instance!!.announcements

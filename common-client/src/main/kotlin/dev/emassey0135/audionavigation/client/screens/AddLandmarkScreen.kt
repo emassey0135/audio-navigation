@@ -1,5 +1,6 @@
 package dev.emassey0135.audionavigation.client.screens
 
+import net.blay09.mods.balm.Balm
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.Checkbox
 import net.minecraft.client.gui.components.EditBox
@@ -9,7 +10,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import dev.emassey0135.audionavigation.AudioNavigation
-import dev.emassey0135.audionavigation.client.AudioNavigationClient
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 
 object AddLandmark {
@@ -17,7 +17,7 @@ object AddLandmark {
     val minecraftClient = Minecraft.getInstance()
     val player = minecraftClient.player
     if (player!=null)
-      AudioNavigationClient.sendAddLandmark(AddLandmarkPayload(name, BlockPos.containing(player.position()), visibleToOtherPlayers))
+      Balm.networking().sendToServer(AddLandmarkPayload(name, BlockPos.containing(player.position()), visibleToOtherPlayers))
   }
 }
 class AddLandmarkScreen(val parent: Screen): Screen(Component.translatable("${AudioNavigation.MOD_ID}.screens.add_landmark")) {

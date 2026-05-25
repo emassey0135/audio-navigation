@@ -22,21 +22,9 @@ import dev.emassey0135.audionavigation.client.sound.SoundPlayer
 import dev.emassey0135.audionavigation.client.speech.Speech
 import dev.emassey0135.audionavigation.client.util.Interval
 import dev.emassey0135.audionavigation.client.util.Library
-import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
-import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
 import dev.emassey0135.audionavigation.packets.PoiListPayload
-import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 
 object AudioNavigationClient {
-  fun sendPoiRequest(poiRequestPayload: PoiRequestPayload) {
-    error("This function is not implemented.")
-  }
-  fun sendAddLandmark(addLandmarkPayload: AddLandmarkPayload) {
-    error("This function is not implemented.")
-  }
-  fun sendDeleteLandmark(deleteLandmarkPayload: DeleteLandmarkPayload) {
-    error("This function is not implemented.")
-  }
   private val poiListHandlers = HashMap<UUID, (PoiListPayload) -> Unit>()
   fun registerPoiListHandler(requestID: UUID, handler: (PoiListPayload) -> Unit) {
     poiListHandlers.put(requestID, handler)

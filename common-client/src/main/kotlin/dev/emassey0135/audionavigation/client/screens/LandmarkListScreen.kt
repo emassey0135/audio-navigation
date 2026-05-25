@@ -5,6 +5,7 @@ import java.util.Optional
 import java.util.UUID
 import kotlin.concurrent.thread
 import kotlin.math.pow
+import net.blay09.mods.balm.Balm
 import net.minecraft.core.BlockPos
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.CycleButton
@@ -79,7 +80,7 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: Minecraft, val
       minecraftClient.setScreen(ConfirmScreen(
         { choice ->
           if (choice) {
-            AudioNavigationClient.sendDeleteLandmark(DeleteLandmarkPayload(selectedEntry.poi.id))
+            Balm.networking().sendToServer(DeleteLandmarkPayload(selectedEntry.poi.id))
             minecraftClient.setScreen(LandmarkListScreen(parent, minecraftClient, poiList.also { it.delete(selectedEntry.poi.id) }, startingRadius))
           }
           else {
@@ -122,7 +123,7 @@ class LandmarkListScreen(val parent: Screen, val minecraftClient: Minecraft, val
         val poiListQueue = SynchronousQueue<PoiList>()
         val requestID = UUID.randomUUID()
         AudioNavigationClient.registerPoiListHandler(requestID, { payload -> poiListQueue.put(payload.poiList) })
-        AudioNavigationClient.sendPoiRequest(PoiRequestPayload(requestID, PoiRequest(origin, startingRadius, 1000, Optional.empty(), Optional.of(PoiType.LANDMARK), Optional.empty())))
+        Balm.networking().sendToServer(PoiRequestPayload(requestID, PoiRequest(origin, startingRadius, 1000, Optional.empty(), Optional.of(PoiType.LANDMARK), Optional.empty())))
         val poiList = poiListQueue.take()
         minecraftClient.execute { minecraftClient.setScreen(LandmarkListScreen(parent, minecraftClient, poiList, startingRadius)) }
       })

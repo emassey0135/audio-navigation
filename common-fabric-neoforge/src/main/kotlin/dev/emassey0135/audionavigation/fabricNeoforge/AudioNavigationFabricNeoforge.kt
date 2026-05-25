@@ -12,7 +12,6 @@ import dev.emassey0135.audionavigation.AudioNavigation
 import dev.emassey0135.audionavigation.fabricNeoforge.config.ServerConfig
 import dev.emassey0135.audionavigation.packets.AddLandmarkPayload
 import dev.emassey0135.audionavigation.packets.DeleteLandmarkPayload
-import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.poi.Landmarks
 

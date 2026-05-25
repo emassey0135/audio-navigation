@@ -40,7 +40,7 @@ tasks.named<ProcessResources>("processPluginResources") {
       "mod_description" to mod_description,
       "mod_author" to mod_author,
       "mod_github_url" to mod_github_url,
-      "paper_api_version" to paper_api_version.replace("-.*".toRegex(), ""),
+      "paper_api_version" to paper_api_version.replace("\\.build.*".toRegex(), ""),
       "mod_id" to mod_id,
     ))
   }

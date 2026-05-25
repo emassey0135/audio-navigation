@@ -75,7 +75,6 @@ tasks.processResources {
       "mod_icon" to mod_icon,
       "neoforge_version" to neoforge_version.replace("\\.[^\\.]*$".toRegex(), ""),
       "minecraft_version" to minecraft_version,
-      "kotlin_lang_forge_version" to kotlin_lang_forge_version.replace("-.*".toRegex(), ""),
       "balm_version" to balm_version,
       "fzzy_config_neoforge_version" to fzzy_config_neoforge_version.replace("\\+.*".toRegex(), ""),
       "minecraft_access_version" to minecraft_access_version,

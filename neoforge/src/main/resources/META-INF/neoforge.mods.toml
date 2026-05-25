@@ -27,13 +27,6 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.audio_navigation]]
-modId = "kotlinlangforge"
-type = "required"
-versionRange = "[${kotlin_lang_forge_version},)"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.audio_navigation]]
 modId = "balm"
 type = "required"
 versionRange = "[${balm_version},)"

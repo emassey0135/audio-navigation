@@ -1,10 +1,12 @@
 package dev.emassey0135.audionavigation.mixin;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.FeatureCountTracker;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
@@ -50,6 +52,10 @@ public class PlacedFeatureMixin {
         stream.forEach(blockPos -> {
                 if (configuredFeature.place(context.getLevel(), context.generator(), random, blockPos)) {
                     mutableBoolean.setTrue();
+
+                    if (SharedConstants.DEBUG_FEATURE_COUNT) {
+                        FeatureCountTracker.featurePlaced(context.getLevel().getLevel(), configuredFeature, context.topFeature());
+                    }
 
                     if (key.isPresent()) {
                         Features.addFeatureToDatabase(key.get().identifier().getPath(), blockPos, context.getLevel().getLevel());

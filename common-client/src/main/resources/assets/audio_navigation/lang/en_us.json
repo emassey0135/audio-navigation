@@ -373,7 +373,7 @@
   "audio_navigation.vertical_directions.straight": "straight",
   "audio_navigation.vertical_directions.up": "up",
   "audio_navigation.vertical_directions.down": "down",
-  "category.audio_navigation": "Audio Navigation",
+  "key.category.audio_navigation.default": "Audio Navigation",
   "key.audio_navigation.open_main_menu": "Open Main Menu",
   "key.audio_navigation.announce_nearby_pois": "Announce Nearby POI's",
   "key.audio_navigation.announce_beacon": "Announce Beacon",

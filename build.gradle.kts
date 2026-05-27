@@ -27,7 +27,6 @@ subprojects {
     archivesName = "$archives_name-$name"
   }
   java {
-    withSourcesJar()
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
   }

@@ -44,106 +44,86 @@ object SoundPlayer {
     }
   }
   fun addSource(name: String) {
-    thread {
-      tasks.put {
-        sources.put(name, AL11.alGenSources())
-      }
+    tasks.put {
+      sources.put(name, AL11.alGenSources())
     }
   }
   fun setSourceMaxDistance(name: String, maxDistance: Float) {
-    thread {
-      tasks.put {
-        if (!sources.containsKey(name))
-          error("Source has not been added: ${name}")
-        AL11.alSourcef(sources.get(name)!!, AL11.AL_MAX_DISTANCE, maxDistance)
-      }
+    tasks.put {
+      if (!sources.containsKey(name))
+        error("Source has not been added: ${name}")
+      AL11.alSourcef(sources.get(name)!!, AL11.AL_MAX_DISTANCE, maxDistance)
     }
   }
   fun setSourceRolloffFactor(name: String, rolloffFactor: Float) {
-    thread {
-      tasks.put {
-        if (!sources.containsKey(name))
-          error("Source has not been added: ${name}")
-        AL11.alSourcef(sources.get(name)!!, AL11.AL_ROLLOFF_FACTOR, rolloffFactor)
-      }
+    tasks.put {
+      if (!sources.containsKey(name))
+        error("Source has not been added: ${name}")
+      AL11.alSourcef(sources.get(name)!!, AL11.AL_ROLLOFF_FACTOR, rolloffFactor)
     }
   }
   fun setSourcePosition(name: String, pos: BlockPos) {
-    thread {
-      tasks.put {
-        if (!sources.containsKey(name))
-          error("Source has not been added: ${name}")
-        AL11.alSource3f(sources.get(name)!!, AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), -pos.getZ().toFloat())
-      }
+    tasks.put {
+      if (!sources.containsKey(name))
+        error("Source has not been added: ${name}")
+      AL11.alSource3f(sources.get(name)!!, AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), -pos.getZ().toFloat())
     }
   }
   fun updateListenerPosition() {
-    thread {
-      tasks.put(fun(): Unit {
-        val minecraftClient = Minecraft.getInstance()
-        val player = minecraftClient.player
-        if (player==null)
-          return
-        val pos = BlockPos.containing(player.position())
-        val orientation = Orientation(player.getRotationVector())
-        AL11.alListener3f(AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), -pos.getZ().toFloat())
-        val vector = orientation.toVector()
-        AL11.alListenerfv(AL11.AL_ORIENTATION, floatArrayOf(vector.x.toFloat(), vector.y.toFloat(), vector.z.toFloat(), 0f, 1f, 0f))
-      })
+    tasks.put {
+      val minecraftClient = Minecraft.getInstance()
+      val player = minecraftClient.player
+      if (player==null)
+        return@put
+      val pos = BlockPos.containing(player.position())
+      val orientation = Orientation(player.getRotationVector())
+      AL11.alListener3f(AL11.AL_POSITION, pos.getX().toFloat(), pos.getY().toFloat(), -pos.getZ().toFloat())
+      val vector = orientation.toVector()
+      AL11.alListenerfv(AL11.AL_ORIENTATION, floatArrayOf(vector.x.toFloat(), vector.y.toFloat(), vector.z.toFloat(), 0f, 1f, 0f))
     }
   }
   fun play(name: String, format: Int, sampleRate: Int, data: ByteBuffer) {
-    thread {
-      tasks.put {
-        if (!sources.containsKey(name))
-          error("Source has not been added: ${name}")
-        val buffer = AL11.alGenBuffers()
-        AL11.alBufferData(buffer, format, data, sampleRate)
-        AL11.alSourcei(sources.get(name)!!, AL11.AL_BUFFER, buffer)
-        AL11.alSourcePlay(sources.get(name)!!)
-      }
+    tasks.put {
+      if (!sources.containsKey(name))
+        error("Source has not been added: ${name}")
+      val buffer = AL11.alGenBuffers()
+      AL11.alBufferData(buffer, format, data, sampleRate)
+      AL11.alSourcei(sources.get(name)!!, AL11.AL_BUFFER, buffer)
+      AL11.alSourcePlay(sources.get(name)!!)
     }
   }
   fun play(name: String, format: Int, sampleRate: Int, data: ShortBuffer) {
-    thread {
-      tasks.put {
-        if (!sources.containsKey(name))
-          error("Source has not been added: ${name}")
-        val buffer = AL11.alGenBuffers()
-        AL11.alBufferData(buffer, format, data, sampleRate)
-        AL11.alSourcei(sources.get(name)!!, AL11.AL_BUFFER, buffer)
-        AL11.alSourcePlay(sources.get(name)!!)
-      }
+    tasks.put {
+      if (!sources.containsKey(name))
+        error("Source has not been added: ${name}")
+      val buffer = AL11.alGenBuffers()
+      AL11.alBufferData(buffer, format, data, sampleRate)
+      AL11.alSourcei(sources.get(name)!!, AL11.AL_BUFFER, buffer)
+      AL11.alSourcePlay(sources.get(name)!!)
     }
   }
   fun play(name: String, format: Int, sampleRate: Int, data: FloatBuffer) {
-    thread {
-      tasks.put {
-        if (!sources.containsKey(name))
-          error("Source has not been added: ${name}")
-        val buffer = AL11.alGenBuffers()
-        AL11.alBufferData(buffer, format, data, sampleRate)
-        AL11.alSourcei(sources.get(name)!!, AL11.AL_BUFFER, buffer)
-        AL11.alSourcePlay(sources.get(name)!!)
-      }
+    tasks.put {
+      if (!sources.containsKey(name))
+        error("Source has not been added: ${name}")
+      val buffer = AL11.alGenBuffers()
+      AL11.alBufferData(buffer, format, data, sampleRate)
+      AL11.alSourcei(sources.get(name)!!, AL11.AL_BUFFER, buffer)
+      AL11.alSourcePlay(sources.get(name)!!)
     }
   }
   fun stop(name: String) {
-    thread {
-      tasks.put {
-        if (!sources.containsKey(name))
-          error("Source has not been added: ${name}")
-        AL11.alSourceStop(sources.get(name)!!)
-      }
+    tasks.put {
+      if (!sources.containsKey(name))
+        error("Source has not been added: ${name}")
+      AL11.alSourceStop(sources.get(name)!!)
     }
   }
   fun getSourceState(name: String, callback: (Int) -> Unit) {
-    thread {
-      tasks.put {
-        if (!sources.containsKey(name))
-          error("Source has not been added: ${name}")
-        callback(AL11.alGetSourcei(sources.get(name)!!, AL11.AL_SOURCE_STATE))
-      }
+    tasks.put {
+      if (!sources.containsKey(name))
+        error("Source has not been added: ${name}")
+      callback(AL11.alGetSourcei(sources.get(name)!!, AL11.AL_SOURCE_STATE))
     }
   }
 }

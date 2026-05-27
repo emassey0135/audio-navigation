@@ -3,6 +3,7 @@ package dev.emassey0135.audionavigation.poi
 import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
 import java.util.UUID
+import kotlin.concurrent.withLock
 import java.util.Optional
 import kotlin.math.abs
 import kotlinx.serialization.decodeFromByteArray
@@ -95,20 +96,20 @@ class PoiList(list: List<PoiListItem>) {
     var getNearestStatement: PreparedStatement? = null
     val getNearestMutex = ReentrantLock()
     fun getNearest(world: ServerLevel, player: ServerPlayer, poiRequest: PoiRequest): PoiList {
-      getNearestMutex.lock()
-      currentPoiRequest = poiRequest
-      currentPlayerUUID = player.getUUID()
-      if (getNearestStatement==null)
-        getNearestStatement = Database.connection.prepareStatement("SELECT id, type, name, data, x, y, z, filterPoi(type, name, x, y, z, data) AS distance FROM pois2 WHERE distance >= 0 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
-      getNearestStatement?.setInt(1, poiRequest.pos.getX())
-      getNearestStatement?.setInt(2, poiRequest.pos.getY())
-      getNearestStatement?.setInt(3, poiRequest.pos.getZ())
-      getNearestStatement?.setInt(4, poiRequest.radius)
-      getNearestStatement?.setInt(5, poiRequest.maxItems)
-      getNearestStatement?.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.platform!!.getWorldUUID(world)))
-      val result = getFromDatabase(getNearestStatement!!)
-      getNearestMutex.unlock()
-      return result
+      return getNearestMutex.withLock {
+        currentPoiRequest = poiRequest
+        currentPlayerUUID = player.getUUID()
+        if (getNearestStatement==null)
+          getNearestStatement = Database.prepareStatement("SELECT id, type, name, data, x, y, z, filterPoi(type, name, x, y, z, data) AS distance FROM pois2 WHERE distance >= 0 AND world = ?6 AND minX >= ?1-?4 AND maxX <= ?1+?4 AND minY >= ?2-?4 AND maxY <= ?2+?4 AND minZ >= ?3-?4 AND maxZ <= ?3+?4 ORDER BY distance LIMIT ?5")
+        val statement = getNearestStatement!!
+        statement.setInt(1, poiRequest.pos.getX())
+        statement.setInt(2, poiRequest.pos.getY())
+        statement.setInt(3, poiRequest.pos.getZ())
+        statement.setInt(4, poiRequest.radius)
+        statement.setInt(5, poiRequest.maxItems)
+        statement.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.platform!!.getWorldUUID(world)))
+        getFromDatabase(statement)
+      }
     }
     @JvmField val STREAM_CODEC = StreamCodec.composite(
       PoiListItem.STREAM_CODEC.apply(ByteBufCodecs.list()), PoiList::toList,

@@ -1,10 +1,10 @@
 package dev.emassey0135.audionavigation.util
 
-import java.lang.Thread
 import java.sql.DriverManager
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import java.util.Optional
-import kotlin.concurrent.thread
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.protobuf.ProtoBuf
@@ -18,17 +18,18 @@ import dev.emassey0135.audionavigation.poi.PoiList
 import dev.emassey0135.audionavigation.poi.PoiType
 
 object Database {
-  @JvmField val connection = DriverManager.getConnection("jdbc:sqlite:poi.db")
-  private var commitScheduled = AtomicBoolean()
+  private val connection = DriverManager.getConnection("jdbc:sqlite:poi.db")
+  fun prepareStatement(sql: String) = connection.prepareStatement(sql)
+  private val commitScheduler = Executors.newSingleThreadScheduledExecutor()
+  private val commitScheduled = AtomicBoolean()
   fun scheduleCommitIfNeeded() {
     if (commitScheduled.compareAndSet(false, true))
-      thread {
-        Thread.sleep(1000)
+      commitScheduler.schedule({
         commitScheduled.set(false)
         connection.commit()
-      }
+      }, 1, TimeUnit.SECONDS)
   }
-  class FilterPoiFunction(): Function() {
+  class FilterPoiFunction: Function() {
     @OptIn(ExperimentalSerializationApi::class)
     override protected fun xFunc() {
       if (args()!=6)

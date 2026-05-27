@@ -67,7 +67,7 @@ object Library {
     }
     if (Files.exists(Paths.get("espeak-ng-data")))
       FileUtils.deleteDirectory(File("espeak-ng-data"))
-    UnzipUtility().unzip(espeakNgDataName, ".")
+    UnzipUtility.unzip(espeakNgDataName, ".")
     FileUtils.delete(File(espeakNgDataName))
   }
   fun initialize() {

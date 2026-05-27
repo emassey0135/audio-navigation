@@ -17,6 +17,7 @@ sourceSets {
   main {
     java.srcDir("../common/src/main/java")
     kotlin.srcDir("../common/src/main/kotlin")
+    resources.srcDir("../common/src/main/resources")
   }
 }
 val version: String by project

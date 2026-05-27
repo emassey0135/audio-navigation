@@ -4,6 +4,7 @@ import java.sql.PreparedStatement
 import java.sql.Types
 import java.util.concurrent.locks.ReentrantLock
 import java.util.Optional
+import kotlin.concurrent.withLock
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlinx.serialization.encodeToByteArray
@@ -39,21 +40,22 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos, val data:
   }
   @OptIn(ExperimentalSerializationApi::class)
   fun addToDatabase(world: ServerLevel) {
-    addToDatabaseMutex.lock()
-    if (addToDatabaseStatement == null)
-      addToDatabaseStatement = Database.connection.prepareStatement("INSERT INTO pois2 (id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, data, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?6, ?4, ?5, ?7, ?1, ?2, ?3)")
-    addToDatabaseStatement?.setInt(1, pos.getX())
-    addToDatabaseStatement?.setInt(2, pos.getY())
-    addToDatabaseStatement?.setInt(3, pos.getZ())
-    addToDatabaseStatement?.setInt(4, type.ordinal)
-    addToDatabaseStatement?.setString(5, name)
-    addToDatabaseStatement?.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.platform!!.getWorldUUID(world)))
-    if (data.isPresent())
-      addToDatabaseStatement?.setBytes(7, ProtoBuf.encodeToByteArray(data.get()))
-    else
-      addToDatabaseStatement?.setNull(7, Types.NULL)
-    addToDatabaseStatement?.executeUpdate()
-    addToDatabaseMutex.unlock()
+    addToDatabaseMutex.withLock {
+      if (addToDatabaseStatement == null)
+        addToDatabaseStatement = Database.prepareStatement("INSERT INTO pois2 (id, minX, maxX, minY, maxY, minZ, maxZ, world, type, name, data, x, y, z) VALUES(NULL, ?1, ?1, ?2, ?2, ?3, ?3, ?6, ?4, ?5, ?7, ?1, ?2, ?3)")
+      val statement = addToDatabaseStatement!!
+      statement.setInt(1, pos.getX())
+      statement.setInt(2, pos.getY())
+      statement.setInt(3, pos.getZ())
+      statement.setInt(4, type.ordinal)
+      statement.setString(5, name)
+      statement.setBytes(6, UUIDUtil.uuidToByteArray(AudioNavigation.platform!!.getWorldUUID(world)))
+      if (data.isPresent())
+        statement.setBytes(7, ProtoBuf.encodeToByteArray(data.get()))
+      else
+        statement.setNull(7, Types.NULL)
+      statement.executeUpdate()
+    }
     Database.scheduleCommitIfNeeded()
   }
   companion object {
@@ -62,12 +64,13 @@ data class Poi(val type: PoiType, val name: String, val pos: BlockPos, val data:
     private var deleteLandmarkStatement: PreparedStatement? = null
     private val deleteLandmarkMutex = ReentrantLock()
     fun deleteLandmark(id: Int) {
-      deleteLandmarkMutex.lock()
-      if (deleteLandmarkStatement==null)
-        deleteLandmarkStatement = Database.connection.prepareStatement("DELETE FROM pois2 WHERE id = ?1")
-      deleteLandmarkStatement?.setInt(1, id)
-      deleteLandmarkStatement?.executeUpdate()
-      deleteLandmarkMutex.unlock()
+      deleteLandmarkMutex.withLock {
+        if (deleteLandmarkStatement==null)
+          deleteLandmarkStatement = Database.prepareStatement("DELETE FROM pois2 WHERE id = ?1")
+        val statement = deleteLandmarkStatement!!
+        statement.setInt(1, id)
+        statement.executeUpdate()
+      }
       Database.scheduleCommitIfNeeded()
     }
     @JvmField val STREAM_CODEC = StreamCodec.composite(

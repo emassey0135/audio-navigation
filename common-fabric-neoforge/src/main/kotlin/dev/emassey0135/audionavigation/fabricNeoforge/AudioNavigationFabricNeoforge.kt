@@ -4,6 +4,7 @@ import java.util.UUID
 import net.blay09.mods.balm.Balm
 import net.blay09.mods.balm.core.BalmRegistrars
 import net.blay09.mods.balm.platform.attachment.DataAttachmentLookup
+import net.blay09.mods.balm.platform.event.callback.LivingEntityCallback
 import net.minecraft.core.UUIDUtil
 import net.minecraft.network.RegistryFriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
@@ -31,6 +32,11 @@ object AudioNavigationFabricNeoforge {
     networking.registerServerboundPacket(DeleteLandmarkPayload.ID, DeleteLandmarkPayload::class.java, DeleteLandmarkPayload.CODEC as StreamCodec<RegistryFriendlyByteBuf, DeleteLandmarkPayload>, { player: ServerPlayer, payload: DeleteLandmarkPayload ->
       Landmarks.deleteLandmark(payload.landmarkID)
     })
+    LivingEntityCallback.Death.Before.EVENT.register { entity, _ ->
+      if (entity is ServerPlayer)
+        Landmarks.addLandmarkOnDeath(entity)
+      true
+    }
     ServerConfig.initialize()
     val config = ServerConfig.createServerConfiguration()
     AudioNavigation.initialize(AudioNavigationPlatformImpl(), config)

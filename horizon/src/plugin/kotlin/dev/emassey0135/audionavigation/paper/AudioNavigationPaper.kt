@@ -4,6 +4,9 @@ import io.netty.buffer.Unpooled
 import org.bukkit.craftbukkit.entity.CraftPlayer
 import org.bukkit.craftbukkit.CraftWorld
 import org.bukkit.entity.Player
+import org.bukkit.event.entity.PlayerDeathEvent
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.NamespacedKey
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.messaging.PluginMessageListener
@@ -17,18 +20,26 @@ import dev.emassey0135.audionavigation.packets.PoiRequestPayload
 import dev.emassey0135.audionavigation.poi.Features
 import dev.emassey0135.audionavigation.poi.Landmarks
 
-class AudioNavigationPaper(): JavaPlugin(), PluginMessageListener {
+class AudioNavigationPaper(): JavaPlugin(), Listener, PluginMessageListener {
   override fun onEnable() {
     val config = this.getConfig()
     config.options().copyDefaults(true)
     config.addDefault("restrict-features", false)
     config.addDefault("allowed-features", Features.features.toList())
     config.addDefault("radius-limit", 67108864)
-    val serverConfig = ServerConfiguration(config.getBoolean("restrict-features"), config.getStringList("allowed-features"), config.getInt("radius-limit"))
+    config.addDefault("save-landmarks-on-player-death", true)
+    config.addDefault("death-landmarks-visible-to-other-players", true)
+    val serverConfig = ServerConfiguration(
+      config.getBoolean("restrict-features"),
+      config.getStringList("allowed-features"),
+      config.getInt("radius-limit"),
+      config.getBoolean("save-landmarks-on-player-death"),
+      config.getBoolean("death-landmarks-visible-to-other-players"))
     this.getServer().getMessenger().registerIncomingPluginChannel(this, PacketIdentifiers.POI_REQUEST_ID.toString(), this)
     this.getServer().getMessenger().registerOutgoingPluginChannel(this, PacketIdentifiers.POI_LIST_ID.toString())
     this.getServer().getMessenger().registerIncomingPluginChannel(this, PacketIdentifiers.ADD_LANDMARK_ID.toString(), this)
     this.getServer().getMessenger().registerIncomingPluginChannel(this, PacketIdentifiers.DELETE_LANDMARK_ID.toString(), this)
+    this.getServer().getPluginManager().registerEvents(this, this)
     AudioNavigation.initialize(AudioNavigationPlatformImpl(), serverConfig)
   }
   override fun onDisable() {
@@ -63,6 +74,10 @@ class AudioNavigationPaper(): JavaPlugin(), PluginMessageListener {
         Landmarks.deleteLandmark(deleteLandmarkPayload.landmarkID)
       }
     }
+  }
+  @EventHandler
+  fun onPlayerDeath(event: PlayerDeathEvent) {
+    Landmarks.addLandmarkOnDeath((event.getEntity() as CraftPlayer).getHandle())
   }
   companion object {
     @JvmField val WORLD_UUID_KEY = NamespacedKey(AudioNavigation.MOD_ID, "world_uuid")

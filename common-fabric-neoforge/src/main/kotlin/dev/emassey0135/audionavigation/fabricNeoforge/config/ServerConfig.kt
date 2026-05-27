@@ -42,13 +42,22 @@ class ServerConfig: Config(Identifier.fromNamespaceAndPath(AudioNavigation.MOD_I
     Component.translatable("${AudioNavigation.MOD_ID}.server_config.enableAllAllowedFeatures.desc"))
   var radiusLimit = ValidatedInt(67108864, 67108864, 0, ValidatedNumber.WidgetType.TEXTBOX)
     .also { it.listenToEntry { value -> AudioNavigation.config?.radiusLimit = value.get() }}
+  var saveLandmarksOnPlayerDeath = ValidatedBoolean(true)
+    .also { it.listenToEntry { value -> AudioNavigation.config?.saveLandmarksOnPlayerDeath = value.get() }}
+  var deathLandmarksVisibleToOtherPlayers = ValidatedBoolean(true)
+    .also { it.listenToEntry { value -> AudioNavigation.config?.deathLandmarksVisibleToOtherPlayers = value.get() }}
   companion object {
     var instance: ServerConfig? = null
     fun initialize() {
       instance = ConfigApi.registerAndLoadConfig(::ServerConfig)
     }
     fun createServerConfiguration(): ServerConfiguration {
-      return ServerConfiguration(instance!!.restrictFeatures.get(), instance!!.allowedFeatures.get(), instance!!.radiusLimit.get())
+      return ServerConfiguration(
+        instance!!.restrictFeatures.get(),
+        instance!!.allowedFeatures.get(),
+        instance!!.radiusLimit.get(),
+        instance!!.saveLandmarksOnPlayerDeath.get(),
+        instance!!.deathLandmarksVisibleToOtherPlayers.get())
     }
   }
 }

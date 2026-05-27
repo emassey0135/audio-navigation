@@ -2,9 +2,9 @@ package dev.emassey0135.audionavigation.poi
 
 import java.sql.PreparedStatement
 import java.util.concurrent.locks.ReentrantLock
+import java.util.Optional
 import java.util.UUID
 import kotlin.concurrent.withLock
-import java.util.Optional
 import kotlin.math.abs
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.ExperimentalSerializationApi

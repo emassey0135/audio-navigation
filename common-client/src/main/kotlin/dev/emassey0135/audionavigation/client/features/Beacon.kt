@@ -94,10 +94,12 @@ object Beacon {
       }
     }
   }
+  var compassBeaconActive: Boolean = false
   fun startBeacon(poi: Poi) {
     beaconQueue.offer(Optional.of(poi))
   }
   fun stopBeacon() {
+    compassBeaconActive = false
     beaconQueue.offer(Optional.empty())
     SoundPlayer.stop("beacon")
   }

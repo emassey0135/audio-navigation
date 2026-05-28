@@ -329,6 +329,8 @@
   "audio_navigation.features.waterlily": "Waterlily",
   "audio_navigation.features.weeping_vines": "Weeping Vines",
   "audio_navigation.features.wildflower": "Wildflower",
+  "audio_navigation.lodestone": "Lodestone",
+  "audio_navigation.spawn_point": "Spawn Point",
   "audio_navigation.number.negative": "negative %1$s",
   "audio_navigation.poi_distance": "%1$s blocks away",
   "audio_navigation.server_config": "Server Settings",

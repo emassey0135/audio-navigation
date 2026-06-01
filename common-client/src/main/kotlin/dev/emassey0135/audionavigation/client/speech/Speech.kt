@@ -101,7 +101,7 @@ object Speech {
     return defaultLanguages
   }
   fun filterVoices(synthesizers: List<String>, languages: List<String>): List<Voice> {
-    return voices.filter { it.synthesizer.name in synthesizers && it.languages.any { language -> language in languages } }.sortedBy { it.displayName.lowercase() }
+    return voices.filter { it.synthesizer.name in synthesizers && it.languages.any { language -> language in languages } }.sortedWith(compareBy({ it.priority }, { it.displayName.lowercase() }))
   }
   fun configure() {
     SoundPlayer.setSourceMaxDistance("speech", ClientConfig.instance!!.sound.maxDistance.get().toFloat())

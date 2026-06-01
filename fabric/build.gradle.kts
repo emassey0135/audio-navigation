@@ -8,6 +8,7 @@ plugins {
   id("io.github.themrmilchmann.curseforge-publish")
 }
 repositories {
+  mavenLocal()
   maven("https://maven.twelveiterations.com/repository/maven-public/")
   maven("https://maven.fzzyhmstrs.me/")
   maven("https://maven.terraformersmc.com/")
@@ -20,6 +21,7 @@ val balm_version: String by project
 val fzzy_config_version: String by project
 val sqlite_jdbc_version: String by project
 val lwjgl_version: String by project
+val whisprs_version: String by project
 val kotlinx_serialization_fabric_version: String by project
 dependencies {
   minecraft("net.minecraft:minecraft:$minecraft_version")
@@ -40,6 +42,8 @@ dependencies {
   shadow("org.lwjgl:lwjgl-opus:$lwjgl_version:natives-windows-arm64")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_fabric_version")
   shadow("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinx_serialization_fabric_version")
+  implementation("org.mcaccess:whisprs:$whisprs_version")
+  shadow("org.mcaccess:whisprs:$whisprs_version")
   implementation(project(":common")) { isTransitive = false }
   shadow(project(":common")) { isTransitive = false }
   implementation(project(":common-fabric-neoforge")) { isTransitive = false }

@@ -9,6 +9,9 @@ import kotlin.concurrent.thread
 import org.lwjgl.BufferUtils
 import org.lwjgl.openal.AL11
 import org.lwjgl.openal.EXTFloat32
+import org.mcaccess.whisprs.Whisprs
+import org.mcaccess.whisprs.audio.SpeechResult
+import org.mcaccess.whisprs.metadata.Voice
 import net.minecraft.client.Minecraft
 import net.minecraft.core.BlockPos
 import dev.emassey0135.audionavigation.AudioNavigation
@@ -20,13 +23,15 @@ private data class SpeechRequest(val speakRequest: SpeakRequest?, val playSoundR
   data class PlaySoundRequest(val format: Int, val sampleRate: Int, val byteBuffer: ByteBuffer?, val shortBuffer: ShortBuffer?, val floatBuffer: FloatBuffer?)
 }
 object Speech {
+  private var whisprs: Whisprs? = null
   private var voices: List<Voice> = listOf()
   private val speechRequests = ArrayBlockingQueue<SpeechRequest>(64)
   var isInitialized = false
   fun initialize() {
-    Native.INSTANCE.initialize()
+    whisprs = Whisprs()
+    val whisprs = whisprs!!
     SoundPlayer.addSource("speech")
-    voices = Native.INSTANCE.listVoices().toList()
+    voices = whisprs.listVoices(null, null, null, true).toList()
     isInitialized = true
     AudioNavigation.logger.info("Speech initialized.")
     thread {
@@ -39,7 +44,7 @@ object Speech {
         if (speechRequest.speakRequest!=null) {
           val config = ClientConfig.instance!!.speech
           val voice = config.voice.get()
-          val result = Native.INSTANCE.speak(voice.synthesizer, voice.name, voice.language, config.rate.get(), config.volume.get(), config.pitch.get(), speechRequest.speakRequest.text)
+          val result = whisprs.speakToAudioData(voice.synthesizer.name, voice.name, null, config.rate.get(), config.volume.get(), config.pitch.get(), speechRequest.speakRequest.text)
           val buffer = BufferUtils.createByteBuffer(result.pcm.size)
           buffer.put(result.pcm)
           buffer.flip()
@@ -72,10 +77,10 @@ object Speech {
     }
   }
   fun synthesizers(): List<String> {
-    return voices.map { it.synthesizer }.toSet().toList().sorted()
+    return voices.map { it.synthesizer.name }.toSet().toList().sorted()
   }
   fun languages(): List<String> {
-    return voices.map { it.language }.toSet().toList().sorted()
+    return voices.flatMap { it.languages.toList() }.toSet().toList().sorted()
   }
   fun defaultLanguages(): List<String> {
     val currentLanguage = Minecraft.getInstance().getLanguageManager().getSelected().replace('_', '-')
@@ -96,7 +101,7 @@ object Speech {
     return defaultLanguages
   }
   fun filterVoices(synthesizers: List<String>, languages: List<String>): List<Voice> {
-    return voices.filter { it.synthesizer in synthesizers && it.language in languages }.sortedBy { it.displayName.lowercase() }
+    return voices.filter { it.synthesizer.name in synthesizers && it.languages.any { language -> language in languages } }.sortedBy { it.displayName.lowercase() }
   }
   fun configure() {
     SoundPlayer.setSourceMaxDistance("speech", ClientConfig.instance!!.sound.maxDistance.get().toFloat())

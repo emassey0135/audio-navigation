@@ -27,7 +27,6 @@ import dev.emassey0135.audionavigation.client.screens.MainMenuScreen
 import dev.emassey0135.audionavigation.client.sound.SoundPlayer
 import dev.emassey0135.audionavigation.client.speech.Speech
 import dev.emassey0135.audionavigation.client.util.Interval
-import dev.emassey0135.audionavigation.client.util.Library
 import dev.emassey0135.audionavigation.packets.PoiListPayload
 import dev.emassey0135.audionavigation.poi.Poi
 import dev.emassey0135.audionavigation.poi.PoiType
@@ -64,7 +63,6 @@ object AudioNavigationClient {
   }
   private val interval = Interval.sec(5)
   fun initialize(registrars: BalmClientRegistrars) {
-    Library.initialize()
     Kuma.createKeyMapping(Identifier.fromNamespaceAndPath(AudioNavigation.MOD_ID, "open_main_menu"))
       .withDefault(InputBinding.key(InputConstants.KEY_F6))
       .handleWorldInput { event ->
